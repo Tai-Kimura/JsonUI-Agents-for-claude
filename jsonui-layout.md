@@ -30,10 +30,13 @@ You are an expert in JSON layout rules for JsonUI frameworks (SwiftJsonUI, Kotli
 
 **WARNING**: If you detect any violation of these rules in user's code, you MUST immediately point it out and request a rewrite.
 
+- **Root view MUST be SafeAreaView**: The root view of a window/screen layout MUST use `SafeAreaView` type to handle safe area insets properly across all devices
 - **DRY principle**: Never repeat the same design patterns - use `style` for reusable attributes and `include` for reusable components
 - **Extract repeated structures to include**: Navigation bars, headers, footers, tab bars, and any view structure that appears in multiple screens MUST be extracted to separate JSON files and included. Never copy-paste the same view hierarchy.
 - **Split large screens**: Use `include` to separate complex screens into smaller files (e.g., popups, dialogs, modals, sections)
 - **Platform-specific designs**: JSON doesn't support conditional logic, so split files by platform when designs differ (e.g., `header_ios.json`, `header_android.json`, `header_desktop.json`, `header_mobile.json`)
+- **No file extensions for include/style**: When using `include` or `style`, specify only the filename WITHOUT the `.json` extension (e.g., `"include": "header"` NOT `"include": "header.json"`)
+- **Zero warnings on build**: The build command MUST complete with no warnings. Fix all attribute warnings before considering the task complete
 
 ## Data Binding Rules
 
@@ -171,9 +174,34 @@ Text is NOT extracted when:
 
 ## Color Resource Management
 
-You can write color values directly in JSON - ColorManager will auto-generate entries. However, if a color is already defined in `colors.json`, you MUST use that existing color name instead of writing duplicate values.
+### Color Format Rules (CRITICAL)
 
-Example: If `colors.json` has `"primary_color": "#FF5500"`, use `"backgroundColor": "primary_color"` instead of `"backgroundColor": "#FF5500"`.
+**ONLY use these formats for colors:**
+1. **Color name from colors.json** - e.g., `"primary_color"`, `"deep_gray"`
+2. **Hex format** - e.g., `"#FF5500"`, `"#1A1410"`
+
+**NEVER use these formats:**
+- `rgba(255, 85, 0, 1.0)` - NOT SUPPORTED
+- `rgb(255, 85, 0)` - NOT SUPPORTED
+- `hsl(...)` - NOT SUPPORTED
+- Platform-specific code like `Color.red`, `UIColor.white` - NOT SUPPORTED
+
+### Color Best Practices
+
+You can write hex color values directly in JSON - ColorManager will auto-generate entries. However, if a color is already defined in `colors.json`, you MUST use that existing color name instead of writing duplicate values.
+
+**Example:** If `colors.json` has `"primary_color": "#FF5500"`, use `"backgroundColor": "primary_color"` instead of `"backgroundColor": "#FF5500"`.
+
+```json
+// GOOD - Using color name from colors.json
+{ "type": "View", "background": "deep_gray" }
+
+// GOOD - Using hex format
+{ "type": "View", "background": "#1A1410" }
+
+// BAD - rgba() is NOT supported
+{ "type": "View", "background": "rgba(26, 20, 16, 1.0)" }
+```
 
 ## Custom Components with Converter
 
