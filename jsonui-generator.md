@@ -295,6 +295,7 @@ After generating or modifying files, always run build:
 - Generated view files (`*GeneratedView.swift`, generated composables)
 - Binding files
 - Data model files (auto-generated from JSON `data` section)
+- **Tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code
 
 ---
 

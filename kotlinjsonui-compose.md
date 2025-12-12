@@ -150,3 +150,4 @@ class HomeViewModel : ViewModel() {
 3. **Never hardcode** strings or colors - use StringManager/ColorManager
 4. **Keep ViewModel focused** - split if exceeding 500 lines
 5. **Validate JSON** - always run `kjui build` after changes
+6. **NEVER modify code inside tools directories** (`kjui_tools/`) - these are framework tools, not project code

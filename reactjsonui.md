@@ -154,3 +154,4 @@ export function HomeComponent({
 3. **Never hardcode** strings or colors - use StringManager/ColorManager
 4. **Keep hooks focused** - split if exceeding 500 lines
 5. **Validate JSON** - always run `rjui build` after changes
+6. **NEVER modify code inside tools directories** (`rjui_tools/`) - these are framework tools, not project code

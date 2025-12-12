@@ -41,13 +41,22 @@ This ensures:
 
 ### How It Works
 
-1. **JSON Layout** defines data structure:
+1. **JSON Layout** defines data structure (inside root component's `child`):
 ```json
 {
-  "data": [
-    { "name": "items", "class": "Array(ItemData)" },
-    { "name": "selectedItem", "class": "ItemData?" },
-    { "name": "onItemTap", "class": "(() -> Void)" }
+  "type": "View",
+  "child": [
+    {
+      "data": [
+        { "name": "items", "class": "Array(ItemData)" },
+        { "name": "selectedItem", "class": "ItemData?" },
+        { "name": "onItemTap", "class": "(() -> Void)" }
+      ]
+    },
+    {
+      "type": "Text",
+      "text": "Hello"
+    }
   ]
 }
 ```
@@ -115,9 +124,14 @@ Use **cross-platform syntax** for collections:
 **Example:**
 ```json
 {
-  "data": [
-    { "name": "items", "class": "Array(WhiskyData)" },
-    { "name": "userScores", "class": "Dictionary(String, Int)" }
+  "type": "View",
+  "child": [
+    {
+      "data": [
+        { "name": "items", "class": "Array(WhiskyData)" },
+        { "name": "userScores", "class": "Dictionary(String, Int)" }
+      ]
+    }
   ]
 }
 ```
@@ -144,12 +158,17 @@ Use **cross-platform syntax** for collections:
 
 ```json
 {
-  "data": [
-    { "name": "email", "class": "String" },
-    { "name": "password", "class": "String" },
-    { "name": "onLoginTap", "class": "(() -> Void)" },
-    { "name": "onGoogleLoginTap", "class": "(() -> Void)" },
-    { "name": "onItemSelected", "class": "((ItemData) -> Void)" }
+  "type": "View",
+  "child": [
+    {
+      "data": [
+        { "name": "email", "class": "String" },
+        { "name": "password", "class": "String" },
+        { "name": "onLoginTap", "class": "(() -> Void)" },
+        { "name": "onGoogleLoginTap", "class": "(() -> Void)" },
+        { "name": "onItemSelected", "class": "((ItemData) -> Void)" }
+      ]
+    }
   ]
 }
 ```
@@ -185,25 +204,32 @@ When working on a JSON file, scan for binding patterns and ensure they're in the
 **JSON with binding but missing data:**
 ```json
 {
-  "type": "Button",
-  "text": "Login",
-  "onClick": "@{onLoginTap}"
+  "type": "View",
+  "child": {
+    "type": "Button",
+    "text": "Login",
+    "onClick": "@{onLoginTap}"
+  }
 }
-// Missing in data section!
+// Missing data object in child!
 ```
 
 **Fixed JSON:**
 ```json
 {
   "type": "View",
-  "data": [
-    { "name": "onLoginTap", "class": "(() -> Void)" }
-  ],
-  "child": {
-    "type": "Button",
-    "text": "Login",
-    "onClick": "@{onLoginTap}"
-  }
+  "child": [
+    {
+      "data": [
+        { "name": "onLoginTap", "class": "(() -> Void)" }
+      ]
+    },
+    {
+      "type": "Button",
+      "text": "Login",
+      "onClick": "@{onLoginTap}"
+    }
+  ]
 }
 ```
 
@@ -258,6 +284,7 @@ For types that cannot be auto-converted, use platform-specific format:
 5. **ADD missing bindings** to the data section
 6. **RUN build** after making changes to regenerate Data models
 7. **VERIFY** the generated Data file has correct types
+8. **NEVER modify code inside tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code
 
 ---
 

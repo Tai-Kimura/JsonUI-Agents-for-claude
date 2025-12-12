@@ -286,3 +286,9 @@ Android:
 ./kjui_tools/bin/kjui hotload listen
 adb forward tcp:8082 tcp:8082
 ```
+
+---
+
+## Important Rules
+
+1. **NEVER modify code inside tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code

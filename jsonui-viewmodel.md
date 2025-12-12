@@ -265,6 +265,7 @@ backgroundColor = ColorManager.compose.deepGray ?: Color.Black
 6. **KEEP ViewModels focused** - Split if exceeding 500 lines
 7. **DESIGN for testing** - Use protocols/interfaces, inject dependencies
 8. **FOLLOW platform conventions** - Use idiomatic patterns
+9. **NEVER modify code inside tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code
 
 ---
 
