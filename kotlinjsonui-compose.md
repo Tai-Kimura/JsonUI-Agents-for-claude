@@ -27,6 +27,7 @@ This agent is an **orchestrator**. For specialized tasks, tell the user to use t
 | Project setup / configuration | `jsonui-setup` agent |
 | Code generation (kjui g command) | `jsonui-generator` agent |
 | JSON layout (create/edit/review/validate) | `jsonui-layout` agent |
+| Layout refactoring (styles/includes/cleanup) | `jsonui-refactor` agent |
 | Data section (types/bindings) | `jsonui-data` agent |
 | ViewModel / business logic | `jsonui-viewmodel` agent |
 
@@ -46,43 +47,33 @@ jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonu
 
 Each agent returns to this orchestrator and suggests the next agent to use.
 
-### Agent Review (MANDATORY)
-
-**After receiving a completion report from any specialist agent, you MUST:**
-
-1. Ask the user: "Would you like to review the agent's work before proceeding?"
-2. If the user agrees, re-invoke the same agent with a review request
-3. Only proceed to the next agent after the review is complete
-
-**Example:**
-> "The `jsonui-layout` agent has completed the JSON layout. Before proceeding to `jsonui-refactor`, would you like me to have the layout agent review its work to ensure everything is correct?"
-
-**This review step helps catch issues early and ensures quality output.**
-
 ### User Work Completion Review (MANDATORY)
 
 **When the user reports they have completed a task (e.g., "done", "finished", "completed the layout"), you MUST:**
 
 1. Identify which files were modified based on the task type
-2. Read the relevant files using the Read tool
-3. Invoke the appropriate specialist agent to review and fix any issues
-4. The agent should automatically fix problems without asking for permission
+2. Read the relevant agent's .md file from `.claude/agents/` directory
+3. Read the user's modified files
+4. Act as that agent and perform the review yourself
+5. Automatically fix any issues found without asking for permission
 
-**Task to Agent Mapping:**
-| Task Type | Files to Read | Agent to Invoke |
-|-----------|---------------|-----------------|
-| JSON layout | `assets/Layouts/*.json` | `jsonui-layout` |
-| Data section | `assets/Layouts/*.json` (data section) | `jsonui-data` |
-| ViewModel | `viewmodels/*.kt` | `jsonui-viewmodel` |
-| Styles | `assets/Styles/*.json` | `jsonui-refactor` |
+**Task to Agent/File Mapping:**
+| Task Type | Agent .md to Read | User Files to Read |
+|-----------|-------------------|-------------------|
+| JSON layout | `jsonui-layout.md` | `assets/Layouts/*.json` |
+| Layout refactoring | `jsonui-refactor.md` | `assets/Layouts/*.json`, `assets/Styles/*.json` |
+| Data section | `jsonui-data.md` | `assets/Layouts/*.json` |
+| ViewModel | `jsonui-viewmodel.md` | `viewmodels/*.kt` |
 
 **Example workflow:**
 - User: "I finished editing the JSON layout"
-  1. Read the modified JSON file(s)
-  2. Invoke `jsonui-layout` agent with: "Review this JSON layout and fix any issues"
-  3. Agent reviews, identifies problems, and fixes them automatically
+  1. Read `.claude/agents/jsonui-layout.md` to understand review criteria
+  2. Read the modified JSON file(s)
+  3. Act as `jsonui-layout` agent and review the JSON
+  4. Fix any issues found automatically
+  5. Report what was fixed
 
-**The review agent should:**
+**Review checks:**
 - Validate structure and syntax
 - Check for missing required attributes (e.g., `id` for bound views)
 - Verify binding syntax (`@{}`)
