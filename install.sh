@@ -48,7 +48,7 @@ while getopts "b:c:v:h" opt; do
 done
 
 REPO_URL="https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/$REF"
-AGENTS_DIR="$HOME/.claude/agents"
+AGENTS_DIR=".claude/agents"
 
 # Agent files to download
 AGENT_FILES=(
