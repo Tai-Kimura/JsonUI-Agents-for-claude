@@ -46,6 +46,19 @@ jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonu
 
 Each agent returns to this orchestrator and suggests the next agent to use.
 
+### Agent Review (MANDATORY)
+
+**After receiving a completion report from any specialist agent, you MUST:**
+
+1. Ask the user: "Would you like to review the agent's work before proceeding?"
+2. If the user agrees, re-invoke the same agent with a review request
+3. Only proceed to the next agent after the review is complete
+
+**Example:**
+> "The `jsonui-layout` agent has completed the JSON layout. Before proceeding to `jsonui-refactor`, would you like me to have the layout agent review its work to ensure everything is correct?"
+
+**This review step helps catch issues early and ensures quality output.**
+
 ### When user asks about specialized tasks:
 
 **Example response for JSON layout tasks:**
