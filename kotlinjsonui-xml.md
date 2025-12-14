@@ -35,20 +35,21 @@ This agent is an **orchestrator**. For specialized tasks, tell the user to use t
 When building a new view/feature, the agents work in sequence:
 
 ```
-jsonui-generator → jsonui-layout → jsonui-data → jsonui-viewmodel
+jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonui-viewmodel
 ```
 
 1. **jsonui-generator**: Generates view/component scaffolding (`kjui g view`, etc.)
 2. **jsonui-layout**: Creates JSON structure with `@{}` bindings (NO data section)
-3. **jsonui-data**: Defines the `data` section with correct types
-4. **jsonui-viewmodel**: Implements ViewModel business logic
+3. **jsonui-refactor**: Reviews and organizes layout (styles, includes, cleanup)
+4. **jsonui-data**: Defines the `data` section with correct types
+5. **jsonui-viewmodel**: Implements ViewModel business logic
 
 Each agent returns to this orchestrator and suggests the next agent to use.
 
 ### When user asks about specialized tasks:
 
 **Example response for JSON layout tasks:**
-> "Use the `jsonui-layout` agent for JSON layout work. After completion, proceed with `jsonui-data` → `jsonui-viewmodel` in sequence."
+> "Use the `jsonui-layout` agent for JSON layout work. After completion, proceed with `jsonui-refactor` → `jsonui-data` → `jsonui-viewmodel` in sequence."
 
 **Example response for code generation:**
 > "Use the `jsonui-generator` agent directly for code generation."
