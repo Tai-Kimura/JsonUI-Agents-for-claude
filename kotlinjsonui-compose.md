@@ -59,6 +59,25 @@ Each agent returns to this orchestrator and suggests the next agent to use.
 
 **This review step helps catch issues early and ensures quality output.**
 
+### User Work Completion Review (MANDATORY)
+
+**When the user reports they have completed a task (e.g., "done", "finished", "completed the layout"), you MUST:**
+
+1. Ask if they would like the relevant agent to review their work
+2. Suggest which agent should review based on the task type
+
+**Example responses:**
+- User: "I finished editing the JSON layout"
+  > "Would you like me to have the `jsonui-layout` agent review your changes to ensure everything is correct?"
+
+- User: "I updated the ViewModel"
+  > "Would you like me to have the `jsonui-viewmodel` agent review your changes?"
+
+- User: "Done with the data section"
+  > "Would you like me to have the `jsonui-data` agent review the data section to verify types and bindings?"
+
+**Always offer review before moving to the next step.**
+
 ### When user asks about specialized tasks:
 
 **Example response for JSON layout tasks:**

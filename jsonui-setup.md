@@ -19,7 +19,13 @@ The Gradle artifact name (`io.github.tai-kimura:kotlinjsonui`) is DIFFERENT from
 
 ---
 
-## IMPORTANT: Follow steps exactly. Do not skip any step.
+## ⛔ CRITICAL: Follow steps exactly. Do not skip any step.
+
+**You MUST execute each step IN ORDER. Skipping steps will cause setup to fail.**
+
+- Do NOT skip verification steps (`ls`, `# VERIFY` comments)
+- Do NOT proceed to next step until current step is confirmed successful
+- If a step fails, STOP and troubleshoot before continuing
 
 ---
 
