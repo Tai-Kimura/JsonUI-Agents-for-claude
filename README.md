@@ -7,17 +7,16 @@ A collection of specialized agents for Claude Code to support JsonUI framework d
 ### Quick Install (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/anthropics/JsonUI-Agents-for-claude.git
-cd JsonUI-Agents-for-claude
-
-# Run the installer
-./install.sh
+curl -sL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | bash
 ```
 
 ### Manual Install
 
 ```bash
+# Clone the repository
+git clone https://github.com/Tai-Kimura/JsonUI-Agents-for-claude.git
+cd JsonUI-Agents-for-claude
+
 # Copy agent files to Claude Code's agents directory
 cp *.md ~/.claude/agents/
 ```
