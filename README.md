@@ -7,7 +7,17 @@ A collection of specialized agents for Claude Code to support JsonUI framework d
 ### Quick Install (Recommended)
 
 ```bash
+# Install from main branch
 curl -sL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | bash
+
+# Install from specific branch
+curl -sL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | bash -s -- -b develop
+
+# Install from specific commit
+curl -sL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | bash -s -- -c abc123
+
+# Install from specific version tag
+curl -sL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | bash -s -- -v 1.0.0
 ```
 
 ### Manual Install
