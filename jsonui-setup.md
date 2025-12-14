@@ -87,6 +87,17 @@ struct YourAppApp: App {
 ls */View/Splash/  # VERIFY: Files created
 ```
 
+### Step 8: Build to generate resource managers
+```bash
+./sjui_tools/bin/sjui build
+```
+
+This command auto-generates:
+- **StringManager.swift** - Manages localized strings from `strings.json`
+- **ColorManager.swift** - Manages color definitions from `colors.json`
+
+These files are regenerated on every `sjui build` execution. **Do NOT edit them manually.**
+
 ---
 
 ## Android Setup (KotlinJsonUI)
