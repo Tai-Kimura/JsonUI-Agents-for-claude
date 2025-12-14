@@ -65,26 +65,82 @@ For **full screen layouts** (not includes or collection cells):
 
 When the same view structure repeats with different data, **always use Collection** instead of duplicating views manually.
 
+**IMPORTANT: Collection syntax differs by platform/mode:**
+
+#### UIKit / Android Views (Dynamic mode) - Use `cellClasses`, `headerClasses`, `footerClasses`
+
 ```json
-// CORRECT - Use Collection for repeated items
+// Basic Collection with cell classes
 {
   "type": "Collection",
-  "id": "itemsList",
+  "id": "itemsCollection",
   "items": "@{items}",
-  "cellClasses": ["ItemCell", "ItemCell2"]
+  "cellClasses": ["ItemCell", "PromotionCell"]
 }
 
-// With header and footer
+// With header and footer classes
 {
   "type": "Collection",
-  "id": "itemsList",
+  "id": "itemsCollection",
   "items": "@{items}",
   "cellClasses": ["ItemCell"],
   "headerClasses": ["SectionHeader"],
   "footerClasses": ["SectionFooter"]
 }
+```
 
-// WRONG - Manually repeating views
+**UIKit/Views Collection rules**:
+- Use actual class names (e.g., `ItemCell`, `SectionHeader`) - NOT snake_case
+- `cellClasses`, `headerClasses`, `footerClasses` are arrays
+- Each class requires a separate JSON layout file in `{layouts_directory}/` (e.g., `ItemCell.json`)
+
+#### SwiftUI / Jetpack Compose (Generated mode) - Use `sections` array
+
+```json
+// Collection with sections (SwiftUI/Compose)
+{
+  "type": "Collection",
+  "id": "itemsCollection",
+  "sections": [
+    { "cell": "ProductCell" }
+  ]
+}
+
+// With header and footer
+{
+  "type": "Collection",
+  "id": "itemsCollection",
+  "sections": [
+    {
+      "header": "SectionHeader",
+      "cell": "ProductCell",
+      "footer": "SectionFooter",
+      "columns": 2
+    }
+  ]
+}
+
+// Multiple sections with different cells
+{
+  "type": "Collection",
+  "id": "itemsCollection",
+  "sections": [
+    { "header": "FeaturedHeader", "cell": "FeaturedCell" },
+    { "header": "RegularHeader", "cell": "ProductCell", "columns": 2 }
+  ]
+}
+```
+
+**SwiftUI/Compose Collection rules**:
+- `sections` is an array of objects (NOT a binding)
+- Each section object can have: `header`, `cell`, `footer`, `columns`
+- Each `header`, `cell`, `footer` requires a separate JSON layout file in `{layouts_directory}/`
+- GeneratedView files must exist in `{view_directory}/` (e.g., `ProductCellGeneratedView.swift`)
+
+#### WRONG - Manually repeating views
+
+```json
+// WRONG - Never do this
 {
   "type": "View",
   "child": [
@@ -94,10 +150,6 @@ When the same view structure repeats with different data, **always use Collectio
   ]
 }
 ```
-
-**Collection class naming**:
-- Use actual class names (e.g., `ItemCell`, `SectionHeader`) - NOT snake_case
-- `cellClasses`, `headerClasses`, `footerClasses` are arrays
 
 ### Other Rules
 
@@ -341,3 +393,61 @@ When the JSON layout is finalized (with empty `@{}` bindings but NO data section
 - Data types are validated by specialized agent
 - ViewModels implement business logic
 - Type-safe data binding across the entire stack
+
+---
+
+## IMPORTANT: Collection Cell Creation
+
+**When using Collection in a layout, cell files MUST be created separately for ALL platforms.**
+
+### For UIKit / Android Views (Dynamic mode)
+
+If your layout includes a Collection component with `cellClasses`, `headerClasses`, or `footerClasses`:
+
+1. **This agent creates ONLY the main layout** - NOT the cell files
+2. **Cell files require a separate generator agent invocation**
+
+**After completing the main layout, you MUST report:**
+> "This layout uses Collection (UIKit/Views mode) with the following cell classes that need to be created:
+> - Cell classes: `ItemCell`, `ProductCell`, etc.
+> - Header classes: `SectionHeader`, etc. (if any)
+> - Footer classes: `SectionFooter`, etc. (if any)
+>
+> **Please run the jsonui-generator agent again** to create each cell layout file."
+
+**Example workflow (UIKit/Views):**
+1. `jsonui-generator` → Creates main layout (e.g., `ProductList.json`) with Collection
+2. `jsonui-generator` → Creates `ProductCell.json` (cell layout)
+3. `jsonui-generator` → Creates `SectionHeader.json` (if needed)
+4. `jsonui-layout` → Implements view details for each layout
+5. `jsonui-refactor` → Reviews and organizes all layouts
+6. `jsonui-data` → Defines data sections
+7. `jsonui-viewmodel` → Implements ViewModels
+
+**Cell layouts do NOT need SafeAreaView or ScrollView** - they are embedded within Collections.
+
+### For SwiftUI / Jetpack Compose (Generated mode)
+
+If your layout includes a Collection component with `sections` array containing `header`, `cell`, or `footer`:
+
+1. **This agent creates ONLY the main layout** - NOT the cell files
+2. **Cell files require a separate generator agent invocation**
+
+**After completing the main layout, you MUST report:**
+> "This layout uses Collection (SwiftUI/Compose mode) with the following views that need to be created:
+> - Cell views: `ProductCell`, `FeaturedCell`, etc.
+> - Header views: `SectionHeader`, etc. (if any)
+> - Footer views: `SectionFooter`, etc. (if any)
+>
+> **Please run the jsonui-generator agent again** to create each cell layout file."
+
+**Example workflow (SwiftUI/Compose):**
+1. `jsonui-generator` → Creates main layout (e.g., `ProductList.json`) with Collection using `sections`
+2. `jsonui-generator` → Creates `ProductCell.json` (cell layout)
+3. `jsonui-generator` → Creates `SectionHeader.json` (if needed)
+4. `jsonui-layout` → Implements view details for each layout
+5. `jsonui-refactor` → Reviews and organizes all layouts
+6. `jsonui-data` → Defines data sections including section/cell types
+7. `jsonui-viewmodel` → Implements ViewModel with section data
+
+**Cell layouts do NOT need SafeAreaView or ScrollView** - they are embedded within Collections.

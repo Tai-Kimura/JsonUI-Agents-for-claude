@@ -283,3 +283,108 @@ When refactoring:
 2. **jsonui-refactor** → Reviews and organizes (styles, includes, cleanup)
 3. **jsonui-data** → Defines the `data` section with types
 4. **jsonui-viewmodel** → Implements ViewModel business logic
+
+---
+
+## IMPORTANT: Collection Cell Detection by Platform
+
+**Collection syntax differs by platform/mode. Check which attributes are used:**
+
+### UIKit / Android Views (Dynamic mode) - `cellClasses`, `headerClasses`, `footerClasses`
+
+When reviewing a layout that contains Collection with `cellClasses`, `headerClasses`, or `footerClasses`:
+
+1. **Check for cell file existence** - Look for files matching each class name
+2. **Report missing files** - If any cell class file is NOT found
+
+**How to check:**
+```json
+// If layout contains (UIKit/Views mode):
+{
+  "type": "Collection",
+  "cellClasses": ["ProductCell", "PromotionCell"],
+  "headerClasses": ["SectionHeader"]
+}
+```
+
+Search for JSON layout files in `{layouts_directory}/` (from `sjui.config.json` or `kjui.config.json`):
+- `{layouts_directory}/ProductCell.json`
+- `{layouts_directory}/PromotionCell.json`
+- `{layouts_directory}/SectionHeader.json`
+
+**If any cell file is missing, you MUST report:**
+> "⚠️ **Missing Collection cell files detected (UIKit/Views mode):**
+> - `ProductCell.json` - NOT FOUND
+> - `PromotionCell.json` - NOT FOUND
+> - `SectionHeader.json` - NOT FOUND
+>
+> **Please run the jsonui-generator agent** to create each missing cell layout file before proceeding."
+
+**Do NOT proceed with data or viewmodel agents until all cell files exist.**
+
+**Example workflow when cells are missing (UIKit/Views):**
+1. `jsonui-refactor` → Detects missing cells, reports to parent
+2. `jsonui-generator` → Creates `ProductCell.json`
+3. `jsonui-generator` → Creates `PromotionCell.json`
+4. `jsonui-generator` → Creates `SectionHeader.json`
+5. `jsonui-layout` → Implements view details for each layout
+6. `jsonui-refactor` → Re-run to review all layouts including new cells
+7. `jsonui-data` → Defines data sections for all files
+8. `jsonui-viewmodel` → Implements ViewModels
+
+### SwiftUI / Jetpack Compose (Generated mode) - `sections` array
+
+When reviewing a layout that contains Collection with `sections` array:
+
+```json
+// If layout contains (SwiftUI/Compose mode):
+{
+  "type": "Collection",
+  "id": "itemsCollection",
+  "sections": [
+    {
+      "header": "SectionHeader",
+      "cell": "ProductCell",
+      "footer": "SectionFooter"
+    },
+    {
+      "cell": "PromotionCell"
+    }
+  ]
+}
+```
+
+**Check for cell files** - Look for all `header`, `cell`, `footer` values in the `sections` array.
+
+Search for JSON layout files in `{layouts_directory}/` (from `sjui.config.json` or `kjui.config.json`):
+- `{layouts_directory}/SectionHeader.json`
+- `{layouts_directory}/ProductCell.json`
+- `{layouts_directory}/SectionFooter.json`
+- `{layouts_directory}/PromotionCell.json`
+
+Also verify GeneratedView files exist in `{view_directory}/` (from config):
+- `{view_directory}/SectionHeaderGeneratedView.swift` (or `.kt` for Android)
+- `{view_directory}/ProductCellGeneratedView.swift`
+- etc.
+
+**Note**: GeneratedView files should already exist for each cell. If missing, the cell JSON layout file needs to be created first.
+
+**If any cell file is missing, you MUST report:**
+> "⚠️ **Missing Collection cell files detected (SwiftUI/Compose mode):**
+> - `ProductCell.json` - NOT FOUND
+> - `PromotionCell.json` - NOT FOUND
+> - `SectionHeader.json` - NOT FOUND
+>
+> **Please run the jsonui-generator agent** to create each missing cell layout file before proceeding."
+
+**Do NOT proceed with data or viewmodel agents until all cell files exist.**
+
+**Example workflow when cells are missing (SwiftUI/Compose):**
+1. `jsonui-refactor` → Detects missing cells, reports to parent
+2. `jsonui-generator` → Creates `ProductCell.json`
+3. `jsonui-generator` → Creates `PromotionCell.json`
+4. `jsonui-generator` → Creates `SectionHeader.json`
+5. `jsonui-layout` → Implements view details for each layout
+6. `jsonui-refactor` → Re-run to review all layouts including new cells
+7. `jsonui-data` → Defines data sections including section/cell types
+8. `jsonui-viewmodel` → Implements ViewModel with section data
