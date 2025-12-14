@@ -13,9 +13,11 @@ You are an expert in implementing JSON layouts for JsonUI frameworks (SwiftJsonU
 **BEFORE creating or modifying any JSON layout**, you MUST:
 1. Find the user's tools directory (`sjui_tools`, `kjui_tools`, or `rjui_tools`)
 2. Read `lib/core/attribute_definitions.json` from that location
-3. Verify all attributes exist and have correct types
+3. **Read the `description` field of each attribute** - It contains important usage notes, constraints, and exceptions (e.g., "Not required if weight is specified")
+4. Verify all attributes exist and have correct types
+5. Check `required` field to know which attributes are mandatory
 
-**NEVER guess attribute names or types.**
+**NEVER guess attribute names or types. Always read the description for context.**
 
 ## Post-Build Validation (MANDATORY)
 

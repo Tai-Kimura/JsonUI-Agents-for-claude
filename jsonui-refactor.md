@@ -15,6 +15,17 @@ You are an expert in reviewing and organizing JSON layouts for JsonUI frameworks
 3. **Duplicate Cleanup** - Remove redundant attributes
 4. **DRY Enforcement** - Ensure no repeated patterns exist across layouts
 
+## JSON Attribute Validation (CRITICAL)
+
+**BEFORE reviewing or modifying any JSON layout**, you MUST:
+1. Find the user's tools directory (`sjui_tools`, `kjui_tools`, or `rjui_tools`)
+2. Read `lib/core/attribute_definitions.json` from that location
+3. **Read the `description` field of each attribute** - It contains important usage notes, constraints, and exceptions (e.g., "Not required if weight is specified")
+4. Check `required` field to know which attributes are mandatory
+5. Verify all attributes used in layouts are valid
+
+**NEVER guess attribute names or types. Always read the description for context.**
+
 ## Post-Build Validation (MANDATORY)
 
 **AFTER creating or modifying any JSON layout file**:
