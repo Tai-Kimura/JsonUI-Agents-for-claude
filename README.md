@@ -17,7 +17,8 @@ cp *.md ~/.claude/agents/
 |-------|-------------|
 | `jsonui-setup` | Project initialization and configuration |
 | `jsonui-generator` | Code generation for Views, Collections, Converters |
-| `jsonui-layout` | JSON layout creation, editing, and validation |
+| `jsonui-layout` | JSON layout creation and implementation |
+| `jsonui-refactor` | Layout review, style extraction, include separation, cleanup |
 | `jsonui-data` | Data section type definitions and bindings |
 | `jsonui-viewmodel` | ViewModel and business logic implementation |
 
@@ -36,13 +37,14 @@ cp *.md ~/.claude/agents/
 Recommended sequence when creating new Views/features:
 
 ```
-jsonui-generator → jsonui-layout → jsonui-data → jsonui-viewmodel
+jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonui-viewmodel
 ```
 
 1. **jsonui-generator**: Generate scaffolding with `sjui g view` / `kjui g view`
 2. **jsonui-layout**: Create JSON layout structure with `@{}` bindings
-3. **jsonui-data**: Define types in the `data` section
-4. **jsonui-viewmodel**: Implement business logic in ViewModel
+3. **jsonui-refactor**: Review and organize (styles, includes, cleanup)
+4. **jsonui-data**: Define types in the `data` section
+5. **jsonui-viewmodel**: Implement business logic in ViewModel
 
 ## Usage
 
