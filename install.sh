@@ -49,6 +49,7 @@ done
 
 REPO_URL="https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/$REF"
 AGENTS_DIR=".claude/agents"
+COMMANDS_DIR=".claude/commands"
 
 # Agent files to download
 AGENT_FILES=(
@@ -74,6 +75,12 @@ if [ ! -d "$AGENTS_DIR" ]; then
     mkdir -p "$AGENTS_DIR"
 fi
 
+# Create commands directory if it doesn't exist
+if [ ! -d "$COMMANDS_DIR" ]; then
+    echo "Creating commands directory: $COMMANDS_DIR"
+    mkdir -p "$COMMANDS_DIR"
+fi
+
 # Download agent files
 echo "Downloading agent files..."
 for file in "${AGENT_FILES[@]}"; do
@@ -83,6 +90,8 @@ for file in "${AGENT_FILES[@]}"; do
         echo "Please check if the $REF_TYPE '$REF' exists." >&2
         exit 1
     fi
+    # Also copy to commands directory
+    cp "$AGENTS_DIR/$file" "$COMMANDS_DIR/$file"
 done
 
 echo ""
@@ -92,6 +101,10 @@ echo "Installed agents:"
 for file in "${AGENT_FILES[@]}"; do
     echo "  - ${file%.md}"
 done
+echo ""
+echo "Files installed to:"
+echo "  - $AGENTS_DIR"
+echo "  - $COMMANDS_DIR"
 echo ""
 echo "You can now use JsonUI agents in Claude Code."
 echo "Example: \"Use the jsonui-layout agent to create a login screen\""
