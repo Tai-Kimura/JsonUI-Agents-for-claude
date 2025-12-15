@@ -158,6 +158,32 @@ When the same view structure repeats with different data, **always use Collectio
 - **No file extensions for include/style**: When using `include` or `style`, specify only the filename WITHOUT the `.json` extension (e.g., `"include": "header"` NOT `"include": "header.json"`)
 - **Zero warnings on build**: The build command MUST complete with no warnings. Fix all attribute warnings before considering the task complete
 
+### Include Syntax
+
+**Include is NOT a component type** - it's a reference directive to embed another JSON file.
+
+**WRONG:**
+```json
+{ "type": "include", "include": "header" }  // ← WRONG: include is not a type
+```
+
+**CORRECT:**
+```json
+{ "include": "header" }  // ← CORRECT: just use include key, no type
+```
+
+Example usage:
+```json
+{
+  "type": "Linear",
+  "child": [
+    { "include": "header" },
+    { "include": "popups/confirm" },
+    { "type": "Label", "text": "Content" }
+  ]
+}
+```
+
 ## Refactoring Note
 
 **This agent focuses on implementing views correctly.** After implementation, use the **jsonui-refactor agent** for:

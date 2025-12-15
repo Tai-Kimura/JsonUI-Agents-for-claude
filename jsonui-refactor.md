@@ -159,8 +159,19 @@ Layouts/
 ```
 
 **IMPORTANT**:
+- **DO NOT add `type` to include objects** - Include is NOT a component type, it's a reference directive
 - Never include `.json` extension
 - Use subdirectory path only when file is in a subdirectory (e.g., `"popups/confirm"`)
+
+**WRONG:**
+```json
+{ "type": "include", "include": "header" }  // ← WRONG: include is not a type
+```
+
+**CORRECT:**
+```json
+{ "include": "header" }  // ← CORRECT: just use include key
+```
 
 ## Duplicate Attribute Cleanup
 
