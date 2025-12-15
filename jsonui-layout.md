@@ -190,6 +190,17 @@ When the same view structure repeats with different data, **always use Collectio
 
 **Include is NOT a component type** - it's a reference directive to embed another JSON file.
 
+**Always use `g partial` command to create include files:**
+```bash
+# SwiftJsonUI
+./sjui_tools/bin/sjui g partial header
+./sjui_tools/bin/sjui g partial popups/confirm
+
+# KotlinJsonUI
+./kjui_tools/bin/kjui g partial header
+./kjui_tools/bin/kjui g partial popups/confirm
+```
+
 **WRONG:**
 ```json
 { "type": "include", "include": "header" }  // ← WRONG: include is not a type

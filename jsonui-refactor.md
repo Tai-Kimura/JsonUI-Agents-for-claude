@@ -186,9 +186,21 @@ Layouts/
 ```
 
 **IMPORTANT**:
+- **Always use `g partial` command to create include files** - Never create JSON files manually
 - **DO NOT add `type` to include objects** - Include is NOT a component type, it's a reference directive
 - Never include `.json` extension
 - Use subdirectory path only when file is in a subdirectory (e.g., `"popups/confirm"`)
+
+**Creating include files:**
+```bash
+# SwiftJsonUI
+./sjui_tools/bin/sjui g partial header
+./sjui_tools/bin/sjui g partial popups/confirm
+
+# KotlinJsonUI
+./kjui_tools/bin/kjui g partial header
+./kjui_tools/bin/kjui g partial popups/confirm
+```
 
 **WRONG:**
 ```json
