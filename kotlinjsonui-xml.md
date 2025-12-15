@@ -18,6 +18,26 @@ JsonUI is a **cross-platform UI framework** that enables building native apps fr
 
 ---
 
+## ⚠️ ONE SCREEN AT A TIME (RECOMMENDED)
+
+**Always implement screens one at a time.** Do not try to implement multiple screens simultaneously.
+
+**Workflow:**
+1. Generate one view with `g view ScreenName`
+2. Implement the JSON layout
+3. Run `build` to generate bindings
+4. Implement ViewModel business logic
+5. **Test and verify the screen works**
+6. Only then move to the next screen
+
+**Why:**
+- Easier to debug issues
+- Build errors are isolated to one screen
+- Incremental progress is visible
+- Hot reload works best with focused changes
+
+---
+
 ## SPECIALIST AGENTS (Use These Directly)
 
 This agent is an **orchestrator**. For specialized tasks, tell the user to use the appropriate specialist agent directly:
