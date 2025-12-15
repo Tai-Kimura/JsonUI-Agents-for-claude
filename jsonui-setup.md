@@ -6,19 +6,6 @@ tools: Read, Write, Bash, Glob, Grep
 
 # JsonUI Setup Agent
 
-## ⛔ CRITICAL - READ THIS FIRST ⛔
-
-**KotlinJsonUI Import Package:**
-```
-CORRECT: com.kotlinjsonui.core
-WRONG:   io.github.taikimura (DO NOT USE)
-WRONG:   io.github.tai_kimura (DO NOT USE)
-```
-
-The Gradle artifact name (`io.github.tai-kimura:kotlinjsonui`) is DIFFERENT from the Kotlin import package (`com.kotlinjsonui.core`).
-
----
-
 ## ⛔ CRITICAL: Follow steps exactly. Do not skip any step.
 
 **You MUST execute each step IN ORDER. Skipping steps will cause setup to fail.**
@@ -29,11 +16,23 @@ The Gradle artifact name (`io.github.tai-kimura:kotlinjsonui`) is DIFFERENT from
 
 ---
 
-## ⛔ MANDATORY COMPLETION CHECKLIST
+## Platform Selection
+
+**Choose ONE platform and follow its complete guide:**
+
+| Platform | Section |
+|----------|---------|
+| iOS (Swift) | [iOS Setup (SwiftJsonUI)](#ios-setup-swiftjsonui) |
+| Android (Kotlin) | [Android Setup (KotlinJsonUI)](#android-setup-kotlinjsonui) |
+
+---
+
+# iOS Setup (SwiftJsonUI)
+
+## iOS Checklist
 
 **You are NOT done until ALL items are checked:**
 
-### iOS (SwiftJsonUI)
 - [ ] Step 1: Project root confirmed (.xcodeproj exists)
 - [ ] Step 2: sjui_tools installed
 - [ ] Step 3: sjui.config.json created
@@ -44,93 +43,50 @@ The Gradle artifact name (`io.github.tai-kimura:kotlinjsonui`) is DIFFERENT from
 - [ ] **Step 8: sjui build executed** ← CRITICAL
 - [ ] **Step 9: Final verification passed** ← CRITICAL
 
-### Android (KotlinJsonUI)
-- [ ] Step 1: Project root confirmed (build.gradle.kts exists)
-- [ ] Step 2: Dependencies added
-- [ ] Step 3: kjui_tools installed
-- [ ] Step 4: kjui.config.json created
-- [ ] Step 5: Port configured (8082)
-- [ ] Step 6: setup command executed
-- [ ] **Step 7: Application class created** ← CRITICAL
-- [ ] **Step 8: AndroidManifest.xml modified** ← CRITICAL
-- [ ] **Step 9: MainActivity.kt modified** ← CRITICAL
-- [ ] **Step 10: Splash view generated** ← CRITICAL
-- [ ] **Step 11: Final verification passed** ← CRITICAL
-
----
-
-## Step Dependencies
-
 ```
-iOS:
 Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9
                                               ↑
                                     DO NOT STOP HERE!
                                     Steps 6-9 are MANDATORY
-
-Android:
-Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9 → Step 10 → Step 11
-                                              ↑
-                                    DO NOT STOP HERE!
-                                    Steps 7-11 are MANDATORY
 ```
 
----
+## iOS Common Mistakes
 
-## ⚠️ COMMON MISTAKES - DO NOT DO THESE
-
-1. **❌ Stopping at Step 5/6 after `setup` command**
-   - `setup` only creates directory structure
-   - App.swift/Application class modifications are REQUIRED
-   - View generation is REQUIRED
-
-2. **❌ Forgetting to generate Splash view**
-   - Without Splash view, the app has no entry point
-
-3. **❌ Forgetting `sjui build` (iOS)**
-   - StringManager.swift and ColorManager.swift won't exist
-
-4. **❌ Not modifying App.swift (iOS)**
-   - Dynamic mode won't work without ViewSwitcher
-
-5. **❌ Not creating Application class (Android)**
-   - DynamicModeManager won't be initialized
+1. **Stopping at Step 5 after `setup` command** - `setup` only creates directory structure
+2. **Forgetting to generate Splash view** - Without it, app has no entry point
+3. **Forgetting `sjui build`** - StringManager.swift and ColorManager.swift won't exist
+4. **Not modifying App.swift** - Dynamic mode won't work without ViewSwitcher
 
 ---
 
-## iOS Setup (SwiftJsonUI)
-
-Execute these steps IN ORDER:
-
-### Step 1: Go to project root
+## iOS Step 1: Go to project root
 ```bash
 cd /path/to/project  # Where .xcodeproj is located
 ls *.xcodeproj       # VERIFY: Must show .xcodeproj file
 ```
 
-### Step 2: Install sjui_tools
-Download and run the installer:
+## iOS Step 2: Install sjui_tools
 ```bash
 curl -sSL https://raw.githubusercontent.com/Tai-Kimura/SwiftJsonUI/main/tools/installer/install_sjui.sh | bash
 ls sjui_tools/bin/sjui  # VERIFY: File must exist
 ```
 
-### Step 3: Initialize
+## iOS Step 3: Initialize
 ```bash
 ./sjui_tools/bin/sjui init --mode swiftui
 ls sjui.config.json  # VERIFY: File must exist
 ```
 
-### Step 4: Edit sjui.config.json
-- Set hotloader.port (iOS: 8081, Android: 8082)
+## iOS Step 4: Edit sjui.config.json
+- Set `hotloader.port` to `8081`
 - Read file to VERIFY port is correct
 
-### Step 5: Run setup
+## iOS Step 5: Run setup
 ```bash
 ./sjui_tools/bin/sjui setup
 ```
 
-### Step 6: MANDATORY - Edit App.swift
+## iOS Step 6: MANDATORY - Edit App.swift
 Find the App struct file and ADD these changes:
 1. Add `import SwiftJsonUI`
 2. Add `@StateObject private var viewSwitcher = ViewSwitcher.shared`
@@ -156,13 +112,14 @@ struct YourAppApp: App {
 
 **VERIFY**: Read App.swift and confirm `ViewSwitcher.shared` exists
 
-### Step 7: Generate Splash view
+## iOS Step 7: Generate Splash view
 ```bash
 ./sjui_tools/bin/sjui g view Splash --root
-ls */View/Splash/  # VERIFY: Files created
 ```
 
-### Step 8: Build to generate resource managers
+**VERIFY**: Check that View/Splash/ directory was created (path depends on `source_path` in config)
+
+## iOS Step 8: Build to generate resource managers
 ```bash
 ./sjui_tools/bin/sjui build
 ```
@@ -173,7 +130,7 @@ This command auto-generates:
 
 These files are regenerated on every `sjui build` execution. **Do NOT edit them manually.**
 
-### Step 9: FINAL VERIFICATION (MANDATORY)
+## iOS Step 9: FINAL VERIFICATION (MANDATORY)
 Read `sjui.config.json` and verify the following files/directories exist based on `source_path` value:
 
 **Verify these items:**
@@ -185,20 +142,107 @@ Read `sjui.config.json` and verify the following files/directories exist based o
 
 **If ANY of the above is missing, go back and complete the missing step!**
 
+## iOS Hotloader Command
+```bash
+./sjui_tools/bin/sjui hotload listen
+```
+
+## iOS Response Template
+
+When reporting completion, use this format:
+
+```
+## iOS Setup Status
+
+| Step | Description | Status |
+|------|-------------|--------|
+| 1 | Project root confirmed | ✅ |
+| 2 | sjui_tools installed | ✅ |
+| 3 | sjui.config.json created | ✅ |
+| 4 | Port configured (8081) | ✅ |
+| 5 | setup command executed | ✅ |
+| 6 | App.swift modified | ✅ |
+| 7 | Splash view generated | ✅ |
+| 8 | sjui build executed | ✅ |
+| 9 | Final verification | ✅ |
+
+All steps completed: ✅ YES / ❌ NO
+
+### Verification Results:
+- [x] sjui_tools/bin/sjui exists
+- [x] sjui.config.json exists
+- [x] {source_path}/View/Splash/ exists
+- [x] {source_path}/Managers/StringManager.swift exists
+- [x] {source_path}/Managers/ColorManager.swift exists
+```
+
+**DO NOT report completion until ALL steps show ✅**
+
 ---
 
-## Android Setup (KotlinJsonUI)
+# Android Setup (KotlinJsonUI)
 
-Execute these steps IN ORDER:
+## ⛔ CRITICAL - KotlinJsonUI Package Name
 
-### Step 1: Go to project root
+**Gradle artifact name ≠ Kotlin import package**
+
+```
+Gradle artifact:  io.github.tai-kimura:kotlinjsonui
+Kotlin import:    com.kotlinjsonui.core
+```
+
+**CORRECT imports:**
+```kotlin
+import com.kotlinjsonui.core.DynamicModeManager
+import com.kotlinjsonui.core.Configuration
+```
+
+**WRONG imports (DO NOT USE):**
+- `io.github.taikimura.*` ← WRONG
+- `io.github.tai_kimura.*` ← WRONG
+- `com.tai_kimura.*` ← WRONG
+
+---
+
+## Android Checklist
+
+**You are NOT done until ALL items are checked:**
+
+- [ ] Step 1: Project root confirmed (build.gradle.kts exists)
+- [ ] Step 2: Dependencies added to app/build.gradle.kts
+- [ ] Step 3: kjui_tools installed
+- [ ] Step 4: kjui.config.json created
+- [ ] Step 5: Port configured (8082)
+- [ ] Step 6: setup command executed
+- [ ] **Step 7: Application class created** ← CRITICAL
+- [ ] **Step 8: AndroidManifest.xml modified** ← CRITICAL
+- [ ] **Step 9: MainActivity.kt modified** ← CRITICAL
+- [ ] **Step 10: Splash view generated** ← CRITICAL
+- [ ] **Step 11: Final verification passed** ← CRITICAL
+
+```
+Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9 → Step 10 → Step 11
+                                              ↑
+                                    DO NOT STOP HERE!
+                                    Steps 7-11 are MANDATORY
+```
+
+## Android Common Mistakes
+
+1. **Stopping at Step 6 after `setup` command** - `setup` only creates directory structure
+2. **Using wrong import package** - Use `com.kotlinjsonui.core`, NOT `io.github.taikimura`
+3. **Not creating Application class** - DynamicModeManager won't be initialized
+4. **Forgetting to generate Splash view** - Without it, app has no entry point
+
+---
+
+## Android Step 1: Go to project root
 ```bash
 cd /path/to/project  # Where build.gradle.kts is (NOT app/ folder)
 ls build.gradle.kts settings.gradle.kts  # VERIFY: Both files must exist
 ```
 
-### Step 2: Add dependencies to app/build.gradle.kts
-Add Compose settings and KotlinJsonUI:
+## Android Step 2: Add dependencies to app/build.gradle.kts
 ```kotlin
 android {
     buildFeatures { compose = true }
@@ -221,45 +265,28 @@ dependencies {
 
 **VERIFY**: Read app/build.gradle.kts and confirm kotlinjsonui dependency exists
 
-### Step 3: Install kjui_tools
-Download and run the installer:
+## Android Step 3: Install kjui_tools
 ```bash
 curl -sSL https://raw.githubusercontent.com/Tai-Kimura/KotlinJsonUI/main/installer/install_kjui.sh | bash
 ls kjui_tools/bin/kjui  # VERIFY: File must exist
 ```
 
-### Step 4: Initialize
+## Android Step 4: Initialize
 ```bash
 ./kjui_tools/bin/kjui init --mode compose
 ls kjui.config.json  # VERIFY: File must exist
 ```
 
-### Step 5: Edit kjui.config.json
-- Set hotloader.port to 8082 (different from iOS!)
+## Android Step 5: Edit kjui.config.json
+- Set `hotloader.port` to `8082`
 - Read file to VERIFY port is correct
 
-### Step 6: Run setup
+## Android Step 6: Run setup
 ```bash
 ./kjui_tools/bin/kjui setup
 ```
 
-### Step 7: MANDATORY - Create Application class
-
-**⚠️ IMPORTANT: Gradle artifact ≠ Kotlin package**
-
-- Gradle: `io.github.tai-kimura:kotlinjsonui` (artifact name)
-- Kotlin: `com.kotlinjsonui.core` (package name for imports)
-
-Copy these imports EXACTLY (character for character):
-```kotlin
-import com.kotlinjsonui.core.DynamicModeManager
-import com.kotlinjsonui.core.Configuration
-```
-
-WRONG packages (do NOT use these):
-- `io.github.taikimura.*` ← WRONG
-- `io.github.tai_kimura.*` ← WRONG
-- `com.tai_kimura.*` ← WRONG
+## Android Step 7: MANDATORY - Create Application class
 
 Create file `app/src/main/kotlin/<package>/YourAppApplication.kt`:
 ```kotlin
@@ -278,8 +305,8 @@ class YourAppApplication : Application() {
 
 **VERIFY**: Read the file and confirm `DynamicModeManager.initialize(this)` exists
 
-### Step 8: MANDATORY - Edit AndroidManifest.xml
-Add `android:name` and `<activity>`:
+## Android Step 8: MANDATORY - Edit AndroidManifest.xml
+Add `android:name` to `<application>`:
 ```xml
 <application
     android:name=".YourAppApplication"
@@ -296,22 +323,9 @@ Add `android:name` and `<activity>`:
 </application>
 ```
 
-**VERIFY**: Read AndroidManifest.xml and confirm `android:name` and `<activity>` exist
+**VERIFY**: Read AndroidManifest.xml and confirm `android:name` attribute exists
 
-### Step 9: MANDATORY - Edit MainActivity.kt
-
-**⚠️ PACKAGE NAME: `com.kotlinjsonui.core`**
-
-Copy this import EXACTLY:
-```kotlin
-import com.kotlinjsonui.core.DynamicModeManager
-```
-
-WRONG packages (do NOT use these):
-- `io.github.taikimura.*` ← WRONG
-- `io.github.tai_kimura.*` ← WRONG
-- `com.tai_kimura.*` ← WRONG
-- ANY package that is NOT `com.kotlinjsonui.core` ← WRONG
+## Android Step 9: MANDATORY - Edit MainActivity.kt
 
 Replace MainActivity content with:
 ```kotlin
@@ -354,14 +368,14 @@ class MainActivity : ComponentActivity() {
 - `DynamicModeManager.isDynamicModeEnabled.collectAsState()`
 - `key(isDynamicModeEnabled)`
 
-### Step 10: Generate Splash view
+## Android Step 10: Generate Splash view
 ```bash
 ./kjui_tools/bin/kjui g view Splash --root
 ```
 
-**VERIFY**: Check views directory for generated files
+**VERIFY**: Check that layout_json/splash/ directory was created (path depends on `layout_path` in config)
 
-### Step 11: FINAL VERIFICATION (MANDATORY)
+## Android Step 11: FINAL VERIFICATION (MANDATORY)
 Read `kjui.config.json` and verify the following files/directories exist based on `source_path` and `layout_path` values:
 
 **Verify these items:**
@@ -373,29 +387,44 @@ Read `kjui.config.json` and verify the following files/directories exist based o
 
 **If ANY of the above is missing, go back and complete the missing step!**
 
----
-
-## Port Configuration
-
-| Platform | Port |
-|----------|------|
-| iOS      | 8081 |
-| Android  | 8082 |
-
----
-
-## Hotloader Commands
-
-iOS:
-```bash
-./sjui_tools/bin/sjui hotload listen
-```
-
-Android:
+## Android Hotloader Commands
 ```bash
 ./kjui_tools/bin/kjui hotload listen
 adb forward tcp:8082 tcp:8082
 ```
+
+## Android Response Template
+
+When reporting completion, use this format:
+
+```
+## Android Setup Status
+
+| Step | Description | Status |
+|------|-------------|--------|
+| 1 | Project root confirmed | ✅ |
+| 2 | Dependencies added | ✅ |
+| 3 | kjui_tools installed | ✅ |
+| 4 | kjui.config.json created | ✅ |
+| 5 | Port configured (8082) | ✅ |
+| 6 | setup command executed | ✅ |
+| 7 | Application class created | ✅ |
+| 8 | AndroidManifest.xml modified | ✅ |
+| 9 | MainActivity.kt modified | ✅ |
+| 10 | Splash view generated | ✅ |
+| 11 | Final verification | ✅ |
+
+All steps completed: ✅ YES / ❌ NO
+
+### Verification Results:
+- [x] kjui_tools/bin/kjui exists
+- [x] kjui.config.json exists
+- [x] Application class contains DynamicModeManager.initialize(this)
+- [x] MainActivity.kt contains correct imports
+- [x] {layout_path}/splash/ exists
+```
+
+**DO NOT report completion until ALL steps show ✅**
 
 ---
 
@@ -403,35 +432,9 @@ adb forward tcp:8082 tcp:8082
 
 1. **NEVER modify code inside tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code
 
----
+## Port Configuration Summary
 
-## ⛔ RESPONSE TEMPLATE (USE THIS FORMAT)
-
-When reporting completion, use this EXACT format:
-
-```
-## Setup Status
-
-| Step | Description | Status |
-|------|-------------|--------|
-| 1 | Project root | ✅ |
-| 2 | Install tools | ✅ |
-| 3 | Initialize | ✅ |
-| 4 | Configure port | ✅ |
-| 5 | Run setup | ✅ |
-| 6 | App.swift / Application class | ✅ |
-| 7 | Generate Splash view | ✅ |
-| 8 | Build (iOS) / Manifest+MainActivity (Android) | ✅ |
-| 9 | Final verification | ✅ |
-
-All steps completed: ✅ YES / ❌ NO
-
-### Verification Results:
-- [x] Tools installed
-- [x] Config created
-- [x] App entry point configured
-- [x] Splash view generated
-- [x] Resource managers generated (iOS)
-```
-
-**DO NOT report completion until ALL steps show ✅**
+| Platform | Port |
+|----------|------|
+| iOS      | 8081 |
+| Android  | 8082 |
