@@ -54,8 +54,9 @@ Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Ste
 
 1. **Stopping at Step 5 after `setup` command** - `setup` only creates directory structure
 2. **Forgetting to generate Splash view** - Without it, app has no entry point
-3. **Forgetting `sjui build`** - StringManager.swift and ColorManager.swift won't exist
+3. **Forgetting `sjui build`** - StringManager.swift, ColorManager.swift, strings.json, colors.json won't exist
 4. **Not modifying App.swift** - Dynamic mode won't work without ViewSwitcher
+5. **Reporting wrong resource paths** - Resource files are in `{layouts_directory}/Resources/`, NOT in project root
 
 ---
 
@@ -125,20 +126,24 @@ struct YourAppApp: App {
 ```
 
 This command auto-generates:
-- **StringManager.swift** - Manages localized strings from `strings.json`
-- **ColorManager.swift** - Manages color definitions from `colors.json`
+- **StringManager.swift** - Manages localized strings (in `{resource_manager_directory}`)
+- **ColorManager.swift** - Manages color definitions (in `{resource_manager_directory}`)
+- **{layouts_directory}/Resources/strings.json** - String resource file (auto-generated)
+- **{layouts_directory}/Resources/colors.json** - Color resource file (auto-generated)
 
 These files are regenerated on every `sjui build` execution. **Do NOT edit them manually.**
 
 ## iOS Step 9: FINAL VERIFICATION (MANDATORY)
-Read `sjui.config.json` and verify the following files/directories exist based on `source_path` value:
+Read `sjui.config.json` and verify the following files/directories exist based on config values:
 
 **Verify these items:**
 1. `sjui_tools/bin/sjui` exists
 2. `sjui.config.json` exists
 3. `{source_path}/View/Splash/` directory exists
-4. `{source_path}/Managers/StringManager.swift` exists
-5. `{source_path}/Managers/ColorManager.swift` exists
+4. `{source_path}/{resource_manager_directory}/StringManager.swift` exists
+5. `{source_path}/{resource_manager_directory}/ColorManager.swift` exists
+6. `{source_path}/{layouts_directory}/Resources/strings.json` exists
+7. `{source_path}/{layouts_directory}/Resources/colors.json` exists
 
 **If ANY of the above is missing, go back and complete the missing step!**
 
@@ -172,8 +177,10 @@ All steps completed: ✅ YES / ❌ NO
 - [x] sjui_tools/bin/sjui exists
 - [x] sjui.config.json exists
 - [x] {source_path}/View/Splash/ exists
-- [x] {source_path}/Managers/StringManager.swift exists
-- [x] {source_path}/Managers/ColorManager.swift exists
+- [x] {source_path}/{resource_manager_directory}/StringManager.swift exists
+- [x] {source_path}/{resource_manager_directory}/ColorManager.swift exists
+- [x] {source_path}/{layouts_directory}/Resources/strings.json exists
+- [x] {source_path}/{layouts_directory}/Resources/colors.json exists
 ```
 
 **DO NOT report completion until ALL steps show ✅**
