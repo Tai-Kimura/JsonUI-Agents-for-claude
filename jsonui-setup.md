@@ -29,6 +29,75 @@ The Gradle artifact name (`io.github.tai-kimura:kotlinjsonui`) is DIFFERENT from
 
 ---
 
+## ⛔ MANDATORY COMPLETION CHECKLIST
+
+**You are NOT done until ALL items are checked:**
+
+### iOS (SwiftJsonUI)
+- [ ] Step 1: Project root confirmed (.xcodeproj exists)
+- [ ] Step 2: sjui_tools installed
+- [ ] Step 3: sjui.config.json created
+- [ ] Step 4: Port configured (8081)
+- [ ] Step 5: setup command executed
+- [ ] **Step 6: App.swift modified with ViewSwitcher** ← CRITICAL
+- [ ] **Step 7: Splash view generated** ← CRITICAL
+- [ ] **Step 8: sjui build executed** ← CRITICAL
+- [ ] **Step 9: Final verification passed** ← CRITICAL
+
+### Android (KotlinJsonUI)
+- [ ] Step 1: Project root confirmed (build.gradle.kts exists)
+- [ ] Step 2: Dependencies added
+- [ ] Step 3: kjui_tools installed
+- [ ] Step 4: kjui.config.json created
+- [ ] Step 5: Port configured (8082)
+- [ ] Step 6: setup command executed
+- [ ] **Step 7: Application class created** ← CRITICAL
+- [ ] **Step 8: AndroidManifest.xml modified** ← CRITICAL
+- [ ] **Step 9: MainActivity.kt modified** ← CRITICAL
+- [ ] **Step 10: Splash view generated** ← CRITICAL
+- [ ] **Step 11: Final verification passed** ← CRITICAL
+
+---
+
+## Step Dependencies
+
+```
+iOS:
+Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9
+                                              ↑
+                                    DO NOT STOP HERE!
+                                    Steps 6-9 are MANDATORY
+
+Android:
+Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9 → Step 10 → Step 11
+                                              ↑
+                                    DO NOT STOP HERE!
+                                    Steps 7-11 are MANDATORY
+```
+
+---
+
+## ⚠️ COMMON MISTAKES - DO NOT DO THESE
+
+1. **❌ Stopping at Step 5/6 after `setup` command**
+   - `setup` only creates directory structure
+   - App.swift/Application class modifications are REQUIRED
+   - View generation is REQUIRED
+
+2. **❌ Forgetting to generate Splash view**
+   - Without Splash view, the app has no entry point
+
+3. **❌ Forgetting `sjui build` (iOS)**
+   - StringManager.swift and ColorManager.swift won't exist
+
+4. **❌ Not modifying App.swift (iOS)**
+   - Dynamic mode won't work without ViewSwitcher
+
+5. **❌ Not creating Application class (Android)**
+   - DynamicModeManager won't be initialized
+
+---
+
 ## iOS Setup (SwiftJsonUI)
 
 Execute these steps IN ORDER:
@@ -103,6 +172,18 @@ This command auto-generates:
 - **ColorManager.swift** - Manages color definitions from `colors.json`
 
 These files are regenerated on every `sjui build` execution. **Do NOT edit them manually.**
+
+### Step 9: FINAL VERIFICATION (MANDATORY)
+Read `sjui.config.json` and verify the following files/directories exist based on `source_path` value:
+
+**Verify these items:**
+1. `sjui_tools/bin/sjui` exists
+2. `sjui.config.json` exists
+3. `{source_path}/View/Splash/` directory exists
+4. `{source_path}/Managers/StringManager.swift` exists
+5. `{source_path}/Managers/ColorManager.swift` exists
+
+**If ANY of the above is missing, go back and complete the missing step!**
 
 ---
 
@@ -280,6 +361,18 @@ class MainActivity : ComponentActivity() {
 
 **VERIFY**: Check views directory for generated files
 
+### Step 11: FINAL VERIFICATION (MANDATORY)
+Read `kjui.config.json` and verify the following files/directories exist based on `source_path` and `layout_path` values:
+
+**Verify these items:**
+1. `kjui_tools/bin/kjui` exists
+2. `kjui.config.json` exists
+3. Application class file exists (contains `DynamicModeManager.initialize(this)`)
+4. MainActivity.kt contains `DynamicModeManager.isDynamicModeEnabled.collectAsState()`
+5. `{layout_path}/splash/` directory exists (Splash view layout)
+
+**If ANY of the above is missing, go back and complete the missing step!**
+
 ---
 
 ## Port Configuration
@@ -309,3 +402,36 @@ adb forward tcp:8082 tcp:8082
 ## Important Rules
 
 1. **NEVER modify code inside tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code
+
+---
+
+## ⛔ RESPONSE TEMPLATE (USE THIS FORMAT)
+
+When reporting completion, use this EXACT format:
+
+```
+## Setup Status
+
+| Step | Description | Status |
+|------|-------------|--------|
+| 1 | Project root | ✅ |
+| 2 | Install tools | ✅ |
+| 3 | Initialize | ✅ |
+| 4 | Configure port | ✅ |
+| 5 | Run setup | ✅ |
+| 6 | App.swift / Application class | ✅ |
+| 7 | Generate Splash view | ✅ |
+| 8 | Build (iOS) / Manifest+MainActivity (Android) | ✅ |
+| 9 | Final verification | ✅ |
+
+All steps completed: ✅ YES / ❌ NO
+
+### Verification Results:
+- [x] Tools installed
+- [x] Config created
+- [x] App entry point configured
+- [x] Splash view generated
+- [x] Resource managers generated (iOS)
+```
+
+**DO NOT report completion until ALL steps show ✅**
