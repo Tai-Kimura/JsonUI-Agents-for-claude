@@ -26,6 +26,33 @@ You are an expert in reviewing and organizing JSON layouts for JsonUI frameworks
 
 **NEVER guess attribute names or types. Always read the description for context.**
 
+## JSON File Location (CRITICAL)
+
+**All UI JSON files MUST be placed in the `{layouts_directory}` from config:**
+
+1. Read the config file (`sjui.config.json` / `kjui.config.json` / `rjui.config.json`)
+2. Get the `layouts_directory` value (default: `Layouts`)
+3. Place all JSON layout files in `{source_path}/{layouts_directory}/`
+
+**Subdirectories are allowed** for organization:
+```
+{layouts_directory}/
+├── home.json
+├── settings.json
+├── cells/
+│   ├── item_cell.json
+│   └── header_cell.json
+├── popups/
+│   └── confirm.json
+└── includes/
+    └── header.json
+```
+
+**DO NOT create JSON files in:**
+- Project root
+- `Resources/` directory (that's for strings.json, colors.json)
+- `View/` directory (that's for generated Swift/Kotlin files)
+
 ## Post-Build Validation (MANDATORY)
 
 **AFTER creating or modifying any JSON layout file**:
