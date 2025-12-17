@@ -260,6 +260,140 @@ When working on a JSON file, scan for binding patterns and ensure they're in the
 
 ---
 
+## Collection Data Source (items attribute)
+
+### Overview
+
+The `items` attribute is specified **inside each section** of a Collection component using **binding format**:
+
+```json
+{
+  "type": "Collection",
+  "sections": [
+    {
+      "cell": "ProductCell",
+      "items": "@{products}"
+    }
+  ]
+}
+```
+
+### Binding Format
+
+The `items` attribute expects a binding string: `@{propertyName}`
+
+- `@{` prefix indicates binding
+- `propertyName` is the data property name (a `CollectionDataSource`)
+- `}` suffix closes the binding
+
+**Example**: `"items": "@{collectionData}"` binds to `data.collectionData`.
+
+### CollectionDataSource
+
+The bound property should be of type `CollectionDataSource`:
+
+**Swift**:
+```swift
+public class CollectionDataSource {
+    public var sections: [CollectionDataSection] = []
+}
+
+public class CollectionDataSection {
+    // Header: (viewName, data dictionary)
+    public var header: (viewName: String, data: [String: Any])?
+    // Cells: (viewName, array of data dictionaries)
+    public var cells: (viewName: String, data: [[String: Any]])?
+    // Footer: (viewName, data dictionary)
+    public var footer: (viewName: String, data: [String: Any])?
+}
+```
+
+**Kotlin**:
+```kotlin
+data class CollectionDataSource(
+    val sections: List<CollectionDataSection> = emptyList()
+)
+
+data class CollectionDataSection(
+    val header: HeaderFooterData? = null,
+    val cells: CellData? = null,
+    val footer: HeaderFooterData? = null,
+    val columns: Int? = null
+) {
+    data class CellData(
+        val viewName: String,
+        val data: List<Map<String, Any>>
+    )
+    data class HeaderFooterData(
+        val viewName: String,
+        val data: Map<String, Any>
+    )
+}
+```
+
+### Complete Example
+
+**JSON Layout**:
+```json
+{
+  "type": "Collection",
+  "items": "@{collectionData}",
+  "sections": [
+    { "cell": "FeaturedCell", "header": "FeaturedHeader" },
+    { "cell": "ProductCell", "columns": 2 }
+  ]
+}
+```
+
+**Data Definition**:
+```json
+{
+  "data": [
+    { "name": "collectionData", "class": "CollectionDataSource" }
+  ]
+}
+```
+
+**ViewModel Initialization**:
+```swift
+// Swift
+func loadData() {
+    let dataSource = CollectionDataSource()
+
+    // Section 0: Featured items
+    let featuredSection = dataSource.addSection()
+    featuredSection.setHeader(viewName: "FeaturedHeader", data: ["title": "Featured"])
+    featuredSection.setCells(viewName: "FeaturedCell", data: [
+        ["name": "Featured 1", "image": "featured1"]
+    ])
+
+    // Section 1: Products
+    let productsSection = dataSource.addSection()
+    productsSection.setCells(viewName: "ProductCell", data: [
+        ["name": "Product 1", "price": 100],
+        ["name": "Product 2", "price": 200]
+    ])
+
+    data.collectionData = dataSource
+}
+```
+
+### Legacy Format (cellClasses)
+
+If `items` is not specified, collections can use `cellClasses` with `collectionDataSource`:
+
+```json
+{
+  "type": "Collection",
+  "cellClasses": ["ProductCell"],
+  "columns": 2
+}
+```
+
+In this case, data is accessed via `data.collectionDataSource.getCellData(for: "ProductCell")`.
+
+---
+
 ## Platform-Specific Types
 
 For types that cannot be auto-converted, use platform-specific format:
