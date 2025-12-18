@@ -110,7 +110,8 @@ ls sjui.config.json  # VERIFY: File must exist
 Find the App struct file and ADD these changes:
 1. Add `import SwiftJsonUI`
 2. Add `@StateObject private var viewSwitcher = ViewSwitcher.shared`
-3. Add `.id(viewSwitcher.isDynamicMode)` to root view
+3. Add `init()` with DEBUG setup for hot reload
+4. Add `.id(viewSwitcher.isDynamicMode)` to root view
 
 Example:
 ```swift
@@ -121,6 +122,15 @@ import SwiftJsonUI
 struct YourAppApp: App {
     @StateObject private var viewSwitcher = ViewSwitcher.shared
 
+    init() {
+        #if DEBUG
+        // Copy bundle JSON to cache directory for hot reload
+        JSONLayoutLoader.copyResourcesToCache()
+        ViewSwitcher.setDynamicMode(true)
+        HotLoader.instance.isHotLoadEnabled = true
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             SplashView()
@@ -130,7 +140,12 @@ struct YourAppApp: App {
 }
 ```
 
-**VERIFY**: Read App.swift and confirm `ViewSwitcher.shared` exists
+**VERIFY**: Read App.swift and confirm:
+- `ViewSwitcher.shared` exists
+- `init()` with `#if DEBUG` block exists
+- `JSONLayoutLoader.copyResourcesToCache()` is called
+- `ViewSwitcher.setDynamicMode(true)` is called
+- `HotLoader.instance.isHotLoadEnabled = true` is called
 
 ## iOS Step 8: Build to generate resource managers
 ```bash
@@ -179,7 +194,7 @@ When reporting completion, use this format:
 | 4 | Port configured (8081) | ✅ |
 | 5 | setup command executed | ✅ |
 | 6 | Splash view generated | ✅ |
-| 7 | App.swift modified | ✅ |
+| 7 | App.swift modified (with init DEBUG setup) | ✅ |
 | 8 | sjui build executed | ✅ |
 | 9 | Final verification | ✅ |
 
