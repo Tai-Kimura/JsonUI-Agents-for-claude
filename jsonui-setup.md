@@ -50,8 +50,8 @@ tools: Read, Write, Bash, Glob, Grep
 - [ ] Step 3: sjui.config.json created
 - [ ] Step 4: Port configured (8081)
 - [ ] Step 5: setup command executed
-- [ ] **Step 6: App.swift modified with ViewSwitcher** ← CRITICAL
-- [ ] **Step 7: Splash view generated** ← CRITICAL
+- [ ] **Step 6: Splash view generated** ← CRITICAL
+- [ ] **Step 7: App.swift modified with ViewSwitcher** ← CRITICAL
 - [ ] **Step 8: sjui build executed** ← CRITICAL
 - [ ] **Step 9: Final verification passed** ← CRITICAL
 
@@ -99,7 +99,14 @@ ls sjui.config.json  # VERIFY: File must exist
 ./sjui_tools/bin/sjui setup
 ```
 
-## iOS Step 6: MANDATORY - Edit App.swift
+## iOS Step 6: Generate Splash view
+```bash
+./sjui_tools/bin/sjui g view Splash --root
+```
+
+**VERIFY**: Check that View/Splash/ directory was created (path depends on `source_path` in config)
+
+## iOS Step 7: MANDATORY - Edit App.swift
 Find the App struct file and ADD these changes:
 1. Add `import SwiftJsonUI`
 2. Add `@StateObject private var viewSwitcher = ViewSwitcher.shared`
@@ -124,13 +131,6 @@ struct YourAppApp: App {
 ```
 
 **VERIFY**: Read App.swift and confirm `ViewSwitcher.shared` exists
-
-## iOS Step 7: Generate Splash view
-```bash
-./sjui_tools/bin/sjui g view Splash --root
-```
-
-**VERIFY**: Check that View/Splash/ directory was created (path depends on `source_path` in config)
 
 ## iOS Step 8: Build to generate resource managers
 ```bash
@@ -178,8 +178,8 @@ When reporting completion, use this format:
 | 3 | sjui.config.json created | ✅ |
 | 4 | Port configured (8081) | ✅ |
 | 5 | setup command executed | ✅ |
-| 6 | App.swift modified | ✅ |
-| 7 | Splash view generated | ✅ |
+| 6 | Splash view generated | ✅ |
+| 7 | App.swift modified | ✅ |
 | 8 | sjui build executed | ✅ |
 | 9 | Final verification | ✅ |
 
