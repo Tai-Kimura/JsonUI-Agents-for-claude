@@ -123,6 +123,11 @@ struct YourAppApp: App {
     @StateObject private var viewSwitcher = ViewSwitcher.shared
 
     init() {
+        // Set color provider for dynamic color resolution
+        SwiftJsonUIConfiguration.shared.colorProvider = { key in
+            ColorManager.swiftui.color(for: key)
+        }
+
         #if DEBUG
         // Copy bundle JSON to cache directory for hot reload
         JSONLayoutLoader.copyResourcesToCache()
@@ -142,7 +147,9 @@ struct YourAppApp: App {
 
 **VERIFY**: Read App.swift and confirm:
 - `ViewSwitcher.shared` exists
-- `init()` with `#if DEBUG` block exists
+- `init()` block exists with:
+  - `SwiftJsonUIConfiguration.shared.colorProvider` is set
+  - `#if DEBUG` block with hot reload setup
 - `JSONLayoutLoader.copyResourcesToCache()` is called
 - `ViewSwitcher.setDynamicMode(true)` is called
 - `HotLoader.instance.isHotLoadEnabled = true` is called
