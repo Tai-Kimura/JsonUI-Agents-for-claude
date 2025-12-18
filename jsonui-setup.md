@@ -125,7 +125,10 @@ struct YourAppApp: App {
     init() {
         // Set color provider for dynamic color resolution
         SwiftJsonUIConfiguration.shared.colorProvider = { key in
-            ColorManager.swiftui.color(for: key)
+            guard let key = key as? String else {
+                return nil
+            }
+            return ColorManager.swiftui.color(for: key)
         }
 
         #if DEBUG
