@@ -35,15 +35,14 @@ You are an expert in implementing ViewModel business logic for JsonUI framework 
 import SwiftJsonUI
 
 // ✅ Correct - use Logger
-Logger.debug("Debug message: \(value)")
-Logger.info("Info message")
-Logger.error("Error occurred: \(error)")
+Logger.debug("Debug message: \(value)")  // Only outputs in DEBUG builds
+Logger.log("Always logged message")       // Always outputs
 
 // ❌ Wrong - never use print
 print("Debug message")  // DO NOT USE
 ```
 
-**Why**: Logger integrates with SwiftJsonUI's debugging infrastructure and can be easily enabled/disabled in production.
+**Why**: `Logger.debug()` only outputs in DEBUG builds, so it's automatically disabled in production. This prevents debug logs from appearing in release builds.
 
 ---
 
