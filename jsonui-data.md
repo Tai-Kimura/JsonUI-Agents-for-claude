@@ -431,6 +431,50 @@ For types that cannot be auto-converted, use platform-specific format:
 6. **RUN build** after making changes to regenerate Data models
 7. **VERIFY** the generated Data file has correct types
 8. **NEVER modify code inside tools directories** (`sjui_tools/`, `kjui_tools/`, `rjui_tools/`) - these are framework tools, not project code
+9. **2-way binding properties MUST have default values** - Properties used with `text` attribute bindings (e.g., TextField inputs) must include a `defaultValue` to ensure proper initialization
+
+### 2-Way Binding Default Values (REQUIRED)
+
+For properties bound to text input fields (2-way binding), **ALWAYS specify a `defaultValue`**:
+
+```json
+{
+  "data": [
+    { "name": "email", "class": "String", "defaultValue": "''" },
+    { "name": "password", "class": "String", "defaultValue": "''" },
+    { "name": "searchQuery", "class": "String", "defaultValue": "''" }
+  ]
+}
+```
+
+**Why this is required:**
+- 2-way bindings update the data model when the user types
+- Without a default value, the property may be uninitialized
+- This can cause crashes or undefined behavior in the generated code
+
+**Common 2-way binding scenarios:**
+- `TextField` with `text: "@{inputValue}"`
+- `TextEditor` with `text: "@{content}"`
+- `SecureField` with `text: "@{password}"`
+
+**Example TextField:**
+```json
+{
+  "type": "TextField",
+  "text": "@{email}",
+  "placeholder": "Enter email"
+}
+```
+
+**Correct data definition:**
+```json
+{ "name": "email", "class": "String", "defaultValue": "''" }
+```
+
+**❌ Wrong (missing defaultValue):**
+```json
+{ "name": "email", "class": "String" }
+```
 
 ---
 
