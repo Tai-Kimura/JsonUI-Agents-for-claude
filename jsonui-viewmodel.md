@@ -27,6 +27,26 @@ You are an expert in implementing ViewModel business logic for JsonUI framework 
 
 ---
 
+## ⛔ Debug Logging Rules (SwiftJsonUI)
+
+**NEVER use `print()` for debug logging.** Always use SwiftJsonUI's Logger class:
+
+```swift
+import SwiftJsonUI
+
+// ✅ Correct - use Logger
+Logger.debug("Debug message: \(value)")
+Logger.info("Info message")
+Logger.error("Error occurred: \(error)")
+
+// ❌ Wrong - never use print
+print("Debug message")  // DO NOT USE
+```
+
+**Why**: Logger integrates with SwiftJsonUI's debugging infrastructure and can be easily enabled/disabled in production.
+
+---
+
 ## Mandatory Build with --clean Before Starting
 
 **CRITICAL**: Before starting ANY work, you MUST run the build command with `--clean` option:
