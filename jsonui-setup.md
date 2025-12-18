@@ -110,7 +110,9 @@ ls sjui.config.json  # VERIFY: File must exist
 Find the App struct file and ADD these changes:
 1. Add `import SwiftJsonUI`
 2. Add `@StateObject private var viewSwitcher = ViewSwitcher.shared`
-3. Add `init()` with DEBUG setup for hot reload
+3. Add `init()` with:
+   - `SwiftJsonUIConfiguration.shared.colorProvider` setup
+   - `#if DEBUG` block for hot reload (JSONLayoutLoader, ViewSwitcher, HotLoader)
 4. Add `.id(viewSwitcher.isDynamicMode)` to root view
 
 Example:
