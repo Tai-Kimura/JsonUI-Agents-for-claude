@@ -90,9 +90,42 @@ ls sjui_tools/bin/sjui  # VERIFY: File must exist
 ls sjui.config.json  # VERIFY: File must exist
 ```
 
-## iOS Step 4: Edit sjui.config.json
-- Set `hotloader.port` to `8081`
-- Read file to VERIFY port is correct
+## iOS Step 4: CRITICAL - Verify and Edit sjui.config.json
+
+**⛔ CRITICAL**: Read `sjui.config.json` and verify ALL paths are correct for your project structure.
+
+**Required checks:**
+1. `source_path` - Must be the actual source directory relative to project root (e.g., `YourAppName` where your Swift files are)
+2. `layouts_directory` - Usually `Layouts`
+3. `view_directory` - Usually `View`
+4. `viewmodel_directory` - Usually `ViewModel`
+5. `data_directory` - Usually `Data`
+6. `resource_manager_directory` - Usually `Generated` or `Core`
+7. `hotloader.port` - Set to `8081`
+
+**Example correct config:**
+```json
+{
+  "source_path": "YourAppName",
+  "layouts_directory": "Layouts",
+  "view_directory": "View",
+  "viewmodel_directory": "ViewModel",
+  "data_directory": "Data",
+  "resource_manager_directory": "Generated",
+  "hotloader": {
+    "port": 8081
+  }
+}
+```
+
+**⛔ Common mistakes:**
+- `source_path` not matching actual project folder name
+- Missing directories in config
+
+**VERIFY**: Read sjui.config.json and confirm:
+- `source_path` matches the folder containing your Swift source files
+- All directory paths are correct
+- Port is 8081
 
 ## iOS Step 5: Run setup
 ```bash
@@ -323,9 +356,43 @@ ls kjui_tools/bin/kjui  # VERIFY: File must exist
 ls kjui.config.json  # VERIFY: File must exist
 ```
 
-## Android Step 5: Edit kjui.config.json
-- Set `hotloader.port` to `8082`
-- Read file to VERIFY port is correct
+## Android Step 5: CRITICAL - Verify and Edit kjui.config.json
+
+**⛔ CRITICAL**: Read `kjui.config.json` and verify ALL paths are correct for your project structure.
+
+**Required checks:**
+1. `source_directory` - Must be the actual source directory (e.g., `app/src/main` NOT just `src`)
+2. `layouts_directory` - Usually `assets/Layouts`
+3. `view_directory` - Must match your package structure (e.g., `kotlin/com/yourpackage/views`)
+4. `viewmodel_directory` - Must match your package structure
+5. `data_directory` - Must match your package structure
+6. `package_name` - Must match your actual package name
+7. `hotloader.port` - Set to `8082`
+
+**Example correct config:**
+```json
+{
+  "source_directory": "app/src/main",
+  "layouts_directory": "assets/Layouts",
+  "view_directory": "kotlin/com/example/myapp/views",
+  "viewmodel_directory": "kotlin/com/example/myapp/viewmodels",
+  "data_directory": "kotlin/com/example/myapp/data",
+  "package_name": "com.example.myapp",
+  "hotloader": {
+    "port": 8082
+  }
+}
+```
+
+**⛔ Common mistakes:**
+- `source_directory: "src"` → WRONG! Should be `"app/src/main"`
+- Missing `app/` prefix in paths
+- Package name not matching actual project package
+
+**VERIFY**: Read kjui.config.json and confirm:
+- All directory paths exist or will be created
+- Package name matches your AndroidManifest.xml package
+- Port is 8082
 
 ## Android Step 6: Run setup
 ```bash
