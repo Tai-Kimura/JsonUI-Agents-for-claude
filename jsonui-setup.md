@@ -339,17 +339,17 @@ Create file `app/src/main/kotlin/<package>/YourAppApplication.kt`:
 package com.yourpackage
 
 import android.app.Application
-import com.kotlinjsonui.core.DynamicModeManager
+import com.kotlinjsonui.core.KotlinJsonUI
 
 class YourAppApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        DynamicModeManager.initialize(this)
+        KotlinJsonUI.initialize(this)
     }
 }
 ```
 
-**VERIFY**: Read the file and confirm `DynamicModeManager.initialize(this)` exists
+**VERIFY**: Read the file and confirm `KotlinJsonUI.initialize(this)` exists
 
 ## Android Step 8: MANDATORY - Edit AndroidManifest.xml
 Add `android:name` to `<application>`:
