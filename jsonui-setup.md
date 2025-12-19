@@ -39,6 +39,28 @@ tools: Read, Write, Bash, Glob, Grep
 
 ---
 
+# ⛔ COMMON PREREQUISITE - Before Installing Any Platform
+
+**CRITICAL: You MUST be in the project root directory before running the installer.**
+
+The installer installs tools (`sjui_tools`, `kjui_tools`, `rjui_tools`) **in the current directory**. If you run it from the wrong location, the tools will be installed in the wrong place.
+
+```bash
+# 1. Navigate to your project root directory FIRST
+cd /path/to/your/project
+
+# 2. Verify you are in the correct location:
+# - iOS: ls *.xcodeproj should show your project file
+# - Android: ls settings.gradle.kts or ls settings.gradle should show the file
+# - React: ls package.json should show your package.json
+
+# 3. ONLY THEN run the installer
+```
+
+**⛔ The installer does NOT move files. It installs where you run it.**
+
+---
+
 # iOS Setup (SwiftJsonUI)
 
 ## iOS Checklist
