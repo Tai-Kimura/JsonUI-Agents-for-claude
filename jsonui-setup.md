@@ -310,30 +310,32 @@ import com.kotlinjsonui.core.Configuration
 **You are NOT done until ALL items are checked:**
 
 - [ ] Step 1: Project root confirmed (build.gradle.kts exists)
-- [ ] Step 2: Dependencies added to app/build.gradle.kts
-- [ ] Step 3: kjui_tools installed
-- [ ] Step 4: kjui.config.json created
-- [ ] Step 5: Port configured (8082)
-- [ ] Step 6: setup command executed
-- [ ] **Step 7: Application class created** ← CRITICAL
-- [ ] **Step 8: AndroidManifest.xml modified** ← CRITICAL
-- [ ] **Step 9: MainActivity.kt modified** ← CRITICAL
-- [ ] **Step 10: Splash view generated** ← CRITICAL
-- [ ] **Step 11: Final verification passed** ← CRITICAL
+- [ ] Step 2: KotlinJsonUI version requirements checked
+- [ ] Step 3: Dependencies added to app/build.gradle.kts
+- [ ] Step 4: kjui_tools installed
+- [ ] Step 5: kjui.config.json created
+- [ ] Step 6: Port configured (8082)
+- [ ] Step 7: setup command executed
+- [ ] **Step 8: Application class created** ← CRITICAL
+- [ ] **Step 9: AndroidManifest.xml modified** ← CRITICAL
+- [ ] **Step 10: MainActivity.kt modified** ← CRITICAL
+- [ ] **Step 11: Splash view generated** ← CRITICAL
+- [ ] **Step 12: Final verification passed** ← CRITICAL
 
 ```
-Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9 → Step 10 → Step 11
-                                              ↑
-                                    DO NOT STOP HERE!
-                                    Steps 7-11 are MANDATORY
+Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8 → Step 9 → Step 10 → Step 11 → Step 12
+                                                       ↑
+                                             DO NOT STOP HERE!
+                                             Steps 8-12 are MANDATORY
 ```
 
 ## Android Common Mistakes
 
-1. **Stopping at Step 6 after `setup` command** - `setup` only creates directory structure
+1. **Stopping at Step 7 after `setup` command** - `setup` only creates directory structure
 2. **Using wrong import package** - Use `com.kotlinjsonui.core`, NOT `io.github.taikimura`
 3. **Not creating Application class** - DynamicModeManager won't be initialized
 4. **Forgetting to generate Splash view** - Without it, app has no entry point
+5. **Mismatched Kotlin/Compose BOM versions** - Always check Step 2 for required versions
 
 ---
 
@@ -343,16 +345,39 @@ cd /path/to/project  # Where build.gradle.kts is (NOT app/ folder)
 ls build.gradle.kts settings.gradle.kts  # VERIFY: Both files must exist
 ```
 
-## Android Step 2: Add dependencies to app/build.gradle.kts
+## Android Step 2: Check KotlinJsonUI version requirements
+
+**⛔ CRITICAL**: Before adding dependencies, check the required Kotlin and Compose BOM versions from KotlinJsonUI.
+
+```bash
+# Check the required versions from KotlinJsonUI gradle files
+curl -sSL https://raw.githubusercontent.com/Tai-Kimura/KotlinJsonUI/main/gradle/libs.versions.toml 2>/dev/null | grep -E "^kotlin|^composeBom"
+```
+
+**Required versions (as of latest):**
+- Kotlin: Check `kotlin = "x.x.x"` in libs.versions.toml
+- Compose BOM: Check `composeBom = "xxxx.xx.xx"` in libs.versions.toml
+
+**Match your project's versions:**
+1. Open your project's `gradle/libs.versions.toml` (or `build.gradle.kts`)
+2. Ensure Kotlin version matches or is compatible
+3. Ensure Compose BOM version matches
+
+**VERIFY**: Your project's Kotlin and Compose BOM versions are compatible with KotlinJsonUI
+
+## Android Step 3: Add dependencies to app/build.gradle.kts
+
+**⚠️ Use the versions from Step 2, NOT the example below (examples may be outdated):**
+
 ```kotlin
 android {
     buildFeatures { compose = true }
-    composeOptions { kotlinCompilerExtensionVersion = "1.5.7" }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.7" }  // Match your Kotlin version
 }
 
 dependencies {
-    // Compose
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    // Compose - use the version from KotlinJsonUI's libs.versions.toml
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))  // Check Step 2 for current version
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.runtime:runtime")
@@ -364,21 +389,24 @@ dependencies {
 }
 ```
 
-**VERIFY**: Read app/build.gradle.kts and confirm kotlinjsonui dependency exists
+**VERIFY**: Read app/build.gradle.kts and confirm:
+- kotlinjsonui dependency exists
+- Compose BOM version matches KotlinJsonUI requirements
+- kotlinCompilerExtensionVersion is compatible with your Kotlin version
 
-## Android Step 3: Install kjui_tools
+## Android Step 4: Install kjui_tools
 ```bash
 curl -sSL https://raw.githubusercontent.com/Tai-Kimura/KotlinJsonUI/main/installer/install_kjui.sh | bash
 ls kjui_tools/bin/kjui  # VERIFY: File must exist
 ```
 
-## Android Step 4: Initialize
+## Android Step 5: Initialize
 ```bash
 ./kjui_tools/bin/kjui init --mode compose
 ls kjui.config.json  # VERIFY: File must exist
 ```
 
-## Android Step 5: CRITICAL - Verify and Edit kjui.config.json
+## Android Step 6: CRITICAL - Verify and Edit kjui.config.json
 
 **⛔ CRITICAL**: Read `kjui.config.json` and verify ALL paths are correct for your project structure.
 
@@ -416,12 +444,12 @@ ls kjui.config.json  # VERIFY: File must exist
 - Package name matches your AndroidManifest.xml package
 - Port is 8082
 
-## Android Step 6: Run setup
+## Android Step 7: Run setup
 ```bash
 ./kjui_tools/bin/kjui setup
 ```
 
-## Android Step 7: MANDATORY - Create Application class
+## Android Step 8: MANDATORY - Create Application class
 
 Create file `app/src/main/kotlin/<package>/YourAppApplication.kt`:
 ```kotlin
@@ -440,7 +468,7 @@ class YourAppApplication : Application() {
 
 **VERIFY**: Read the file and confirm `KotlinJsonUI.initialize(this)` exists
 
-## Android Step 8: MANDATORY - Edit AndroidManifest.xml
+## Android Step 9: MANDATORY - Edit AndroidManifest.xml
 Add `android:name` to `<application>`:
 ```xml
 <application
@@ -460,7 +488,7 @@ Add `android:name` to `<application>`:
 
 **VERIFY**: Read AndroidManifest.xml and confirm `android:name` attribute exists
 
-## Android Step 9: MANDATORY - Edit MainActivity.kt
+## Android Step 10: MANDATORY - Edit MainActivity.kt
 
 Replace MainActivity content with:
 ```kotlin
@@ -503,14 +531,14 @@ class MainActivity : ComponentActivity() {
 - `DynamicModeManager.isDynamicModeEnabled.collectAsState()`
 - `key(isDynamicModeEnabled)`
 
-## Android Step 10: Generate Splash view
+## Android Step 11: Generate Splash view
 ```bash
 ./kjui_tools/bin/kjui g view Splash --root
 ```
 
 **VERIFY**: Check that layout_json/splash/ directory was created (path depends on `layout_path` in config)
 
-## Android Step 11: FINAL VERIFICATION (MANDATORY)
+## Android Step 12: FINAL VERIFICATION (MANDATORY)
 Read `kjui.config.json` and verify the following files/directories exist based on `source_path` and `layout_path` values:
 
 **Verify these items:**
@@ -538,16 +566,17 @@ When reporting completion, use this format:
 | Step | Description | Status |
 |------|-------------|--------|
 | 1 | Project root confirmed | ✅ |
-| 2 | Dependencies added | ✅ |
-| 3 | kjui_tools installed | ✅ |
-| 4 | kjui.config.json created | ✅ |
-| 5 | Port configured (8082) | ✅ |
-| 6 | setup command executed | ✅ |
-| 7 | Application class created | ✅ |
-| 8 | AndroidManifest.xml modified | ✅ |
-| 9 | MainActivity.kt modified | ✅ |
-| 10 | Splash view generated | ✅ |
-| 11 | Final verification | ✅ |
+| 2 | Version requirements checked | ✅ |
+| 3 | Dependencies added | ✅ |
+| 4 | kjui_tools installed | ✅ |
+| 5 | kjui.config.json created | ✅ |
+| 6 | Port configured (8082) | ✅ |
+| 7 | setup command executed | ✅ |
+| 8 | Application class created | ✅ |
+| 9 | AndroidManifest.xml modified | ✅ |
+| 10 | MainActivity.kt modified | ✅ |
+| 11 | Splash view generated | ✅ |
+| 12 | Final verification | ✅ |
 
 All steps completed: ✅ YES / ❌ NO
 

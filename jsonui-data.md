@@ -452,6 +452,26 @@ For properties bound to text input fields (2-way binding), **ALWAYS specify a `d
 - Without a default value, the property may be uninitialized
 - This can cause crashes or undefined behavior in the generated code
 
+### ⛔ String defaultValue Syntax (CRITICAL)
+
+**ALWAYS use single quotes for String `defaultValue`. NEVER escape double quotes.**
+
+```json
+// ✅ CORRECT - use single quotes
+{ "name": "title", "class": "String", "defaultValue": "'Hello World'" }
+{ "name": "email", "class": "String", "defaultValue": "''" }
+{ "name": "name", "class": "String", "defaultValue": "'Default Name'" }
+
+// ❌ WRONG - NEVER escape double quotes
+{ "name": "title", "class": "String", "defaultValue": "\"Hello World\"" }
+{ "name": "title", "class": "String", "defaultValue": "\\\"Hello\\\"" }
+```
+
+**Why single quotes:**
+- The build system expects single quotes for String literals
+- Double quotes require JSON escaping which breaks the parser
+- Single quotes are unambiguous and work across all platforms
+
 **Common 2-way binding scenarios:**
 - `TextField` with `text: "@{inputValue}"`
 - `TextEditor` with `text: "@{content}"`
