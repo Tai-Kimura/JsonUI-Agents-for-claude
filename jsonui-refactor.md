@@ -87,18 +87,38 @@ Extract to a style file when:
 
 ### Style File Location
 
-Each style is stored as a **separate file** in: `{LayoutsDir}/Styles/`
+Each style is stored as a **separate file** in the `styles_directory` from config.
+
+**CRITICAL: Read the config file to find the correct styles directory:**
+
+1. Read the config file (`sjui.config.json` / `kjui.config.json` / `rjui.config.json`)
+2. Get `source_directory` (e.g., `app/src/main`)
+3. Get `styles_directory` (e.g., `assets/Styles`)
+4. Full path is: `{source_directory}/{styles_directory}/`
+
+Example config:
+```json
+{
+  "source_directory": "app/src/main",
+  "styles_directory": "assets/Styles"
+}
+```
+
+This means styles go in: `app/src/main/assets/Styles/`
 
 Example directory structure:
 ```
-Layouts/
+app/src/main/assets/
 ├── Styles/
 │   ├── card_style.json
 │   ├── primary_button_style.json
 │   └── section_header_style.json
-├── login.json
-└── home.json
+├── Layouts/
+│   ├── login.json
+│   └── home.json
 ```
+
+**DO NOT assume styles are in `Layouts/Styles/`** - always check the config.
 
 ### Style File Format
 

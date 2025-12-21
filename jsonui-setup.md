@@ -508,6 +508,10 @@ import com.yourpackage.ui.theme.YourAppTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Enable Dynamic Mode for HotLoader (debug builds only)
+        DynamicModeManager.setDynamicModeEnabled(this, true)
+
         setContent {
             val isDynamicModeEnabled by DynamicModeManager.isDynamicModeEnabled.collectAsState()
 
@@ -528,6 +532,7 @@ class MainActivity : ComponentActivity() {
 
 **VERIFY**: Read MainActivity.kt and confirm:
 - `import com.kotlinjsonui.core.DynamicModeManager` (NOT io.github.taikimura!)
+- `DynamicModeManager.setDynamicModeEnabled(this, true)` in `onCreate()`
 - `DynamicModeManager.isDynamicModeEnabled.collectAsState()`
 - `key(isDynamicModeEnabled)`
 
