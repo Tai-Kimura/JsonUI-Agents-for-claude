@@ -382,10 +382,14 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")  // Required for ViewModel
 
     // KotlinJsonUI
     implementation("io.github.tai-kimura:kotlinjsonui:1.0.2")
     debugImplementation("io.github.tai-kimura:kotlinjsonui-dynamic:1.0.2")
+
+    // Coil - Image loading for NetworkImage component
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
 ```
 
