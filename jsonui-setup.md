@@ -164,20 +164,32 @@ ls sjui.config.json  # VERIFY: File must exist
 ## iOS Step 7: MANDATORY - Edit App.swift
 Find the App struct file and ADD these changes:
 1. Add `import SwiftJsonUI`
-2. Add `@StateObject private var viewSwitcher = ViewSwitcher.shared`
-3. Add `init()` with:
+2. Add `DeveloperScreen` enum for navigation screens
+3. Add `@State private var currentScreen` state
+4. Add `init()` with:
    - `SwiftJsonUIConfiguration.shared.colorProvider` setup
    - `#if DEBUG` block for hot reload (JSONLayoutLoader, ViewSwitcher, HotLoader)
-4. Add `.id(viewSwitcher.isDynamicMode)` to root view
+5. Wrap content in `DeveloperMenuContainer`
 
 Example:
 ```swift
 import SwiftUI
 import SwiftJsonUI
 
+// Navigation screens
+enum Screen: String, CaseIterable, DeveloperScreen {
+    case splash = "Splash"
+    // Add more screens as needed: case login = "Login", case home = "Home"
+
+    var name: String { rawValue }
+}
+
 @main
 struct YourAppApp: App {
-    @StateObject private var viewSwitcher = ViewSwitcher.shared
+    @State private var currentScreen: Screen = .splash
+
+    // Set to false for actual app navigation, true for screen preview mode
+    private let developerMenuEnabled = true
 
     init() {
         // Set color provider for dynamic color resolution
@@ -191,27 +203,45 @@ struct YourAppApp: App {
         #if DEBUG
         // Copy bundle JSON to cache directory for hot reload
         JSONLayoutLoader.copyResourcesToCache()
-        ViewSwitcher.setDynamicMode(true)
+        ViewSwitcher.setDynamicMode(false)
         HotLoader.instance.isHotLoadEnabled = true
         #endif
     }
 
     var body: some Scene {
         WindowGroup {
-            SplashView()
-                .id(viewSwitcher.isDynamic)
+            DeveloperMenuContainer(
+                currentScreen: $currentScreen,
+                screens: Screen.allCases,
+                enabled: developerMenuEnabled
+            ) { screen in
+                if developerMenuEnabled {
+                    switch screen {
+                    case .splash:
+                        SplashView()
+                    // Add more cases as needed
+                    }
+                } else {
+                    SplashView()
+                }
+            }
         }
     }
 }
 ```
 
+**DeveloperMenuContainer features (DEBUG builds only):**
+- Double tap: Shows view selector to switch between screens
+- Long press: Toggles Dynamic Mode on/off
+
 **VERIFY**: Read App.swift and confirm:
-- `ViewSwitcher.shared` exists
+- `DeveloperScreen` enum exists with screen cases
+- `DeveloperMenuContainer` wraps the content
 - `init()` block exists with:
   - `SwiftJsonUIConfiguration.shared.colorProvider` is set
   - `#if DEBUG` block with hot reload setup
 - `JSONLayoutLoader.copyResourcesToCache()` is called
-- `ViewSwitcher.setDynamicMode(true)` is called
+- `ViewSwitcher.setDynamicMode(false)` is called (starts in static mode)
 - `HotLoader.instance.isHotLoadEnabled = true` is called
 
 ## iOS Step 8: Build to generate resource managers
@@ -261,7 +291,7 @@ When reporting completion, use this format:
 | 4 | Port configured (8081) | ✅ |
 | 5 | setup command executed | ✅ |
 | 6 | Splash view generated | ✅ |
-| 7 | App.swift modified (with init DEBUG setup) | ✅ |
+| 7 | App.swift modified (with DeveloperMenuContainer) | ✅ |
 | 8 | sjui build executed | ✅ |
 | 9 | Final verification | ✅ |
 
@@ -271,6 +301,8 @@ All steps completed: ✅ YES / ❌ NO
 - [x] sjui_tools/bin/sjui exists
 - [x] sjui.config.json exists
 - [x] {source_path}/View/Splash/ exists
+- [x] App.swift contains DeveloperMenuContainer
+- [x] App.swift contains DeveloperScreen enum
 - [x] {source_path}/{resource_manager_directory}/StringManager.swift exists
 - [x] {source_path}/{resource_manager_directory}/ColorManager.swift exists
 - [x] {source_path}/{layouts_directory}/Resources/strings.json exists
@@ -501,30 +533,52 @@ package com.yourpackage
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.*
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import com.kotlinjsonui.core.DeveloperMenuContainer
+import com.kotlinjsonui.core.DeveloperScreen
 import com.kotlinjsonui.core.DynamicModeManager
 import com.yourpackage.views.splash.SplashView
 import com.yourpackage.ui.theme.YourAppTheme
+
+// Navigation screens
+enum class Screen : DeveloperScreen {
+    Splash;
+    // Add more screens as needed: Login, Home
+
+    override val displayName: String get() = this.name
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable Dynamic Mode for HotLoader (debug builds only)
-        DynamicModeManager.setDynamicModeEnabled(this, true)
+        // Enable edge-to-edge display
+        enableEdgeToEdge()
+
+        // Initialize Dynamic Mode (disabled by default, debug builds only)
+        DynamicModeManager.setDynamicModeEnabled(this, false)
 
         setContent {
-            val isDynamicModeEnabled by DynamicModeManager.isDynamicModeEnabled.collectAsState()
+            // Current screen state
+            var currentScreen by remember { mutableStateOf(Screen.Splash) }
+
+            // Set to false for actual app navigation, true for screen preview mode
+            val developerMenuEnabled = true
 
             YourAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    key(isDynamicModeEnabled) {
+                DeveloperMenuContainer(
+                    currentScreen = currentScreen,
+                    screens = Screen.entries,
+                    onScreenChange = { currentScreen = it },
+                    enabled = developerMenuEnabled
+                ) { screen ->
+                    if (developerMenuEnabled) {
+                        when (screen) {
+                            Screen.Splash -> SplashView()
+                            // Add more cases as needed
+                        }
+                    } else {
                         SplashView()
                     }
                 }
@@ -534,11 +588,16 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
+**DeveloperMenuContainer features (DEBUG builds only):**
+- Double tap: Shows view selector to switch between screens
+- Long press: Toggles Dynamic Mode on/off
+
 **VERIFY**: Read MainActivity.kt and confirm:
-- `import com.kotlinjsonui.core.DynamicModeManager` (NOT io.github.taikimura!)
-- `DynamicModeManager.setDynamicModeEnabled(this, true)` in `onCreate()`
-- `DynamicModeManager.isDynamicModeEnabled.collectAsState()`
-- `key(isDynamicModeEnabled)`
+- `import com.kotlinjsonui.core.DeveloperMenuContainer` (NOT io.github.taikimura!)
+- `import com.kotlinjsonui.core.DeveloperScreen`
+- `DeveloperScreen` enum exists with `displayName` override
+- `DeveloperMenuContainer` wraps the content
+- `DynamicModeManager.setDynamicModeEnabled(this, false)` in `onCreate()`
 
 ## Android Step 11: Generate Splash view
 ```bash
@@ -583,7 +642,7 @@ When reporting completion, use this format:
 | 7 | setup command executed | ✅ |
 | 8 | Application class created | ✅ |
 | 9 | AndroidManifest.xml modified | ✅ |
-| 10 | MainActivity.kt modified | ✅ |
+| 10 | MainActivity.kt modified (with DeveloperMenuContainer) | ✅ |
 | 11 | Splash view generated | ✅ |
 | 12 | Final verification | ✅ |
 
@@ -592,8 +651,9 @@ All steps completed: ✅ YES / ❌ NO
 ### Verification Results:
 - [x] kjui_tools/bin/kjui exists
 - [x] kjui.config.json exists
-- [x] Application class contains DynamicModeManager.initialize(this)
-- [x] MainActivity.kt contains correct imports
+- [x] Application class contains KotlinJsonUI.initialize(this)
+- [x] MainActivity.kt contains DeveloperMenuContainer
+- [x] MainActivity.kt contains DeveloperScreen enum
 - [x] {layout_path}/splash/ exists
 ```
 
