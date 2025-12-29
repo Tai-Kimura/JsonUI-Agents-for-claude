@@ -105,11 +105,26 @@ data class HomeData(
 
 ## Type Reference (REQUIRED)
 
-**Always check the type_converter for valid types:**
+**Before defining any data section, you MUST read the following files:**
+
+### Type Converter (for valid types)
 - SwiftJsonUI: `tools/sjui_tools/lib/core/type_converter.rb`
 - KotlinJsonUI: `kjui_tools/lib/core/type_converter.rb`
+- ReactJsonUI: `rjui_tools/lib/core/type_converter.rb`
 
 Read these files to understand what types are supported and how they are converted.
+
+### Binding Validator (for callback types and event handlers)
+- SwiftJsonUI: `tools/sjui_tools/lib/core/binding_validator.rb`
+- KotlinJsonUI: `kjui_tools/lib/core/binding_validator.rb`
+- ReactJsonUI: `rjui_tools/lib/core/binding_validator.rb`
+
+Read these files to understand:
+- Which attributes support binding (`@{propertyName}`)
+- Expected function types for event handlers (onClick, onValueChange, onTabChange, etc.)
+- Validation rules for callback signatures
+
+**ALWAYS read both files before defining data sections to ensure type accuracy.**
 
 ### Cross-Platform Type Mappings
 
