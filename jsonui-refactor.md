@@ -544,9 +544,19 @@ For each `view` value in the `tabs` array, check if an adapter exists:
 > ./kjui_tools/bin/kjui g adapter Search
 > ```
 >
-> After generating adapters, don't forget to:
-> - **SwiftJsonUI**: Call `CustomComponentRegistration.registerAll()` in app initialization
-> - **KotlinJsonUI**: Call `DynamicComponentInitializer.initialize()` in app initialization"
+> After generating adapters, don't forget to register them in app initialization:
+>
+> **SwiftJsonUI** - Call in app startup:
+> ```swift
+> CustomComponentRegistration.registerAll()
+> ```
+>
+> **KotlinJsonUI** - Set `Configuration.customComponentHandler` in app startup (after `KotlinJsonUI.initialize()`):
+> ```kotlin
+> Configuration.customComponentHandler = { type, json, data ->
+>     DynamicComponentRegistry.createCustomComponent(type, json, data)
+> }
+> ```"
 
 ### What the Adapter Does
 
