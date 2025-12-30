@@ -481,3 +481,100 @@ Also verify GeneratedView files exist in `{view_directory}/` (from config):
 6. `jsonui-refactor` → Re-run to review all layouts including new cells
 7. `jsonui-data` → Defines data sections including section/cell types
 8. `jsonui-viewmodel` → Implements ViewModel with section data
+
+---
+
+## IMPORTANT: TabView View Adapter Detection (SwiftJsonUI / KotlinJsonUI)
+
+**When reviewing a layout that contains TabView with `view` attributes in tabs:**
+
+### TabView Structure
+
+```json
+{
+  "type": "TabView",
+  "tabs": [
+    {
+      "title": "Home",
+      "icon": "house",
+      "view": "home"
+    },
+    {
+      "title": "Search",
+      "icon": "magnifyingglass",
+      "view": "search"
+    }
+  ]
+}
+```
+
+### Adapter Requirement for Dynamic Mode
+
+**In Dynamic mode, TabView needs adapters to render native Views (like HomeView, SearchView).**
+
+For each `view` value in the `tabs` array, check if an adapter exists:
+
+**SwiftJsonUI:**
+- Look for adapter files in `{extension_directory}/Adapters/` or `{adapter_directory}/`
+- Expected file: `{ViewName}ViewAdapter.swift` (e.g., `HomeViewAdapter.swift`)
+
+**KotlinJsonUI:**
+- Look for adapter files in `src/debug/kotlin/.../dynamic/components/adapters/`
+- Expected file: `{ViewName}ViewAdapter.kt` (e.g., `HomeViewAdapter.kt`)
+
+### If Adapters Are Missing
+
+**You MUST report and instruct to create adapters:**
+
+> "⚠️ **Missing TabView adapters detected:**
+> - `HomeViewAdapter` - NOT FOUND
+> - `SearchViewAdapter` - NOT FOUND
+>
+> **Please run the adapter generator command to create each missing adapter:**
+>
+> **SwiftJsonUI:**
+> ```bash
+> ./sjui_tools/bin/sjui g adapter Home
+> ./sjui_tools/bin/sjui g adapter Search
+> ```
+>
+> **KotlinJsonUI:**
+> ```bash
+> ./kjui_tools/bin/kjui g adapter Home
+> ./kjui_tools/bin/kjui g adapter Search
+> ```
+>
+> After generating adapters, don't forget to:
+> - **SwiftJsonUI**: Call `CustomComponentRegistration.registerAll()` in app initialization
+> - **KotlinJsonUI**: Call `DynamicComponentInitializer.initialize()` in app initialization"
+
+### What the Adapter Does
+
+The adapter wraps an existing View (e.g., `HomeView`) so it can be rendered in Dynamic mode:
+
+**SwiftJsonUI adapter structure:**
+```swift
+struct HomeViewAdapter: CustomComponentAdapter {
+    var componentType: String { "home" }
+
+    func buildView(component: DynamicComponent, data: [String: Any], ...) -> AnyView {
+        AnyView(HomeView(data: data))
+    }
+}
+```
+
+**KotlinJsonUI adapter structure:**
+```kotlin
+object HomeViewAdapter {
+    @Composable
+    fun create(json: JsonObject, data: Map<String, Any>) {
+        HomeView(data = data)
+    }
+}
+```
+
+### Notes
+
+- **This only applies to SwiftJsonUI and KotlinJsonUI** - ReactJsonUI does not have Dynamic mode
+- The `view` value in tabs (e.g., `"home"`) must match the adapter's `componentType`
+- PascalCase names are converted to snake_case (e.g., `HomeScreen` → `"home_screen"`)
