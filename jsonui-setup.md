@@ -420,6 +420,9 @@ dependencies {
     implementation("io.github.tai-kimura:kotlinjsonui:1.0.2")
     debugImplementation("io.github.tai-kimura:kotlinjsonui-dynamic:1.0.2")
 
+    // Gson - Required for JSON parsing in Dynamic mode
+    implementation("com.google.code.gson:gson:2.10.1")
+
     // Coil - Image loading for NetworkImage component
     implementation("io.coil-kt:coil-compose:2.5.0")
 }
