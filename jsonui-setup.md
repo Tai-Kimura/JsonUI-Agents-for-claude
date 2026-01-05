@@ -425,6 +425,9 @@ dependencies {
 
     // Coil - Image loading for NetworkImage component
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // ConstraintLayout for Compose - Required for relative positioning
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
 }
 ```
 
