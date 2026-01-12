@@ -65,34 +65,27 @@ Create a new Swift file in the UITest target that loads and runs JSON tests.
 import XCTest
 import JsonUITestRunner
 
-@MainActor
 final class JsonUITests: XCTestCase {
 
-    var app: XCUIApplication!
-
-    override func setUp() async throws {
-        try await super.setUp()
+    override func setUpWithError() throws {
         continueAfterFailure = false
-        app = XCUIApplication()
-        app.launch()
-    }
-
-    override func tearDown() async throws {
-        app = nil
-        try await super.tearDown()
     }
 
     // MARK: - Test Methods
 
     // Add test methods for each JSON test file
     // Example:
-    // func testSplashScreen() throws {
-    //     try runTest("splash.test")
+    // @MainActor
+    // func testHomeScreen() throws {
+    //     let app = XCUIApplication()
+    //     app.launch()
+    //     try runTest("home.test", app: app)
     // }
 
     // MARK: - Helper
 
-    private func runTest(_ name: String) throws {
+    @MainActor
+    private func runTest(_ name: String, app: XCUIApplication) throws {
         let result = try runJsonUITest(
             resourceName: name,
             bundle: Bundle(for: type(of: self)),
@@ -137,19 +130,28 @@ YourAppUITests/
 For each `.test.json` file, add a corresponding test method:
 
 ```swift
-// For splash.test.json
-func testSplashScreen() throws {
-    try runTest("splash.test")
+// For home.test.json
+@MainActor
+func testHomeScreen() throws {
+    let app = XCUIApplication()
+    app.launch()
+    try runTest("home.test", app: app)
 }
 
 // For login.test.json
+@MainActor
 func testLoginScreen() throws {
-    try runTest("login.test")
+    let app = XCUIApplication()
+    app.launch()
+    try runTest("login.test", app: app)
 }
 
-// For home.test.json
-func testHomeScreen() throws {
-    try runTest("home.test")
+// For settings.test.json
+@MainActor
+func testSettingsScreen() throws {
+    let app = XCUIApplication()
+    app.launch()
+    try runTest("settings.test", app: app)
 }
 ```
 
@@ -201,6 +203,17 @@ YourApp/
 - Test runner file: `JsonUITests.swift`
 - Test JSON files: `{screen_name}.test.json` (snake_case)
 - Test methods: `test{ScreenName}()` (camelCase)
+
+## Swift 6 Concurrency Notes
+
+The template uses Swift 6 concurrency-safe patterns:
+
+1. **No instance variable for `app`** - Each test method creates a local `XCUIApplication()`
+2. **`@MainActor` on test methods** - Required for XCUITest APIs
+3. **`@MainActor` on helper methods** - Methods that use `XCTContext` need main actor
+4. **Synchronous `setUpWithError()`** - No async setup needed
+
+This pattern avoids data race warnings that occur with instance variables in Swift 6.
 
 ## Common Issues
 
