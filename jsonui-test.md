@@ -188,11 +188,11 @@ If a property is computed or depends on external state, **DO NOT use initialStat
 Instead, create UI-only tests that don't depend on specific ViewModel state.
 
 ```json
-// BAD - isUserLoggedIn is computed from AppUtil, cannot be set
+// BAD - computed properties cannot be set
 {
   "initialState": {
     "viewModel": {
-      "isUserLoggedIn": true  // This won't work!
+      "isLoading": true  // Won't work if this is a computed property
     }
   }
 }
@@ -201,7 +201,7 @@ Instead, create UI-only tests that don't depend on specific ViewModel state.
 {
   "name": "initial_display",
   "steps": [
-    { "assert": "visible", "id": "splash_logo" }
+    { "assert": "visible", "id": "logo" }
   ]
 }
 ```
