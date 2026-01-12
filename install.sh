@@ -59,6 +59,7 @@ AGENT_FILES=(
     "jsonui-refactor.md"
     "jsonui-data.md"
     "jsonui-viewmodel.md"
+    "jsonui-test.md"
     "swiftjsonui-swiftui.md"
     "swiftjsonui-uikit.md"
     "kotlinjsonui-compose.md"
