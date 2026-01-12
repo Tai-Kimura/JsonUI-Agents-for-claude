@@ -62,6 +62,7 @@ AGENT_FILES=(
     "jsonui-viewmodel.md"
     "jsonui-test.md"
     "jsonui-test-setup-ios.md"
+    "jsonui-test-setup-android.md"
     "swiftjsonui-swiftui.md"
     "swiftjsonui-uikit.md"
     "kotlinjsonui-compose.md"
