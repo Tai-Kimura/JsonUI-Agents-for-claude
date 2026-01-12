@@ -50,6 +50,7 @@ done
 REPO_URL="https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/$REF"
 AGENTS_DIR=".claude/agents"
 COMMANDS_DIR=".claude/commands"
+SKILLS_DIR=".claude/skills"
 
 # Agent files to download
 AGENT_FILES=(
@@ -82,6 +83,12 @@ if [ ! -d "$COMMANDS_DIR" ]; then
     mkdir -p "$COMMANDS_DIR"
 fi
 
+# Create skills directory if it doesn't exist
+if [ ! -d "$SKILLS_DIR" ]; then
+    echo "Creating skills directory: $SKILLS_DIR"
+    mkdir -p "$SKILLS_DIR"
+fi
+
 # Download agent files
 echo "Downloading agent files..."
 for file in "${AGENT_FILES[@]}"; do
@@ -93,6 +100,11 @@ for file in "${AGENT_FILES[@]}"; do
     fi
     # Also copy to commands directory
     cp "$AGENTS_DIR/$file" "$COMMANDS_DIR/$file"
+
+    # Create skill directory and copy as SKILL.md
+    skill_name="${file%.md}"
+    mkdir -p "$SKILLS_DIR/$skill_name"
+    cp "$AGENTS_DIR/$file" "$SKILLS_DIR/$skill_name/SKILL.md"
 done
 
 echo ""
@@ -104,8 +116,9 @@ for file in "${AGENT_FILES[@]}"; do
 done
 echo ""
 echo "Files installed to:"
-echo "  - $AGENTS_DIR"
-echo "  - $COMMANDS_DIR"
+echo "  - $AGENTS_DIR (for agents)"
+echo "  - $COMMANDS_DIR (for slash commands)"
+echo "  - $SKILLS_DIR (for skills)"
 echo ""
 echo "You can now use JsonUI agents in Claude Code."
 echo "Example: \"Use the jsonui-layout agent to create a login screen\""
