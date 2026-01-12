@@ -313,3 +313,69 @@ Run steps before/after each test case:
   ]
 }
 ```
+
+## Validation (MANDATORY)
+
+After creating or modifying any test JSON file, you **MUST** validate it using the `jsonui-test` CLI tool.
+
+### Step 1: Check if Tool is Installed
+
+```bash
+which jsonui-test
+```
+
+### Step 2: Install if Not Found
+
+If the command is not found, install it:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/anthropics/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash
+```
+
+### Step 3: Validate the Test File
+
+```bash
+jsonui-test validate path/to/your_test.test.json
+```
+
+### Expected Output
+
+**Success:**
+```
+✓ path/to/your_test.test.json is valid
+```
+
+**With Warnings:**
+```
+⚠ path/to/your_test.test.json has warnings:
+
+  Warning: Case 'test_case_1' has no assertions (step 3)
+
+✓ path/to/your_test.test.json is valid (with warnings)
+```
+
+**With Errors:**
+```
+✗ path/to/your_test.test.json has errors:
+
+  Error: Missing 'id' in step 2 of case 'test_case_1' (action: tap)
+  Error: Unknown action 'click' in step 3 of case 'test_case_1'
+
+Found 2 error(s) and 0 warning(s)
+```
+
+### Fix and Re-validate
+
+If validation fails:
+1. Fix the reported errors
+2. Run validation again
+3. Repeat until all errors are resolved
+4. Warnings are acceptable but should be reviewed
+
+### Validation Workflow Summary
+
+```
+1. Create test file → 2. Check jsonui-test installed → 3. Install if needed → 4. Validate → 5. Fix errors → 6. Done
+```
+
+**IMPORTANT**: Never consider a test file complete until it passes validation.
