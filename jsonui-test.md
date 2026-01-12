@@ -135,15 +135,28 @@ When layouts use `include` with `id`, child element IDs are prefixed:
 - Use snake_case: `login_screen.test.json`, `checkout_flow.test.json`
 - Place in `tests/` directory or alongside layouts
 
-## Workflow
+## Workflow (CRITICAL)
+
+### Before Creating Tests - MANDATORY STEPS
+
+**You MUST read both the Layout JSON AND the ViewModel before creating any test.**
+
+1. **Find the layout JSON file** - Understand the view structure
+2. **Find the corresponding ViewModel** - Check actual property names and types
+   - SwiftJsonUI: Look for `*ViewModel.swift` files
+   - KotlinJsonUI: Look for `*ViewModel.kt` files
+   - ReactJsonUI: Look for `*ViewModel.ts` or hooks files
+3. **DO NOT guess ViewModel properties** - Only use properties that actually exist
+4. **Check if properties are settable** - Computed properties cannot be set via `initialState`
 
 ### Creating Tests from Layout
 
 1. **Read the layout JSON** to understand the view structure
-2. **Identify all elements with `id`** - these are testable
-3. **Consider include prefixes** - check for nested includes
-4. **Create test cases** covering:
-   - Initial display state
+2. **Read the ViewModel** to understand available state and actions
+3. **Identify all elements with `id`** - these are testable
+4. **Consider include prefixes** - check for nested includes
+5. **Create test cases** covering:
+   - Initial display state (UI-only, no state assumptions)
    - User interactions
    - Validation scenarios
    - Error states
@@ -155,11 +168,42 @@ When layouts use `include` with `id`, child element IDs are prefixed:
 # 1. Read layout to understand structure
 cat layouts/login.json
 
-# 2. Create test file
-# Write test JSON based on layout analysis
+# 2. Find and read the corresponding ViewModel (MANDATORY)
+find . -name "*LoginViewModel*" -type f
+cat ViewModel/LoginViewModel.swift
 
-# 3. Test file location
+# 3. Create test file based on BOTH layout and ViewModel
+# Only use properties that exist in the ViewModel
 tests/login.test.json
+```
+
+### initialState Restrictions
+
+**IMPORTANT**: `initialState` can only set properties that are:
+- Mutable (`var` in Swift, `var` in Kotlin, not `readonly` in TypeScript)
+- Not computed properties
+- Directly settable (not derived from other sources like UserDefaults, API, etc.)
+
+If a property is computed or depends on external state, **DO NOT use initialState**.
+Instead, create UI-only tests that don't depend on specific ViewModel state.
+
+```json
+// BAD - isUserLoggedIn is computed from AppUtil, cannot be set
+{
+  "initialState": {
+    "viewModel": {
+      "isUserLoggedIn": true  // This won't work!
+    }
+  }
+}
+
+// GOOD - Test only UI elements without state assumptions
+{
+  "name": "initial_display",
+  "steps": [
+    { "assert": "visible", "id": "splash_logo" }
+  ]
+}
 ```
 
 ## Platform-Specific Tests
