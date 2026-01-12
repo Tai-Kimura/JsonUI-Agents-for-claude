@@ -65,6 +65,7 @@ Create a new Swift file in the UITest target that loads and runs JSON tests.
 import XCTest
 import JsonUITestRunner
 
+@MainActor
 final class JsonUITests: XCTestCase {
 
     var app: XCUIApplication!
@@ -105,7 +106,7 @@ final class JsonUITests: XCTestCase {
             }
         }
 
-        XCTAssertTrue(result.allPassed, "Failed \(result.failedCount) of \(result.totalCount) test cases")
+        XCTAssertTrue(result.allPassed, "Failed \(result.failedCount) of \(result.caseResults.count) test cases")
     }
 }
 ```
