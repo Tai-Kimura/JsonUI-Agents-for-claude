@@ -100,7 +100,7 @@ class JsonUITests {
     // MARK: - Helper
 
     private fun runTest(assetPath: String) {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val context = InstrumentationRegistry.getInstrumentation().context
         val test = JsonUITest.loadFromAssets(context, assetPath)
 
         val runner = JsonUITest.runnerBuilder()
@@ -236,25 +236,27 @@ YourApp/
 
 ## Element Identification
 
-Elements are identified using `contentDescription` (accessibility label). Ensure views have proper content descriptions:
+Elements are identified using `resource-id` exposed via Compose's `testTag` with `testTagsAsResourceId = true`.
+
+**Jetpack Compose (Recommended):**
+```kotlin
+Button(
+    onClick = { /* ... */ },
+    modifier = Modifier
+        .testTag("login_button")
+        .semantics { testTagsAsResourceId = true }
+) {
+    Text("Login")
+}
+```
 
 **XML Layout:**
 ```xml
 <Button
     android:id="@+id/login_button"
-    android:contentDescription="login_button"
     ... />
 ```
-
-**Jetpack Compose:**
-```kotlin
-Button(
-    onClick = { /* ... */ },
-    modifier = Modifier.semantics { contentDescription = "login_button" }
-) {
-    Text("Login")
-}
-```
+Note: For XML layouts, use `android:id` attribute. The test runner will find elements by resource-id.
 
 ## Running Tests
 
@@ -291,4 +293,9 @@ Ensure:
 
 ### Element not found
 
-Ensure views have `contentDescription` set matching the `id` in test JSON.
+For Jetpack Compose:
+- Ensure views have `testTag("id")` modifier matching the `id` in test JSON
+- Add `.semantics { testTagsAsResourceId = true }` to expose testTag as resource-id for UIAutomator
+
+For XML layouts:
+- Ensure views have `android:id` attribute matching the `id` in test JSON
