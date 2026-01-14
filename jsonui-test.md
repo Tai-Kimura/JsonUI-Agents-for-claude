@@ -82,6 +82,7 @@ Tests user flows across multiple screens.
 | `back` | Navigate back | - |
 | `screenshot` | Take screenshot | `name` |
 | `alertTap` | Tap button in native alert | `button` (button text), optional: `timeout` (ms) |
+| `selectOption` | Select option from dropdown (Web only) | `id`, one of: `value`, `label`, `index` |
 
 ## Available Assertions
 
@@ -346,6 +347,31 @@ When the app shows a native alert dialog (confirm, permission request, etc.), us
 ```
 
 The `button` parameter specifies the button text to tap (e.g., "OK", "Cancel", "Delete", "はい", "キャンセル").
+
+### Selecting Dropdown Options (Web Only)
+For Web platform, use `selectOption` to select from `<select>` elements:
+
+```json
+{
+  "name": "select_country",
+  "steps": [
+    { "action": "selectOption", "id": "country_select", "value": "JP" },
+    { "assert": "text", "id": "country_select", "equals": "Japan" }
+  ]
+}
+```
+
+You can select by:
+- `value`: The option's value attribute
+- `label`: The visible text of the option
+- `index`: The 0-based index of the option
+
+```json
+{ "action": "selectOption", "id": "category", "label": "Electronics" }
+{ "action": "selectOption", "id": "priority", "index": 0 }
+```
+
+**Note**: This action is Web-only. For iOS/Android custom pickers, use platform-specific tap interactions.
 
 ## Validation (MANDATORY)
 
