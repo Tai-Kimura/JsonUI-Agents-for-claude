@@ -70,7 +70,7 @@ Tests user flows across multiple screens.
 
 | Action | Description | Required Properties |
 |--------|-------------|---------------------|
-| `tap` | Tap element | `id` |
+| `tap` | Tap element | `id`, optional: `text` (specific text portion to tap) |
 | `doubleTap` | Double tap element | `id` |
 | `longPress` | Long press element | `id`, optional: `duration` (ms) |
 | `input` | Input text | `id`, `value` |
@@ -81,6 +81,7 @@ Tests user flows across multiple screens.
 | `wait` | Fixed wait | `ms` |
 | `back` | Navigate back | - |
 | `screenshot` | Take screenshot | `name` |
+| `alertTap` | Tap button in native alert | `button` (button text), optional: `timeout` (ms) |
 
 ## Available Assertions
 
@@ -313,6 +314,38 @@ Run steps before/after each test case:
   ]
 }
 ```
+
+### Tapping Specific Text Portion
+When a Label contains multiple text segments (e.g., "利用規約に同意する"), you can tap on a specific portion:
+
+```json
+{
+  "name": "tap_terms_link",
+  "steps": [
+    { "action": "tap", "id": "terms_label", "text": "利用規約" },
+    { "action": "waitFor", "id": "terms_page", "timeout": 3000 },
+    { "assert": "visible", "id": "terms_page" }
+  ]
+}
+```
+
+The `text` parameter calculates the position of the specified text within the element and taps at that location.
+
+### Handling Native Alert Dialogs
+When the app shows a native alert dialog (confirm, permission request, etc.), use `alertTap` to tap a button:
+
+```json
+{
+  "name": "confirm_delete",
+  "steps": [
+    { "action": "tap", "id": "delete_button" },
+    { "action": "alertTap", "button": "Delete", "timeout": 3000 },
+    { "assert": "notVisible", "id": "item_row" }
+  ]
+}
+```
+
+The `button` parameter specifies the button text to tap (e.g., "OK", "Cancel", "Delete", "はい", "キャンセル").
 
 ## Validation (MANDATORY)
 
