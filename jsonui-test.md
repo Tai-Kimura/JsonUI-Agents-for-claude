@@ -353,32 +353,44 @@ Use `selectOption` to select from dropdown elements:
 
 **Web**: Selects from standard `<select>` elements
 **iOS**: Selects from SelectBox picker (opens picker sheet, selects value, confirms)
+**Android**: Selects from SelectBox bottom sheet (opens sheet, taps option)
 
 ```json
 {
   "name": "select_country",
   "steps": [
-    { "action": "selectOption", "id": "country_select", "value": "JP" },
+    { "action": "selectOption", "id": "country_select", "index": 0 },
     { "assert": "text", "id": "country_select", "equals": "Japan" }
   ]
 }
 ```
 
 You can select by:
-- `value`: The option's value (Web) or picker wheel value (iOS)
-- `label`: The visible text of the option
-- `index`: The 0-based index (Web only - not supported on iOS)
+- `index`: The 0-based index of the option (recommended for Web/Android, NOT supported on iOS)
+- `label`: The visible text of the option (cross-platform compatible)
+- `value`: The option's value (cross-platform compatible)
 
 ```json
 { "action": "selectOption", "id": "category", "label": "Electronics" }
 { "action": "selectOption", "id": "priority", "index": 0 }
 ```
 
-**iOS Notes**:
-- The action automatically taps the SelectBox, waits for the picker sheet, selects the value, and taps Done
+**Platform Notes**:
+
+| Parameter | Web | iOS | Android |
+|-----------|-----|-----|---------|
+| `index` | ✅ | ❌ | ✅ |
+| `label` | ✅ | ✅ | ✅ |
+| `value` | ✅ | ✅ | ✅ |
+
+**iOS**:
 - Use `label` or `value` parameter (they work the same on iOS)
-- `index` is not supported on iOS - use `label` instead
+- `index` is not supported on iOS - validator will show a warning
 - Date pickers are not yet supported via selectOption - use tap actions directly
+
+**Android**:
+- Supports all parameters including `index`
+- Auto-closes after selection (no Done button needed)
 
 ## Validation (MANDATORY)
 
