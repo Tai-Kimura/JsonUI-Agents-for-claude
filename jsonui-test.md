@@ -66,35 +66,38 @@ Tests user flows across multiple screens.
 }
 ```
 
-## Available Actions
+## Available Actions & Assertions
 
-| Action | Description | Required Properties |
-|--------|-------------|---------------------|
-| `tap` | Tap element | `id`, optional: `text` (specific text portion to tap) |
-| `doubleTap` | Double tap element | `id` |
-| `longPress` | Long press element | `id`, optional: `duration` (ms) |
-| `input` | Input text | `id`, `value` |
-| `clear` | Clear text input | `id` |
-| `scroll` | Scroll in direction | `id`, `direction` (up/down/left/right) |
-| `swipe` | Swipe in direction | `id`, `direction` |
-| `waitFor` | Wait for element | `id`, optional: `timeout` (ms) |
-| `wait` | Fixed wait | `ms` |
-| `back` | Navigate back | - |
-| `screenshot` | Take screenshot | `name` |
-| `alertTap` | Tap button in native alert | `button` (button text), optional: `timeout` (ms) |
-| `selectOption` | Select option from dropdown/picker | `id`, one of: `value`, `label`, `index` |
+**For the complete and up-to-date list of actions and assertions, always check schema.py:**
 
-## Available Assertions
+```bash
+cat ~/resource/jsonui-test-runner/test_tools/jsonui_test_cli/schema.py
+```
 
-| Assertion | Description | Required Properties |
-|-----------|-------------|---------------------|
-| `visible` | Element is visible | `id` |
-| `notVisible` | Element is not visible | `id` |
-| `enabled` | Element is enabled | `id` |
-| `disabled` | Element is disabled | `id` |
-| `text` | Text content check | `id`, `equals` or `contains` |
-| `count` | Element count | `id`, `equals` (number) |
-| `state` | ViewModel state | `path`, `equals` |
+This is the authoritative source for:
+- All supported actions and their required/optional parameters
+- All supported assertions and their parameters
+- Valid parameter values
+
+### Common Actions (Quick Reference)
+
+| Action | Required | Optional |
+|--------|----------|----------|
+| `tap` | `id` | `text`, `timeout` |
+| `input` | `id`, `value` | `timeout` |
+| `tapItem` | `id`, `index` | `timeout` |
+| `selectOption` | `id` | `value`, `label`, `index`, `timeout` |
+| `waitFor` | `id` | `timeout` |
+| `waitForAny` | `ids` | `timeout` |
+| `alertTap` | `button` | `timeout` |
+
+### Common Assertions (Quick Reference)
+
+| Assertion | Required | Optional |
+|-----------|----------|----------|
+| `visible` | `id` | `timeout` |
+| `notVisible` | `id` | `timeout` |
+| `text` | `id` | `equals`, `contains`, `timeout` |
 
 ## Element Identification (CRITICAL)
 
@@ -332,6 +335,22 @@ When a Label contains multiple text segments (e.g., "利用規約に同意する
 
 The `text` parameter calculates the position of the specified text within the element and taps at that location.
 
+### Tapping Collection Items
+Use `tapItem` to tap an item at a specific index in a CollectionView or List:
+
+```json
+{
+  "name": "tap_first_item",
+  "steps": [
+    { "action": "tapItem", "id": "product_list", "index": 0 },
+    { "action": "waitFor", "id": "product_detail_page", "timeout": 3000 },
+    { "assert": "visible", "id": "product_detail_page" }
+  ]
+}
+```
+
+The element ID is constructed as `{collectionId}_item_{index}` internally.
+
 ### Handling Native Alert Dialogs
 When the app shows a native alert dialog (confirm, permission request, etc.), use `alertTap` to tap a button:
 
@@ -366,7 +385,7 @@ Use `selectOption` to select from dropdown elements:
 ```
 
 You can select by:
-- `index`: The 0-based index of the option (recommended for Web/Android, NOT supported on iOS)
+- `index`: The 0-based index of the option (cross-platform compatible)
 - `label`: The visible text of the option (cross-platform compatible)
 - `value`: The option's value (cross-platform compatible)
 
@@ -379,17 +398,16 @@ You can select by:
 
 | Parameter | Web | iOS | Android |
 |-----------|-----|-----|---------|
-| `index` | ✅ | ❌ | ✅ |
+| `index` | ✅ | ✅ | ✅ |
 | `label` | ✅ | ✅ | ✅ |
 | `value` | ✅ | ✅ | ✅ |
 
 **iOS**:
-- Use `label` or `value` parameter (they work the same on iOS)
-- `index` is not supported on iOS - validator will show a warning
-- Date pickers are not yet supported via selectOption - use tap actions directly
+- All parameters (`index`, `label`, `value`) are supported
+- For DateSelectBox, use `value` with ISO format (e.g., "2024-01-15", "14:30", "2024-01-15T14:30")
 
 **Android**:
-- Supports all parameters including `index`
+- Supports all parameters
 - Auto-closes after selection (no Done button needed)
 
 ## Validation (MANDATORY)
