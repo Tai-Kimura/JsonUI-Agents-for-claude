@@ -33,6 +33,7 @@ Tests a single screen's functionality. Each layout JSON should have a correspond
   "cases": [
     {
       "name": "initial_display",
+      "description": "初期表示時にログインフォームが正しく表示されることを確認",
       "steps": [
         { "assert": "visible", "id": "email_input" },
         { "assert": "visible", "id": "password_input" },
@@ -209,6 +210,7 @@ Instead, create UI-only tests that don't depend on specific ViewModel state.
 // GOOD - Test only UI elements without state assumptions
 {
   "name": "initial_display",
+  "description": "初期表示時にロゴが表示されることを確認",
   "steps": [
     { "assert": "visible", "id": "logo" }
   ]
@@ -244,6 +246,7 @@ Per-case platform override:
   "cases": [
     {
       "name": "ios_specific_test",
+      "description": "iOS固有の動作を確認するテスト",
       "platform": "ios",
       "steps": [...]
     }
@@ -351,6 +354,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 5. **Handle animations** - Add small waits if needed
 6. **Screenshot on important states** - Document visual states
 7. **Use descriptionFile for complex tests** - Keep detailed documentation in separate files
+8. **Always include `description` key** - Every test case MUST have a `description` key with a human-readable description (separate from `name`)
 
 ## Common Patterns
 
@@ -358,6 +362,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```json
 {
   "name": "empty_form_validation",
+  "description": "フォームの入力状態に応じて送信ボタンの有効/無効が切り替わることを確認",
   "steps": [
     { "assert": "disabled", "id": "submit_button" },
     { "action": "input", "id": "email_input", "value": "test@example.com" },
@@ -372,6 +377,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```json
 {
   "name": "invalid_email_error",
+  "description": "不正なメールアドレス入力時にエラーメッセージが表示されることを確認",
   "steps": [
     { "action": "input", "id": "email_input", "value": "invalid-email" },
     { "action": "tap", "id": "submit_button" },
@@ -386,6 +392,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```json
 {
   "name": "navigate_to_settings",
+  "description": "設定ボタンをタップして設定画面に遷移することを確認",
   "steps": [
     { "action": "tap", "id": "settings_button" },
     { "action": "waitFor", "id": "settings_title", "timeout": 5000 },
@@ -400,6 +407,7 @@ When a Label contains multiple text segments (e.g., "利用規約に同意する
 ```json
 {
   "name": "tap_terms_link",
+  "description": "利用規約リンクをタップして規約ページに遷移することを確認",
   "steps": [
     { "action": "tap", "id": "terms_label", "text": "利用規約" },
     { "action": "waitFor", "id": "terms_page", "timeout": 3000 },
@@ -416,6 +424,7 @@ Use `tapItem` to tap an item at a specific index in a CollectionView or List:
 ```json
 {
   "name": "tap_first_item",
+  "description": "リストの最初のアイテムをタップして詳細ページに遷移することを確認",
   "steps": [
     { "action": "tapItem", "id": "product_list", "index": 0 },
     { "action": "waitFor", "id": "product_detail_page", "timeout": 3000 },
@@ -432,6 +441,7 @@ When the app shows a native alert dialog (confirm, permission request, etc.), us
 ```json
 {
   "name": "confirm_delete",
+  "description": "削除確認ダイアログでDeleteをタップしてアイテムが削除されることを確認",
   "steps": [
     { "action": "tap", "id": "delete_button" },
     { "action": "alertTap", "button": "Delete", "timeout": 3000 },
@@ -448,6 +458,7 @@ Use `selectTab` to select a tab by index:
 ```json
 {
   "name": "navigate_to_profile_tab",
+  "description": "プロフィールタブを選択してプロフィール画面が表示されることを確認",
   "steps": [
     { "action": "selectTab", "id": "mainTabView", "index": 2 },
     { "action": "waitFor", "id": "profile_header", "timeout": 3000 },
@@ -472,6 +483,7 @@ Use `selectTab` to select a tab by index:
   "platform": "ios-uikit",
   "cases": [{
     "name": "select_second_tab",
+    "description": "2番目のタブを選択する",
     "steps": [
       { "action": "selectTab", "index": 1 }
     ]
@@ -486,6 +498,7 @@ Use `selectTab` to select a tab by index:
   "platform": "ios-swiftui",
   "cases": [{
     "name": "select_second_tab",
+    "description": "2番目のタブを選択する",
     "steps": [
       { "action": "selectTab", "id": "mainTabView", "index": 1 }
     ]
@@ -503,6 +516,7 @@ Use `selectOption` to select from dropdown elements:
 ```json
 {
   "name": "select_country",
+  "description": "国選択ドロップダウンからJapanを選択できることを確認",
   "steps": [
     { "action": "selectOption", "id": "country_select", "index": 0 },
     { "assert": "text", "id": "country_select", "equals": "Japan" }

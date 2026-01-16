@@ -91,7 +91,10 @@ jsonui-test g d screen login initial_display
 
 ## 2. Linking Descriptions to Test Files
 
-After creating description files, add `descriptionFile` to each test case:
+After creating description files, add **both `description` and `descriptionFile`** to each test case:
+
+- `description`: Short summary displayed in HTML sidebar (for quick navigation)
+- `descriptionFile`: Path to detailed documentation file (for full test procedure, preconditions, expected results)
 
 ```json
 {
@@ -103,6 +106,7 @@ After creating description files, add `descriptionFile` to each test case:
   "cases": [
     {
       "name": "initial_display",
+      "description": "初期表示時にログインフォームが正しく表示されることを確認",
       "descriptionFile": "descriptions/initial_display.json",
       "steps": [
         { "assert": "visible", "id": "email_input" }
@@ -110,6 +114,7 @@ After creating description files, add `descriptionFile` to each test case:
     },
     {
       "name": "login_validation",
+      "description": "不正な入力時にバリデーションエラーが表示されることを確認",
       "descriptionFile": "descriptions/login_validation.json",
       "steps": [
         { "action": "input", "id": "email_input", "value": "invalid" }
@@ -236,13 +241,14 @@ vim tests/screens/login/descriptions/initial_display.json
 
 ### Step 4: Link descriptions to test file
 
-Add `descriptionFile` to each case in `login.test.json`:
+Add **both `description` and `descriptionFile`** to each case in `login.test.json`:
 
 ```json
 {
   "cases": [
     {
       "name": "initial_display",
+      "description": "初期表示時にログインフォームが正しく表示されることを確認",
       "descriptionFile": "descriptions/initial_display.json",
       "steps": [...]
     }
@@ -280,13 +286,14 @@ done
 
 ### Link all descriptions at once
 
-You can use this pattern to add `descriptionFile` to all cases:
+You can use this pattern to add **both `description` and `descriptionFile`** to all cases:
 
 ```json
 {
   "cases": [
     {
       "name": "case_name",
+      "description": "テストケースの概要（HTMLサイドバーに表示される）",
       "descriptionFile": "descriptions/case_name.json",
       "steps": [...]
     }
@@ -331,3 +338,4 @@ jsonui-test v tests/
 4. **Generate docs regularly** - Include in CI/CD pipeline
 5. **Review generated HTML** - Ensure documentation is readable
 6. **Version control descriptions** - Commit alongside test files
+7. **Always set both `description` and `descriptionFile`** - `description` is displayed in HTML sidebar for quick navigation, `descriptionFile` contains detailed documentation
