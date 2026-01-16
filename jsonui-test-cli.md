@@ -18,16 +18,66 @@ You do NOT write test content manually - use the `jsonui-test-implement` agent f
 
 ## CLI Installation
 
+### Requirements
+
+- Python 3.10 or higher
+
 ### Check if installed
 
 ```bash
 which jsonui-test
 ```
 
-### Install if not found
+### Quick Install (Recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/anthropics/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash
+```
+
+### Install Specific Version
+
+```bash
+# Install from a specific tag
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash -s -- -v v1.0.0
+
+# Install from a specific branch
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash -s -- -v feature-branch
+```
+
+### Install with Development Dependencies
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash -s -- --dev
+```
+
+### Manual Install (from repository)
+
+```bash
+cd /path/to/jsonui-test-runner/test_tools
+pip install -e .
+```
+
+### Python Version Setup (if Python 3.10+ not available)
+
+Using mise (recommended):
+
+```bash
+# Install mise (if not installed)
+curl https://mise.run | sh
+
+# Install and use Python 3.11
+mise install python@3.11
+mise use python@3.11
+
+# Verify
+python --version
+```
+
+Or using pyenv:
+
+```bash
+pyenv install 3.11.0
+pyenv local 3.11.0
 ```
 
 ## Commands Overview
