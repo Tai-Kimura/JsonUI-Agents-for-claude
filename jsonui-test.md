@@ -283,6 +283,65 @@ Run steps before/after each test case:
 }
 ```
 
+## External Description Files
+
+For detailed test case documentation, you can reference external files instead of inline descriptions:
+
+```json
+{
+  "cases": [
+    {
+      "name": "login_validation",
+      "descriptionFile": "descriptions/login_validation.md",
+      "steps": [...]
+    }
+  ]
+}
+```
+
+### Benefits
+
+- **Separation of concerns**: Keep test JSON clean and focused on test logic
+- **Rich documentation**: Use Markdown for detailed explanations, screenshots, diagrams
+- **Documentation generation**: `jsonui-test generate` includes the full content from external files
+- **Easier maintenance**: Update descriptions without modifying test files
+
+### File Structure
+
+```
+tests/
+├── login.test.json
+└── descriptions/
+    ├── login_validation.md
+    └── login_error_handling.md
+```
+
+### Description File Example (descriptions/login_validation.md)
+
+```markdown
+## ログインバリデーションテスト
+
+このテストでは、ログインフォームの入力バリデーションを検証します。
+
+### 検証項目
+- メールアドレス形式のチェック
+- パスワード最小文字数のチェック
+- 空欄時のエラーメッセージ表示
+
+### 期待される動作
+1. メールアドレスが不正な場合、「正しいメールアドレスを入力してください」と表示
+2. パスワードが8文字未満の場合、「パスワードは8文字以上で入力してください」と表示
+```
+
+### Validation
+
+When `descriptionFile` is specified, the validator will warn if the file doesn't exist:
+
+```
+⚠ tests/login.test.json has warnings:
+  Warning: Description file not found: descriptions/missing_file.md
+```
+
 ## Best Practices
 
 1. **Test one behavior per case** - Keep test cases focused
@@ -291,6 +350,7 @@ Run steps before/after each test case:
 4. **Wait for async operations** - Use `waitFor` for dynamic content
 5. **Handle animations** - Add small waits if needed
 6. **Screenshot on important states** - Document visual states
+7. **Use descriptionFile for complex tests** - Keep detailed documentation in separate files
 
 ## Common Patterns
 
