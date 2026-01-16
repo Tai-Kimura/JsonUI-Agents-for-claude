@@ -68,11 +68,14 @@ Tests user flows across multiple screens.
 
 ## Available Actions & Assertions
 
-**For the complete and up-to-date list of actions and assertions, always check schema.py:**
+**For the complete and up-to-date list of actions and assertions, always check schema.py in the jsonui-test-runner repository:**
 
 ```bash
-cat ~/resource/jsonui-test-runner/test_tools/jsonui_test_cli/schema.py
+# Find the schema.py file in the project
+find . -path "*/jsonui-test-runner/test_tools/jsonui_test_cli/schema.py" -o -path "*/test_tools/jsonui_test_cli/schema.py" 2>/dev/null | head -1 | xargs cat
 ```
+
+Or view directly on GitHub: https://github.com/anthropics/jsonui-test-runner/blob/main/test_tools/jsonui_test_cli/schema.py
 
 This is the authoritative source for:
 - All supported actions and their required/optional parameters
@@ -86,6 +89,7 @@ This is the authoritative source for:
 | `tap` | `id` | `text`, `timeout` |
 | `input` | `id`, `value` | `timeout` |
 | `tapItem` | `id`, `index` | `timeout` |
+| `selectTab` | `index` | `id`, `timeout` |
 | `selectOption` | `id` | `value`, `label`, `index`, `timeout` |
 | `waitFor` | `id` | `timeout` |
 | `waitForAny` | `ids` | `timeout` |
@@ -215,10 +219,21 @@ Instead, create UI-only tests that don't depend on specific ViewModel state.
 
 Use `platform` to target specific platforms:
 
+### Supported Platform Values
+
+| Platform | Description |
+|----------|-------------|
+| `ios` | Generic iOS (auto-detects SwiftUI/UIKit, uses fallback) |
+| `ios-swiftui` | iOS with SwiftUI (uses accessibilityIdentifier pattern for tabs) |
+| `ios-uikit` | iOS with UIKit (uses UITabBarController directly) |
+| `android` | Android (Compose with testTag) |
+| `web` | Web (React with HTML id attribute) |
+| `all` | All platforms |
+
 ```json
 {
   "type": "screen",
-  "platform": "ios",  // or ["ios", "android"], or "all"
+  "platform": "ios-swiftui",  // or "ios-uikit", ["ios", "android"], or "all"
   ...
 }
 ```
@@ -366,6 +381,57 @@ When the app shows a native alert dialog (confirm, permission request, etc.), us
 ```
 
 The `button` parameter specifies the button text to tap (e.g., "OK", "Cancel", "Delete", "はい", "キャンセル").
+
+### Selecting Tabs in TabView/TabBar
+Use `selectTab` to select a tab by index:
+
+```json
+{
+  "name": "navigate_to_profile_tab",
+  "steps": [
+    { "action": "selectTab", "id": "mainTabView", "index": 2 },
+    { "action": "waitFor", "id": "profile_header", "timeout": 3000 },
+    { "assert": "visible", "id": "profile_header" }
+  ]
+}
+```
+
+**Platform-specific behavior:**
+
+| Platform | How it works |
+|----------|-------------|
+| `ios-swiftui` | Tries `{id}_tab_{index}` pattern first, falls back to `tabBars.buttons` |
+| `ios-uikit` | Uses `UITabBarController.tabBars.buttons` directly (`id` is optional) |
+| `android` | Uses `testTag("{id}_tab_{index}")` on NavigationBarItem |
+| `web` | Uses HTML `id="{id}_tab_{index}"` on tab buttons |
+
+**UIKit example (id optional):**
+```json
+{
+  "type": "screen",
+  "platform": "ios-uikit",
+  "cases": [{
+    "name": "select_second_tab",
+    "steps": [
+      { "action": "selectTab", "index": 1 }
+    ]
+  }]
+}
+```
+
+**SwiftUI/Android/Web example (id required):**
+```json
+{
+  "type": "screen",
+  "platform": "ios-swiftui",
+  "cases": [{
+    "name": "select_second_tab",
+    "steps": [
+      { "action": "selectTab", "id": "mainTabView", "index": 1 }
+    ]
+  }]
+}
+```
 
 ### Selecting Dropdown/Picker Options
 Use `selectOption` to select from dropdown elements:
