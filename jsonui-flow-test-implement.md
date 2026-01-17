@@ -86,6 +86,86 @@ You can also include inline steps for flow-specific actions that don't belong to
 }
 ```
 
+### Block Steps (For Grouped Inline Actions)
+
+When you have multiple related inline steps that form a logical unit, use a **block step**. Block steps group inline actions together with a description, similar to screen test cases:
+
+```json
+{
+  "type": "flow",
+  "metadata": {
+    "name": "login_with_error_handling_flow",
+    "description": "Login flow with error handling"
+  },
+  "steps": [
+    { "file": "screens/login", "case": "invalid_login" },
+    {
+      "block": "error_recovery",
+      "description": "Handle login error and retry",
+      "steps": [
+        { "assert": "visible", "id": "error_message" },
+        { "action": "tap", "id": "clear_button" },
+        { "action": "input", "id": "email", "value": "correct@email.com" },
+        { "action": "input", "id": "password", "value": "correct_password" },
+        { "action": "tap", "id": "login_button" }
+      ]
+    },
+    { "action": "waitFor", "id": "home_screen", "timeout": 5000 },
+    { "file": "screens/home", "case": "verify_initial_state" }
+  ]
+}
+```
+
+#### Block Step Structure
+
+| Key | Required | Description |
+|-----|----------|-------------|
+| `block` | Yes | Block name (identifier) |
+| `description` | No | Inline description text |
+| `descriptionFile` | No | Path to external description JSON file |
+| `steps` | Yes | Array of action/assert steps |
+
+#### Block Step Restrictions
+
+- Block steps can only contain action/assert steps
+- File references are NOT allowed inside block steps
+- Nested blocks are NOT allowed
+- Block steps are only allowed in flow tests (not screen tests)
+
+#### When to Use Block Steps
+
+Use block steps when:
+- You have a logical group of inline actions that belong together
+- You want to document the purpose of a set of actions
+- The actions don't belong to any screen test but form a cohesive unit
+- You want the grouped actions to appear in the HTML documentation sidebar
+
+**Good use case - Error recovery:**
+```json
+{
+  "block": "network_error_recovery",
+  "description": "Recover from network timeout",
+  "steps": [
+    { "action": "waitFor", "id": "retry_button", "timeout": 10000 },
+    { "action": "tap", "id": "retry_button" },
+    { "assert": "visible", "id": "success_indicator" }
+  ]
+}
+```
+
+**Good use case - Form filling not covered by screen tests:**
+```json
+{
+  "block": "fill_special_form",
+  "description": "Fill form with edge case data",
+  "steps": [
+    { "action": "input", "id": "name", "value": "Test User 日本語" },
+    { "action": "input", "id": "phone", "value": "+81-90-1234-5678" },
+    { "action": "tap", "id": "submit_button" }
+  ]
+}
+```
+
 ## File Reference Resolution
 
 File references are resolved relative to the flow test file location:
