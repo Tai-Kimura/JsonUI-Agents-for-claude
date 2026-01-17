@@ -122,8 +122,54 @@ When you have multiple related inline steps that form a logical unit, use a **bl
 |-----|----------|-------------|
 | `block` | Yes | Block name (identifier) |
 | `description` | No | Inline description text |
-| `descriptionFile` | No | Path to external description JSON file |
+| `descriptionFile` | No | Path to external description JSON file (relative to flow test) |
 | `steps` | Yes | Array of action/assert steps |
+
+#### Block descriptionFile
+
+For detailed block descriptions, use external JSON files (same format as screen test case descriptions):
+
+**Directory Structure:**
+```
+tests/flows/payment_flow/
+├── payment_flow.test.json
+└── descriptions/
+    ├── fill_card_info.desc.json
+    └── verify_payment.desc.json
+```
+
+**In payment_flow.test.json:**
+```json
+{
+  "block": "fill_card_info",
+  "descriptionFile": "descriptions/fill_card_info.desc.json",
+  "steps": [
+    { "action": "input", "id": "card_number", "value": "4111111111111111" },
+    { "action": "input", "id": "cvc", "value": "123" },
+    { "action": "tap", "id": "submit_btn" }
+  ]
+}
+```
+
+**descriptions/fill_card_info.desc.json:**
+```json
+{
+  "summary": "Fill credit card information for payment",
+  "preconditions": [
+    "Payment form is displayed",
+    "User is authenticated"
+  ],
+  "test_procedure": [
+    "Enter valid card number",
+    "Enter CVC code",
+    "Submit the form"
+  ],
+  "expected_results": [
+    "Card information is validated",
+    "Payment processing starts"
+  ]
+}
+```
 
 #### Block Step Restrictions
 
@@ -168,8 +214,9 @@ Use block steps when:
 
 ## File Reference Resolution
 
-File references are resolved relative to the flow test file location. The loader automatically looks in the sibling `screens/` directory:
+File references are resolved relative to the flow test file location. The loader automatically looks in the `screens/` directory.
 
+### Flat Structure
 ```
 tests/
 ├── flows/
@@ -180,19 +227,38 @@ tests/
     └── confirmation.test.json       <- Screen test
 ```
 
-In `registration_flow.test.json`:
-```json
-{ "file": "landing", "case": "tap_register" }
+### Subdirectory Structure (Recommended)
+
+For flows with description files, use the same subdirectory structure as screen tests:
+
+```
+tests/
+├── flows/
+│   └── registration_flow/
+│       ├── registration_flow.test.json    <- Flow test
+│       └── descriptions/
+│           ├── fill_card_info.desc.json   <- Block description
+│           └── verify_result.desc.json    <- Block description
+└── screens/
+    └── login/
+        ├── login.test.json                <- Screen test
+        └── descriptions/
+            └── valid_login.desc.json      <- Case description
 ```
 
-**IMPORTANT**: Just use the filename without path prefix. The loader automatically searches in the sibling `screens/` directory.
+In `registration_flow.test.json`:
+```json
+{ "file": "login", "case": "valid_login" }
+```
+
+**IMPORTANT**: Just use the filename without path prefix. The loader automatically searches in both `screens/` and `flows/` directories.
 
 The loader tries these locations in order:
-1. `../screens/{file}.test.json` (recommended)
-2. `../screens/{file}.json`
-3. `{file}.test.json` (same directory fallback)
-4. `{file}.json`
-5. `{file}` (exact match)
+1. `screens/{file}/{file}.test.json` (subdirectory structure)
+2. `screens/{file}.test.json` (flat structure)
+3. `flows/{file}/{file}.test.json` (flow reference)
+4. `flows/{file}.test.json` (flat flow)
+5. Same directory fallbacks
 
 ## Available Actions & Assertions
 
@@ -569,6 +635,7 @@ Use **Title Case** for `metadata.name` - this is displayed in documentation and 
 - Place screen tests in `tests/screens/` directory (sibling to flows)
 - Use descriptive names that indicate the user journey
 
+#### Flat Structure (Simple flows without description files)
 ```
 tests/
 ├── flows/
@@ -579,4 +646,32 @@ tests/
     ├── login.test.json              <- Screen tests
     ├── registration.test.json
     └── checkout.test.json
+```
+
+#### Subdirectory Structure (Flows with description files - Recommended)
+```
+tests/
+├── flows/
+│   ├── login_flow/
+│   │   ├── login_flow.test.json
+│   │   └── descriptions/
+│   │       └── error_recovery.desc.json
+│   ├── registration_flow/
+│   │   ├── registration_flow.test.json
+│   │   └── descriptions/
+│   │       └── fill_profile.desc.json
+│   └── checkout_flow/
+│       ├── checkout_flow.test.json
+│       └── descriptions/
+│           ├── fill_card_info.desc.json
+│           └── verify_order.desc.json
+└── screens/
+    ├── login/
+    │   ├── login.test.json
+    │   └── descriptions/
+    │       └── valid_login.desc.json
+    └── checkout/
+        ├── checkout.test.json
+        └── descriptions/
+            └── complete_purchase.desc.json
 ```
