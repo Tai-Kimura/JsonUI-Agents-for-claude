@@ -33,13 +33,13 @@ Flow tests should **reuse screen tests** rather than duplicate test logic:
 {
   "type": "flow",
   "metadata": {
-    "name": "user_registration_flow",
+    "name": "User Registration Flow",
     "description": "Complete user registration flow from landing to confirmation"
   },
   "steps": [
-    { "file": "screens/landing", "case": "tap_register_button" },
-    { "file": "screens/registration", "cases": ["fill_email", "fill_password", "submit_form"] },
-    { "file": "screens/confirmation", "case": "verify_success_message" }
+    { "file": "landing", "case": "tap_register_button" },
+    { "file": "registration", "cases": ["fill_email", "fill_password", "submit_form"] },
+    { "file": "confirmation", "case": "verify_success_message" }
   ]
 }
 ```
@@ -49,19 +49,19 @@ Flow tests should **reuse screen tests** rather than duplicate test logic:
 #### Single Case Reference
 Execute one specific test case from a screen test:
 ```json
-{ "file": "screens/login", "case": "valid_login" }
+{ "file": "login", "case": "valid_login" }
 ```
 
 #### Multiple Cases Reference
 Execute multiple specific test cases in order:
 ```json
-{ "file": "screens/login", "cases": ["initial_display", "fill_email", "fill_password", "valid_login"] }
+{ "file": "login", "cases": ["initial_display", "fill_email", "fill_password", "valid_login"] }
 ```
 
 #### All Cases from a Screen Test
 Execute all test cases defined in the screen test:
 ```json
-{ "file": "screens/login" }
+{ "file": "login" }
 ```
 When no `case` or `cases` is specified, all cases from the referenced screen test are executed in the order they are defined.
 
@@ -73,15 +73,15 @@ You can also include inline steps for flow-specific actions that don't belong to
 {
   "type": "flow",
   "metadata": {
-    "name": "login_to_checkout_flow",
+    "name": "Login to Checkout Flow",
     "description": "Complete flow from login to checkout"
   },
   "steps": [
-    { "file": "screens/login", "case": "valid_login" },
+    { "file": "login", "case": "valid_login" },
     { "action": "waitFor", "id": "home_screen", "timeout": 5000 },
-    { "file": "screens/home", "case": "navigate_to_cart" },
+    { "file": "home", "case": "navigate_to_cart" },
     { "action": "wait", "ms": 1000 },
-    { "file": "screens/checkout", "case": "complete_purchase" }
+    { "file": "checkout", "case": "complete_purchase" }
   ]
 }
 ```
@@ -94,11 +94,11 @@ When you have multiple related inline steps that form a logical unit, use a **bl
 {
   "type": "flow",
   "metadata": {
-    "name": "login_with_error_handling_flow",
+    "name": "Login with Error Handling Flow",
     "description": "Login flow with error handling"
   },
   "steps": [
-    { "file": "screens/login", "case": "invalid_login" },
+    { "file": "login", "case": "invalid_login" },
     {
       "block": "error_recovery",
       "description": "Handle login error and retry",
@@ -111,7 +111,7 @@ When you have multiple related inline steps that form a logical unit, use a **bl
       ]
     },
     { "action": "waitFor", "id": "home_screen", "timeout": 5000 },
-    { "file": "screens/home", "case": "verify_initial_state" }
+    { "file": "home", "case": "verify_initial_state" }
   ]
 }
 ```
@@ -168,7 +168,7 @@ Use block steps when:
 
 ## File Reference Resolution
 
-File references are resolved relative to the flow test file location:
+File references are resolved relative to the flow test file location. The loader automatically looks in the sibling `screens/` directory:
 
 ```
 tests/
@@ -182,18 +182,17 @@ tests/
 
 In `registration_flow.test.json`:
 ```json
-{ "file": "../screens/landing", "case": "tap_register" }
-```
-
-Or if tests are in the same directory:
-```json
 { "file": "landing", "case": "tap_register" }
 ```
 
-The loader automatically tries these extensions:
-1. `{file}.test.json`
-2. `{file}.json`
-3. `{file}` (exact match)
+**IMPORTANT**: Just use the filename without path prefix. The loader automatically searches in the sibling `screens/` directory.
+
+The loader tries these locations in order:
+1. `../screens/{file}.test.json` (recommended)
+2. `../screens/{file}.json`
+3. `{file}.test.json` (same directory fallback)
+4. `{file}.json`
+5. `{file}` (exact match)
 
 ## Available Actions & Assertions
 
@@ -289,11 +288,11 @@ Run steps before/after the entire flow:
   "metadata": { "name": "checkout_flow" },
   "setup": [
     { "action": "wait", "ms": 1000 },
-    { "file": "screens/login", "case": "valid_login" }
+    { "file": "login", "case": "valid_login" }
   ],
   "steps": [
-    { "file": "screens/cart", "case": "add_item" },
-    { "file": "screens/checkout", "case": "complete_purchase" }
+    { "file": "cart", "case": "add_item" },
+    { "file": "checkout", "case": "complete_purchase" }
   ],
   "teardown": [
     { "action": "screenshot", "name": "flow_complete" }
@@ -310,9 +309,9 @@ Mark important points in the flow for debugging:
   "type": "flow",
   "metadata": { "name": "registration_flow" },
   "steps": [
-    { "file": "screens/landing", "case": "tap_register" },
-    { "file": "screens/registration", "case": "fill_form" },
-    { "file": "screens/confirmation", "case": "verify_success" }
+    { "file": "landing", "case": "tap_register" },
+    { "file": "registration", "case": "fill_form" },
+    { "file": "confirmation", "case": "verify_success" }
   ],
   "checkpoints": [
     { "name": "after_registration", "afterStep": 1, "screenshot": true },
@@ -329,8 +328,8 @@ Mark important points in the flow for debugging:
 ```json
 {
   "steps": [
-    { "file": "screens/login", "case": "valid_login" },
-    { "file": "screens/home", "case": "navigate_to_profile" }
+    { "file": "login", "case": "valid_login" },
+    { "file": "home", "case": "navigate_to_profile" }
   ]
 }
 ```
@@ -357,10 +356,10 @@ Inline steps are appropriate for:
 ```json
 {
   "steps": [
-    { "file": "screens/login", "case": "valid_login" },
+    { "file": "login", "case": "valid_login" },
     { "action": "waitFor", "id": "home_screen", "timeout": 5000 },
     { "assert": "text", "id": "welcome_message", "contains": "test@example.com" },
-    { "file": "screens/home", "case": "verify_initial_state" }
+    { "file": "home", "case": "verify_initial_state" }
   ]
 }
 ```
@@ -380,9 +379,9 @@ Don't combine unrelated journeys in a single flow test.
 ```json
 {
   "steps": [
-    { "file": "screens/cart", "case": "add_items" },
+    { "file": "cart", "case": "add_items" },
     { "action": "screenshot", "name": "cart_before_checkout" },
-    { "file": "screens/checkout", "case": "complete_purchase" },
+    { "file": "checkout", "case": "complete_purchase" },
     { "action": "screenshot", "name": "purchase_complete" }
   ]
 }
@@ -398,9 +397,9 @@ Add appropriate waits for:
 ```json
 {
   "steps": [
-    { "file": "screens/login", "case": "valid_login" },
+    { "file": "login", "case": "valid_login" },
     { "action": "waitFor", "id": "home_dashboard", "timeout": 10000 },
-    { "file": "screens/home", "case": "verify_loaded" }
+    { "file": "home", "case": "verify_loaded" }
   ]
 }
 ```
@@ -416,10 +415,10 @@ Add appropriate waits for:
     "description": "User logs in and reaches home screen"
   },
   "steps": [
-    { "file": "screens/login", "case": "initial_display" },
-    { "file": "screens/login", "case": "valid_login" },
+    { "file": "login", "case": "initial_display" },
+    { "file": "login", "case": "valid_login" },
     { "action": "waitFor", "id": "home_screen", "timeout": 5000 },
-    { "file": "screens/home", "case": "verify_initial_state" }
+    { "file": "home", "case": "verify_initial_state" }
   ]
 }
 ```
@@ -433,12 +432,12 @@ Add appropriate waits for:
     "description": "New user registration from start to finish"
   },
   "steps": [
-    { "file": "screens/landing", "case": "tap_register" },
+    { "file": "landing", "case": "tap_register" },
     { "action": "waitFor", "id": "registration_form", "timeout": 3000 },
-    { "file": "screens/registration", "case": "fill_valid_form" },
-    { "file": "screens/registration", "case": "submit_form" },
+    { "file": "registration", "case": "fill_valid_form" },
+    { "file": "registration", "case": "submit_form" },
     { "action": "waitFor", "id": "confirmation_screen", "timeout": 5000 },
-    { "file": "screens/confirmation", "case": "verify_success" }
+    { "file": "confirmation", "case": "verify_success" }
   ]
 }
 ```
@@ -452,19 +451,19 @@ Add appropriate waits for:
     "description": "Add items to cart and complete purchase"
   },
   "setup": [
-    { "file": "screens/login", "case": "valid_login" },
+    { "file": "login", "case": "valid_login" },
     { "action": "waitFor", "id": "home_screen", "timeout": 5000 }
   ],
   "steps": [
-    { "file": "screens/products", "case": "add_item_to_cart" },
+    { "file": "products", "case": "add_item_to_cart" },
     { "action": "screenshot", "name": "item_added" },
-    { "file": "screens/cart", "case": "view_cart" },
-    { "file": "screens/cart", "case": "proceed_to_checkout" },
+    { "file": "cart", "case": "view_cart" },
+    { "file": "cart", "case": "proceed_to_checkout" },
     { "action": "waitFor", "id": "checkout_form", "timeout": 3000 },
-    { "file": "screens/checkout", "case": "fill_shipping_info" },
-    { "file": "screens/checkout", "case": "complete_purchase" },
+    { "file": "checkout", "case": "fill_shipping_info" },
+    { "file": "checkout", "case": "complete_purchase" },
     { "action": "waitFor", "id": "order_confirmation", "timeout": 5000 },
-    { "file": "screens/confirmation", "case": "verify_order_details" }
+    { "file": "confirmation", "case": "verify_order_details" }
   ],
   "checkpoints": [
     { "name": "cart_state", "afterStep": 2, "screenshot": true },
@@ -482,11 +481,11 @@ Add appropriate waits for:
     "description": "Handle login errors and recover"
   },
   "steps": [
-    { "file": "screens/login", "case": "invalid_credentials" },
+    { "file": "login", "case": "invalid_credentials" },
     { "assert": "visible", "id": "error_message" },
     { "action": "screenshot", "name": "login_error_shown" },
-    { "file": "screens/login", "case": "clear_and_retry" },
-    { "file": "screens/login", "case": "valid_login" },
+    { "file": "login", "case": "clear_and_retry" },
+    { "file": "login", "case": "valid_login" },
     { "action": "waitFor", "id": "home_screen", "timeout": 5000 },
     { "assert": "notVisible", "id": "error_message" }
   ]
@@ -542,20 +541,42 @@ If validation fails:
 
 **IMPORTANT**: Never consider a flow test file complete until it passes validation.
 
-## File Naming Convention
+## Naming Conventions
 
-- Use snake_case: `login_flow.test.json`, `checkout_flow.test.json`
-- Place in `tests/flows/` directory to separate from screen tests
+### metadata.name (Human-Readable)
+
+Use **Title Case** for `metadata.name` - this is displayed in documentation and reports:
+
+```json
+{
+  "metadata": {
+    "name": "Login Flow",              // Good: Title Case, human-readable
+    "description": "User login flow"
+  }
+}
+```
+
+**Examples:**
+- `"Login Flow"` (not `login_flow`)
+- `"User Registration"` (not `user_registration_flow`)
+- `"Checkout Process"` (not `checkout_flow_test`)
+- `"Profile Edit Flow"` (not `profile_edit_flow`)
+
+### File Names (snake_case)
+
+- Use snake_case with `.test.json` extension: `login_flow.test.json`, `checkout_flow.test.json`
+- Place flow tests in `tests/flows/` directory
+- Place screen tests in `tests/screens/` directory (sibling to flows)
 - Use descriptive names that indicate the user journey
 
 ```
 tests/
 ├── flows/
-│   ├── login_flow.test.json
+│   ├── login_flow.test.json         <- Flow tests
 │   ├── registration_flow.test.json
 │   └── checkout_flow.test.json
 └── screens/
-    ├── login.test.json
+    ├── login.test.json              <- Screen tests
     ├── registration.test.json
     └── checkout.test.json
 ```

@@ -28,7 +28,7 @@ Screen tests are 1:1 with layouts - each layout JSON should have a corresponding
     "layout": "layouts/login.json"
   },
   "metadata": {
-    "name": "login_screen_test",
+    "name": "Login Screen",
     "description": "Tests for login screen functionality"
   },
   "cases": [
@@ -119,7 +119,28 @@ When layouts use `include` with `id`, child element IDs are prefixed:
 { "action": "tap", "id": "main_form_submit_btn" }
 ```
 
-## File Naming Convention
+## Naming Conventions
+
+### metadata.name (Human-Readable)
+
+Use **Title Case** for `metadata.name` - this is displayed in documentation and reports:
+
+```json
+{
+  "metadata": {
+    "name": "Login Screen",           // Good: Title Case, human-readable
+    "description": "Tests for login screen"
+  }
+}
+```
+
+**Examples:**
+- `"Login Screen"` (not `login_screen_test`)
+- `"User Profile"` (not `user_profile_screen`)
+- `"Payment Settings"` (not `payment_settings_test`)
+- `"Bank Registration"` (not `bank_registration_screen_test`)
+
+### File Names (snake_case)
 
 - Use snake_case: `login_screen.test.json`, `profile_screen.test.json`
 - Place in `tests/` directory or alongside layouts
