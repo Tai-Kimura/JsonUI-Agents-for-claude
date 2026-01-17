@@ -77,12 +77,15 @@ Use this for:
 
 ### Grouping (group)
 
-Screens with the same `group` value are displayed together in a **Mermaid subgraph**.
+Screens with the same `group` value are displayed together in a **separate tab** in the generated HTML.
+
+**The `group` field can be a string OR an array of strings.** When using an array, the screen will appear in **multiple tabs**.
 
 Use this for:
 - Related screens (e.g., all settings screens)
 - Feature modules (e.g., checkout flow screens)
 - Logical groupings (e.g., user management)
+- Screens that belong to multiple features (use array)
 
 ---
 
@@ -104,7 +107,7 @@ Edit the screen test file to add `entry_screen: true` to the metadata:
 }
 ```
 
-### Adding group
+### Adding group (Single Group)
 
 Edit the screen test file to add `group` to the metadata:
 
@@ -119,6 +122,24 @@ Edit the screen test file to add `group` to the metadata:
   "cases": [...]
 }
 ```
+
+### Adding group (Multiple Groups - Array)
+
+To make a screen appear in multiple tabs, use an array:
+
+```json
+{
+  "type": "screen",
+  "metadata": {
+    "name": "Park Detail",
+    "description": "Parking lot detail screen",
+    "group": ["Parking", "Home", "MyList"]
+  },
+  "cases": [...]
+}
+```
+
+This screen will appear in the "Parking", "Home", and "MyList" tabs.
 
 ### Combined Example
 
@@ -137,50 +158,39 @@ Edit the screen test file to add `group` to the metadata:
 
 ---
 
-## 4. Generated Mermaid Code Structure
+## 4. Generated Output
 
-### Without Metadata
+### Tabbed HTML Interface
+
+The generated HTML displays **separate tabs for each group**. Each tab contains only the screens belonging to that group with their transitions.
+
+Features:
+- Click tabs to switch between groups
+- Each group has its own LR (left-to-right) flowchart
+- Entry screens appear on the left side of relevant groups
+- Screens with array groups appear in multiple tabs
+
+### Mermaid Code Structure (per group)
+
+Each tab contains a flowchart like this:
 
 ```mermaid
 flowchart LR
 
-    %% Node definitions
-    home["Home"]
+    %% Entry screens (if connected to this group)
+    splash(["Splash"]):::entryNode
+
+    classDef entryNode fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
+
+    %% Group screens
     login["Login"]
-    splash["Splash"]
+    register["Register"]
+    sms_confirmation["SMS Confirmation"]
 
-    %% Transitions
-    login --> home
+    %% Transitions within this group
     splash --> login
-```
-
-### With entry_screen and group
-
-```mermaid
-flowchart LR
-
-    %% Entry screens (defined first for left positioning)
-    splash["Splash"]
-
-    subgraph Auth["Authentication"]
-        login["Login"]
-        register["Register"]
-    end
-
-    subgraph Facility["Facility Management"]
-        facility_images["Facility Images"]
-        park_detail["Park Detail"]
-    end
-
-    %% Other screens
-    home["Home"]
-    member_id["Member ID"]
-
-    %% Transitions
-    splash --> login
-    login --> home
-    home --> facility_images
-    ...
+    login --> sms_confirmation
+    sms_confirmation --> register
 ```
 
 ---
@@ -244,16 +254,15 @@ done
 
 ### HTML Viewer Features
 
-- **Zoom controls**: -, +, Reset, Fit buttons
-- **Drag to pan**: Click and drag to move around
-- **Mouse wheel zoom**: Ctrl/Cmd + scroll to zoom
+- **Tabbed interface**: Each group has its own tab
 - **Back to Index**: Link to return to documentation index
+- **Automatic rendering**: Diagrams render when tab is selected
 
 ### Node Styling
 
 - Nodes display the `metadata.name` from screen test files
-- Entry screens appear on the left
-- Grouped screens appear in labeled subgraphs
+- Entry screens appear on the left (LR layout)
+- Entry screens have green styling (rounded rectangle)
 - Edges show transitions between screens
 
 ---
@@ -275,8 +284,9 @@ done
 ### Group Not Showing
 
 1. Verify `group` is in metadata (not at root level)
-2. Check that multiple screens have the same group value
+2. Check that the screen is referenced in at least one flow
 3. Group names are case-sensitive
+4. Array syntax: `"group": ["Group1", "Group2"]`
 
 ### Diagram Too Complex
 
@@ -293,10 +303,10 @@ done
 | Field | Type | Description |
 |-------|------|-------------|
 | `name` | string | Display label for the node |
-| `entry_screen` | boolean | If true, positions node on left |
-| `group` | string | Group name for subgraph |
+| `entry_screen` | boolean | If true, positions node on left side of LR diagram |
+| `group` | string \| string[] | Group name(s) for tabs. Array allows screen in multiple tabs |
 
-### Example Complete Metadata
+### Example Complete Metadata (Single Group)
 
 ```json
 {
@@ -312,13 +322,30 @@ done
 }
 ```
 
+### Example Complete Metadata (Multiple Groups)
+
+```json
+{
+  "type": "screen",
+  "metadata": {
+    "name": "Park Detail",
+    "description": "Parking lot detail screen",
+    "platform": "ios",
+    "entry_screen": false,
+    "group": ["Parking", "Home", "Search"]
+  },
+  "cases": [...]
+}
+```
+
 ---
 
 ## 9. Tips
 
 1. **Start with entry points** - Mark splash/login screens first
 2. **Group by feature** - Use consistent group names across related screens
-3. **Keep groups small** - 3-6 screens per group is ideal
-4. **Use descriptive names** - metadata.name is shown in diagram
-5. **Regenerate after changes** - Always regenerate after editing metadata
-6. **Check generated HTML** - Open diagram.html in browser to verify layout
+3. **Use array groups for shared screens** - Screens like "Park Detail" that are accessed from multiple features can use `"group": ["Parking", "Home", "MyList"]`
+4. **Keep groups focused** - Each tab should show a coherent flow
+5. **Use descriptive names** - metadata.name is shown in diagram
+6. **Regenerate after changes** - Always regenerate after editing metadata
+7. **Check generated HTML** - Open diagram.html in browser to verify tabs
