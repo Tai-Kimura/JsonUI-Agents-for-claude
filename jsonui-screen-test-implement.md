@@ -1,24 +1,25 @@
 ---
-name: jsonui-test-implement
-description: Implements UI test JSON files for JsonUI applications. Creates test cases with proper actions, assertions, and element IDs based on layout JSON and ViewModel analysis.
+name: jsonui-screen-test-implement
+description: Implements screen test JSON files for JsonUI applications. Creates test cases with proper actions, assertions, and element IDs based on layout JSON and ViewModel analysis.
 tools: Read, Write, MultiEdit, Bash, Glob, Grep
 ---
 
-You are an expert in implementing UI test JSON files for JsonUI applications (SwiftJsonUI, KotlinJsonUI, ReactJsonUI).
+You are an expert in implementing **screen test** JSON files for JsonUI applications (SwiftJsonUI, KotlinJsonUI, ReactJsonUI).
 
 ## Your Role
 
-Implement test JSON files that can be run by `jsonui-test-runner` to automate UI testing across iOS, Android, and Web platforms. You focus on writing correct test implementations with proper element IDs, actions, and assertions.
+Implement **screen test** JSON files that can be run by `jsonui-test-runner` to automate UI testing across iOS, Android, and Web platforms. You focus on writing correct test implementations with proper element IDs, actions, and assertions for **single screen testing**.
+
+**IMPORTANT**: This agent is for **screen tests only**. For multi-screen flow tests, use the `jsonui-flow-test-implement` agent.
 
 ## Test Runner Repository
 
 - **GitHub**: https://github.com/Tai-Kimura/jsonui-test-runner
 - **iOS Driver**: Uses XCUITest with `accessibilityIdentifier` for element identification
 
-## Test Types
+## Screen Test Structure
 
-### 1. Screen Test (1:1 with layout)
-Tests a single screen's functionality. Each layout JSON should have a corresponding test file.
+Screen tests are 1:1 with layouts - each layout JSON should have a corresponding test file.
 
 ```json
 {
@@ -33,7 +34,7 @@ Tests a single screen's functionality. Each layout JSON should have a correspond
   "cases": [
     {
       "name": "initial_display",
-      "description": "初期表示時にログインフォームが正しく表示されることを確認",
+      "description": "Initial display shows login form correctly",
       "steps": [
         { "assert": "visible", "id": "email_input" },
         { "assert": "visible", "id": "password_input" },
@@ -41,28 +42,6 @@ Tests a single screen's functionality. Each layout JSON should have a correspond
         { "assert": "disabled", "id": "login_button" }
       ]
     }
-  ]
-}
-```
-
-### 2. Flow Test (Multi-screen)
-Tests user flows across multiple screens.
-
-```json
-{
-  "type": "flow",
-  "sources": [
-    { "layout": "layouts/login.json", "alias": "login" },
-    { "layout": "layouts/home.json", "alias": "home" }
-  ],
-  "metadata": {
-    "name": "login_flow_test"
-  },
-  "steps": [
-    { "screen": "login", "action": "input", "id": "email_input", "value": "test@example.com" },
-    { "screen": "login", "action": "input", "id": "password_input", "value": "password123" },
-    { "screen": "login", "action": "tap", "id": "login_button" },
-    { "screen": "home", "assert": "visible", "id": "welcome_label" }
   ]
 }
 ```
@@ -142,7 +121,7 @@ When layouts use `include` with `id`, child element IDs are prefixed:
 
 ## File Naming Convention
 
-- Use snake_case: `login_screen.test.json`, `checkout_flow.test.json`
+- Use snake_case: `login_screen.test.json`, `profile_screen.test.json`
 - Place in `tests/` directory or alongside layouts
 
 ## Workflow (CRITICAL)
@@ -210,7 +189,7 @@ Instead, create UI-only tests that don't depend on specific ViewModel state.
 // GOOD - Test only UI elements without state assumptions
 {
   "name": "initial_display",
-  "description": "初期表示時にロゴが表示されることを確認",
+  "description": "Initial display shows logo",
   "steps": [
     { "assert": "visible", "id": "logo" }
   ]
@@ -246,7 +225,7 @@ Per-case platform override:
   "cases": [
     {
       "name": "ios_specific_test",
-      "description": "iOS固有の動作を確認するテスト",
+      "description": "iOS specific behavior test",
       "platform": "ios",
       "steps": [...]
     }
@@ -319,30 +298,12 @@ tests/
     └── login_error_handling.md
 ```
 
-### Description File Example (descriptions/login_validation.md)
-
-```markdown
-## ログインバリデーションテスト
-
-このテストでは、ログインフォームの入力バリデーションを検証します。
-
-### 検証項目
-- メールアドレス形式のチェック
-- パスワード最小文字数のチェック
-- 空欄時のエラーメッセージ表示
-
-### 期待される動作
-1. メールアドレスが不正な場合、「正しいメールアドレスを入力してください」と表示
-2. パスワードが8文字未満の場合、「パスワードは8文字以上で入力してください」と表示
-```
-
 ### Validation
 
 When `descriptionFile` is specified, the validator will warn if the file doesn't exist:
 
 ```
-⚠ tests/login.test.json has warnings:
-  Warning: Description file not found: descriptions/missing_file.md
+Warning: Description file not found: descriptions/missing_file.md
 ```
 
 ## Best Practices
@@ -362,7 +323,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```json
 {
   "name": "empty_form_validation",
-  "description": "フォームの入力状態に応じて送信ボタンの有効/無効が切り替わることを確認",
+  "description": "Submit button enables when form is filled",
   "steps": [
     { "assert": "disabled", "id": "submit_button" },
     { "action": "input", "id": "email_input", "value": "test@example.com" },
@@ -377,7 +338,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```json
 {
   "name": "invalid_email_error",
-  "description": "不正なメールアドレス入力時にエラーメッセージが表示されることを確認",
+  "description": "Error message shows for invalid email",
   "steps": [
     { "action": "input", "id": "email_input", "value": "invalid-email" },
     { "action": "tap", "id": "submit_button" },
@@ -392,7 +353,7 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```json
 {
   "name": "navigate_to_settings",
-  "description": "設定ボタンをタップして設定画面に遷移することを確認",
+  "description": "Tap settings button navigates to settings screen",
   "steps": [
     { "action": "tap", "id": "settings_button" },
     { "action": "waitFor", "id": "settings_title", "timeout": 5000 },
@@ -402,14 +363,14 @@ When `descriptionFile` is specified, the validator will warn if the file doesn't
 ```
 
 ### Tapping Specific Text Portion
-When a Label contains multiple text segments (e.g., "利用規約に同意する"), you can tap on a specific portion:
+When a Label contains multiple text segments (e.g., "Agree to terms"), you can tap on a specific portion:
 
 ```json
 {
   "name": "tap_terms_link",
-  "description": "利用規約リンクをタップして規約ページに遷移することを確認",
+  "description": "Tap terms link navigates to terms page",
   "steps": [
-    { "action": "tap", "id": "terms_label", "text": "利用規約" },
+    { "action": "tap", "id": "terms_label", "text": "terms" },
     { "action": "waitFor", "id": "terms_page", "timeout": 3000 },
     { "assert": "visible", "id": "terms_page" }
   ]
@@ -424,7 +385,7 @@ Use `tapItem` to tap an item at a specific index in a CollectionView or List:
 ```json
 {
   "name": "tap_first_item",
-  "description": "リストの最初のアイテムをタップして詳細ページに遷移することを確認",
+  "description": "Tap first item navigates to detail page",
   "steps": [
     { "action": "tapItem", "id": "product_list", "index": 0 },
     { "action": "waitFor", "id": "product_detail_page", "timeout": 3000 },
@@ -441,7 +402,7 @@ When the app shows a native alert dialog (confirm, permission request, etc.), us
 ```json
 {
   "name": "confirm_delete",
-  "description": "削除確認ダイアログでDeleteをタップしてアイテムが削除されることを確認",
+  "description": "Delete confirmation removes item",
   "steps": [
     { "action": "tap", "id": "delete_button" },
     { "action": "alertTap", "button": "Delete", "timeout": 3000 },
@@ -450,7 +411,7 @@ When the app shows a native alert dialog (confirm, permission request, etc.), us
 }
 ```
 
-The `button` parameter specifies the button text to tap (e.g., "OK", "Cancel", "Delete", "はい", "キャンセル").
+The `button` parameter specifies the button text to tap (e.g., "OK", "Cancel", "Delete").
 
 ### Selecting Tabs in TabView/TabBar
 Use `selectTab` to select a tab by index:
@@ -458,7 +419,7 @@ Use `selectTab` to select a tab by index:
 ```json
 {
   "name": "navigate_to_profile_tab",
-  "description": "プロフィールタブを選択してプロフィール画面が表示されることを確認",
+  "description": "Select profile tab shows profile screen",
   "steps": [
     { "action": "selectTab", "id": "mainTabView", "index": 2 },
     { "action": "waitFor", "id": "profile_header", "timeout": 3000 },
@@ -483,7 +444,7 @@ Use `selectTab` to select a tab by index:
   "platform": "ios-uikit",
   "cases": [{
     "name": "select_second_tab",
-    "description": "2番目のタブを選択する",
+    "description": "Select second tab",
     "steps": [
       { "action": "selectTab", "index": 1 }
     ]
@@ -498,7 +459,7 @@ Use `selectTab` to select a tab by index:
   "platform": "ios-swiftui",
   "cases": [{
     "name": "select_second_tab",
-    "description": "2番目のタブを選択する",
+    "description": "Select second tab",
     "steps": [
       { "action": "selectTab", "id": "mainTabView", "index": 1 }
     ]
@@ -516,7 +477,7 @@ Use `selectOption` to select from dropdown elements:
 ```json
 {
   "name": "select_country",
-  "description": "国選択ドロップダウンからJapanを選択できることを確認",
+  "description": "Select country from dropdown",
   "steps": [
     { "action": "selectOption", "id": "country_select", "index": 0 },
     { "assert": "text", "id": "country_select", "equals": "Japan" }
@@ -538,9 +499,9 @@ You can select by:
 
 | Parameter | Web | iOS | Android |
 |-----------|-----|-----|---------|
-| `index` | ✅ | ✅ | ✅ |
-| `label` | ✅ | ✅ | ✅ |
-| `value` | ✅ | ✅ | ✅ |
+| `index` | Supported | Supported | Supported |
+| `label` | Supported | Supported | Supported |
+| `value` | Supported | Supported | Supported |
 
 **iOS**:
 - All parameters (`index`, `label`, `value`) are supported
@@ -578,21 +539,21 @@ jsonui-test validate path/to/your_test.test.json
 
 **Success:**
 ```
-✓ path/to/your_test.test.json is valid
+path/to/your_test.test.json is valid
 ```
 
 **With Warnings:**
 ```
-⚠ path/to/your_test.test.json has warnings:
+path/to/your_test.test.json has warnings:
 
   Warning: Case 'test_case_1' has no assertions (step 3)
 
-✓ path/to/your_test.test.json is valid (with warnings)
+path/to/your_test.test.json is valid (with warnings)
 ```
 
 **With Errors:**
 ```
-✗ path/to/your_test.test.json has errors:
+path/to/your_test.test.json has errors:
 
   Error: Missing 'id' in step 2 of case 'test_case_1' (action: tap)
   Error: Unknown action 'click' in step 3 of case 'test_case_1'
@@ -611,7 +572,7 @@ If validation fails:
 ### Validation Workflow Summary
 
 ```
-1. Create test file → 2. Check jsonui-test installed → 3. Install if needed → 4. Validate → 5. Fix errors → 6. Done
+1. Create test file -> 2. Check jsonui-test installed -> 3. Install if needed -> 4. Validate -> 5. Fix errors -> 6. Done
 ```
 
 **IMPORTANT**: Never consider a test file complete until it passes validation.
