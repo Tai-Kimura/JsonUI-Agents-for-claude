@@ -88,8 +88,19 @@ You can also include inline steps for flow-specific actions that don't belong to
 
 ### Block Steps (For Grouped Inline Actions)
 
-When you have multiple related inline steps that form a logical unit, use a **block step**. Block steps group inline actions together with a description, similar to screen test cases:
+When you have multiple related inline steps that form a logical unit, use a **block step**. Block steps group inline actions together with a description file, similar to screen test cases.
 
+**IMPORTANT**: Every block MUST have a `descriptionFile`. Always create the description file when creating a block.
+
+**Directory Structure:**
+```
+tests/flows/login_error_handling_flow/
+├── login_error_handling_flow.test.json
+└── descriptions/
+    └── error_recovery.desc.json
+```
+
+**login_error_handling_flow.test.json:**
 ```json
 {
   "type": "flow",
@@ -101,7 +112,7 @@ When you have multiple related inline steps that form a logical unit, use a **bl
     { "file": "login", "case": "invalid_login" },
     {
       "block": "error_recovery",
-      "description": "Handle login error and retry",
+      "descriptionFile": "descriptions/error_recovery.desc.json",
       "steps": [
         { "assert": "visible", "id": "error_message" },
         { "action": "tap", "id": "clear_button" },
@@ -116,18 +127,39 @@ When you have multiple related inline steps that form a logical unit, use a **bl
 }
 ```
 
+**descriptions/error_recovery.desc.json:**
+```json
+{
+  "summary": "Handle login error and retry with correct credentials",
+  "preconditions": [
+    "Login error message is displayed"
+  ],
+  "test_procedure": [
+    "Verify error message is visible",
+    "Clear previous input",
+    "Enter correct email and password",
+    "Tap login button"
+  ],
+  "expected_results": [
+    "Error message is cleared",
+    "Login succeeds with correct credentials"
+  ]
+}
+```
+
 #### Block Step Structure
 
 | Key | Required | Description |
 |-----|----------|-------------|
 | `block` | Yes | Block name (identifier) |
-| `description` | No | Inline description text |
-| `descriptionFile` | No | Path to external description JSON file (relative to flow test) |
+| `descriptionFile` | **Yes** | Path to external description JSON file (relative to flow test) |
 | `steps` | Yes | Array of action/assert steps |
 
-#### Block descriptionFile
+**IMPORTANT**: When creating a block step, you MUST always create a corresponding description file. Do NOT use inline `description` - always use `descriptionFile`.
 
-For detailed block descriptions, use external JSON files (same format as screen test case descriptions):
+#### Block descriptionFile (Required)
+
+Every block MUST have an external description JSON file (same format as screen test case descriptions):
 
 **Directory Structure:**
 ```
@@ -187,10 +219,12 @@ Use block steps when:
 - You want the grouped actions to appear in the HTML documentation sidebar
 
 **Good use case - Error recovery:**
+
+In `error_handling_flow.test.json`:
 ```json
 {
   "block": "network_error_recovery",
-  "description": "Recover from network timeout",
+  "descriptionFile": "descriptions/network_error_recovery.desc.json",
   "steps": [
     { "action": "waitFor", "id": "retry_button", "timeout": 10000 },
     { "action": "tap", "id": "retry_button" },
@@ -199,16 +233,38 @@ Use block steps when:
 }
 ```
 
+Create `descriptions/network_error_recovery.desc.json`:
+```json
+{
+  "summary": "Recover from network timeout",
+  "preconditions": ["Network error dialog is displayed"],
+  "test_procedure": ["Wait for retry button", "Tap retry button", "Verify success"],
+  "expected_results": ["Connection is restored", "Success indicator appears"]
+}
+```
+
 **Good use case - Form filling not covered by screen tests:**
+
+In `special_form_flow.test.json`:
 ```json
 {
   "block": "fill_special_form",
-  "description": "Fill form with edge case data",
+  "descriptionFile": "descriptions/fill_special_form.desc.json",
   "steps": [
-    { "action": "input", "id": "name", "value": "Test User 日本語" },
+    { "action": "input", "id": "name", "value": "Test User" },
     { "action": "input", "id": "phone", "value": "+81-90-1234-5678" },
     { "action": "tap", "id": "submit_button" }
   ]
+}
+```
+
+Create `descriptions/fill_special_form.desc.json`:
+```json
+{
+  "summary": "Fill form with edge case data",
+  "preconditions": ["Form is displayed"],
+  "test_procedure": ["Enter name with special characters", "Enter international phone number", "Submit form"],
+  "expected_results": ["Form accepts the data", "Submission succeeds"]
 }
 ```
 
