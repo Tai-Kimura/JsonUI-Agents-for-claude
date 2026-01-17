@@ -314,8 +314,8 @@ Mark important points in the flow for debugging:
     { "file": "confirmation", "case": "verify_success" }
   ],
   "checkpoints": [
-    { "name": "after_registration", "afterStep": 1, "screenshot": true },
-    { "name": "flow_complete", "afterStep": 2, "screenshot": true }
+    { "name": "After registration form submitted", "afterStep": 1, "screenshot": true },
+    { "name": "Flow complete", "afterStep": 2, "screenshot": true }
   ]
 }
 ```
@@ -466,8 +466,8 @@ Add appropriate waits for:
     { "file": "confirmation", "case": "verify_order_details" }
   ],
   "checkpoints": [
-    { "name": "cart_state", "afterStep": 2, "screenshot": true },
-    { "name": "order_complete", "afterStep": 7, "screenshot": true }
+    { "name": "Cart state before checkout", "afterStep": 2, "screenshot": true },
+    { "name": "Order complete", "afterStep": 7, "screenshot": true }
   ]
 }
 ```
