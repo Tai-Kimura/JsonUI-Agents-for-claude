@@ -65,6 +65,67 @@ Execute all test cases defined in the screen test:
 ```
 When no `case` or `cases` is specified, all cases from the referenced screen test are executed in the order they are defined.
 
+#### Overriding Args in File References
+
+When screen tests define `args` with default values, flow tests can override them:
+
+```json
+{ "file": "login", "case": "login_with_credentials", "args": { "email": "flow@example.com", "password": "flowPassword" } }
+```
+
+**Screen test (login.test.json):**
+```json
+{
+  "cases": [{
+    "name": "login_with_credentials",
+    "args": {
+      "email": "default@example.com",
+      "password": "defaultPassword"
+    },
+    "steps": [
+      { "action": "input", "id": "email_input", "value": "@{email}" },
+      { "action": "input", "id": "password_input", "value": "@{password}" },
+      { "action": "tap", "id": "login_button" }
+    ]
+  }]
+}
+```
+
+**Flow test overriding args:**
+```json
+{
+  "type": "flow",
+  "metadata": { "name": "Multi-User Login Flow" },
+  "steps": [
+    { "file": "login", "case": "login_with_credentials", "args": { "email": "admin@example.com", "password": "adminPass123" } },
+    { "file": "dashboard", "case": "verify_admin_panel" },
+    { "action": "tap", "id": "logout_button" },
+    { "file": "login", "case": "login_with_credentials", "args": { "email": "user@example.com", "password": "userPass456" } },
+    { "file": "dashboard", "case": "verify_user_panel" }
+  ]
+}
+```
+
+**Args Merge Behavior:**
+- Flow args **override** screen default args (not merge)
+- If flow provides `args: { "email": "new@test.com" }`, only `email` is overridden
+- Other args from screen test keep their default values
+
+**Validation Rules:**
+- Flow can only override args that are **defined** in the screen test
+- Adding new args not defined in the screen test will cause a validation error
+
+```json
+// ✅ GOOD - overriding existing arg
+// Screen defines: { "email": "default@example.com", "password": "pass" }
+{ "file": "login", "case": "login_with_credentials", "args": { "email": "override@example.com" } }
+
+// ❌ BAD - adding new arg not defined in screen
+// Screen defines: { "email": "default@example.com" }
+{ "file": "login", "case": "login_with_credentials", "args": { "email": "test@example.com", "newArg": "value" } }
+// Error: Argument '@{newArg}' passed in flow is not defined in screen case 'login_with_credentials'
+```
+
 ### Inline Steps (For Flow-Specific Actions)
 
 You can also include inline steps for flow-specific actions that don't belong to any screen test:

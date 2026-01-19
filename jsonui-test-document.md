@@ -339,3 +339,201 @@ jsonui-test v tests/
 5. **Review generated HTML** - Ensure documentation is readable
 6. **Version control descriptions** - Commit alongside test files
 7. **Always set both `description` and `descriptionFile`** - `description` is displayed in HTML sidebar for quick navigation, `descriptionFile` contains detailed documentation
+
+---
+
+## 8. Specification Document Linking
+
+### Overview
+
+Screen test files can link to specification documents (HTML/Markdown) that describe the screen's requirements. These documents are displayed in the generated HTML documentation with navigation sidebars, and can be linked from Mermaid flow diagrams.
+
+### Adding Document Links
+
+Add a `document` key to the `source` object in your screen test file:
+
+```json
+{
+  "type": "screen",
+  "source": {
+    "layout": "Layouts/account.json",
+    "document": "docs/screens/account.html"
+  },
+  "metadata": {
+    "name": "アカウント",
+    "description": "Account screen test"
+  },
+  "cases": [...]
+}
+```
+
+### Source Object Properties
+
+| Property | Required | Description |
+|----------|----------|-------------|
+| `layout` | Yes | Path to the JsonUI layout file (e.g., `Layouts/Login.json`) |
+| `document` | No | Path to the specification document file (HTML or Markdown). Used for linking from Mermaid diagrams and sidebar navigation. |
+
+### Generated Document Pages
+
+When `source.document` is specified:
+
+1. The original document is copied to the output directory
+2. A wrapper page is generated with sidebar navigation
+3. The original document is embedded via iframe (preserving styles, scripts, Mermaid diagrams)
+4. A 📄 icon appears in sidebars linking to the specification document
+
+### Document Path Convention
+
+The `document` path is **relative to the test input directory**:
+
+```
+tests/
+├── screens/
+│   └── account/
+│       └── account.test.json    ← "document": "docs/screens/account.html"
+└── docs/
+    └── screens/
+        └── account.html          ← Specification document
+```
+
+---
+
+## 9. Mermaid Flow Diagram Configuration
+
+### Overview
+
+When generating HTML documentation with flow tests, Mermaid diagrams are automatically generated showing screen transitions. You can configure how screens appear in these diagrams using metadata properties.
+
+### Metadata Properties for Mermaid Diagrams
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `entry_screen` | boolean | `false` | Mark this screen as an entry point (splash, login, etc.). Entry screens are positioned on the left side with special styling. |
+| `group` | string or string[] | `null` | Group name(s) for organizing screens in tabbed diagrams. Screens can belong to multiple groups. |
+
+### Entry Screens
+
+Entry screens (splash, login, home, etc.) are displayed with special styling and positioned on the left side of the diagram:
+
+```json
+{
+  "type": "screen",
+  "source": { "layout": "Layouts/splash.json" },
+  "metadata": {
+    "name": "スプラッシュ",
+    "entry_screen": true
+  },
+  "cases": [...]
+}
+```
+
+**Visual characteristics:**
+- Rounded rectangle shape with stadium styling: `([label])`
+- Green border and background (`fill:#e8f5e9, stroke:#4caf50`)
+- Positioned on the left side in LR (left-to-right) layout
+
+### Grouping Screens
+
+Screens can be organized into groups for tabbed diagram display:
+
+```json
+{
+  "type": "screen",
+  "source": { "layout": "Layouts/account.json" },
+  "metadata": {
+    "name": "アカウント",
+    "group": "04_アカウント管理"
+  },
+  "cases": [...]
+}
+```
+
+**Multiple groups (screen appears in multiple tabs):**
+
+```json
+{
+  "metadata": {
+    "name": "決済",
+    "group": ["02_予約フロー", "04_アカウント管理"]
+  }
+}
+```
+
+### Diagram Generation
+
+When HTML documentation is generated:
+
+1. **Combined diagram** - All screens in one flowchart (grouped by subgraphs)
+2. **Tabbed diagrams** - Separate tab for each group with relevant screens and edges
+
+**Example output structure:**
+
+```
+docs/html/
+├── index.html       ← Links to diagram
+├── diagram.html     ← Mermaid flow diagram with tabs
+├── screens/
+│   └── *.html
+└── flows/
+    └── *.html
+```
+
+### Click Events in Diagrams
+
+When `source.document` is specified, clicking on a screen node in the Mermaid diagram navigates to the specification document:
+
+```mermaid
+flowchart LR
+    splash(["スプラッシュ"]):::entryNode
+    account["アカウント"]
+
+    splash --> account
+
+    click account "docs/screens/account.html" "アカウント"
+
+    classDef entryNode fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
+```
+
+### Complete Example
+
+```json
+{
+  "type": "screen",
+  "source": {
+    "layout": "Layouts/account.json",
+    "document": "docs/screens/account.html"
+  },
+  "metadata": {
+    "name": "アカウント",
+    "description": "Account screen test",
+    "entry_screen": true,
+    "group": "04_アカウント管理"
+  },
+  "cases": [
+    {
+      "name": "initial_display_logged_out",
+      "description": "ログアウト状態での初期表示を確認",
+      "descriptionFile": "descriptions/initial_display_logged_out.json",
+      "steps": [...]
+    }
+  ]
+}
+```
+
+### Diagram Styling Reference
+
+| Element | CSS Class | Default Style |
+|---------|-----------|---------------|
+| Entry screen nodes | `entryNode` | Green border, light green fill |
+| Regular nodes | (default) | Blue border, light blue fill |
+| Subgraph borders | - | Grouped by `group` metadata |
+| Edge lines | - | Gray, 2px stroke |
+
+### Tips for Effective Diagrams
+
+1. **Use `entry_screen: true`** for app entry points (splash, login, deep link targets)
+2. **Group logically** - Use feature-based groups (e.g., "01_認証", "02_予約フロー")
+3. **Prefix group names** - Use numbered prefixes for consistent tab ordering (e.g., "01_", "02_")
+4. **Add `document` links** - Makes diagrams interactive and useful for navigation
+5. **Keep flow tests focused** - One flow test per user journey for cleaner diagrams

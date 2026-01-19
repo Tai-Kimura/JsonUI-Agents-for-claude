@@ -286,6 +286,110 @@ Run steps before/after each test case:
 }
 ```
 
+## Test Case Arguments (args)
+
+Use `args` to define reusable test cases with variable placeholders. This allows flow tests to override values when referencing screen tests.
+
+### Defining Args in Screen Tests
+
+Define default argument values in the `args` field and use `@{varName}` placeholders in step values:
+
+```json
+{
+  "type": "screen",
+  "source": { "layout": "layouts/login.json" },
+  "metadata": { "name": "Login Screen" },
+  "cases": [
+    {
+      "name": "login_with_credentials",
+      "description": "Login with provided credentials",
+      "args": {
+        "email": "default@example.com",
+        "password": "defaultPassword123"
+      },
+      "steps": [
+        { "action": "input", "id": "email_input", "value": "@{email}" },
+        { "action": "input", "id": "password_input", "value": "@{password}" },
+        { "action": "tap", "id": "login_button" },
+        { "action": "waitFor", "id": "home_screen", "timeout": 5000 }
+      ]
+    }
+  ]
+}
+```
+
+### Placeholder Syntax
+
+- Use `@{varName}` syntax in any string value within steps
+- Placeholders can appear in: `id`, `value`, `text`, `contains`, `button`, `label`, `equals`
+- Multiple placeholders can be used in a single string: `"@{firstName} @{lastName}"`
+
+### Validation Rules
+
+**Screen tests must define all args they use:**
+- Every `@{varName}` placeholder used in steps must have a corresponding key in `args`
+- Validation will error if a placeholder is used but not defined in `args`
+
+```json
+// ✅ GOOD - all placeholders defined
+{
+  "args": { "userName": "test", "userEmail": "test@example.com" },
+  "steps": [
+    { "action": "input", "id": "name", "value": "@{userName}" },
+    { "action": "input", "id": "email", "value": "@{userEmail}" }
+  ]
+}
+
+// ❌ BAD - @{userEmail} used but not defined
+{
+  "args": { "userName": "test" },
+  "steps": [
+    { "action": "input", "id": "name", "value": "@{userName}" },
+    { "action": "input", "id": "email", "value": "@{userEmail}" }
+  ]
+}
+```
+
+### Args Value Types
+
+Args values must be primitive types:
+- `string`: `"email": "test@example.com"`
+- `number`: `"count": 5`
+- `boolean`: `"enabled": true`
+
+```json
+{
+  "args": {
+    "userName": "TestUser",
+    "itemCount": 3,
+    "isAdmin": false
+  }
+}
+```
+
+### When to Use Args
+
+Use args when:
+- The same test case needs to run with different data
+- Flow tests need to customize screen test behavior
+- You want to reuse test logic with varying inputs
+
+```json
+{
+  "name": "transfer_with_amount",
+  "description": "Transfer money with specified amount",
+  "args": {
+    "amount": "1000",
+    "recipientName": "John Doe"
+  },
+  "steps": [
+    { "action": "input", "id": "amount_input", "value": "@{amount}" },
+    { "action": "input", "id": "recipient_input", "value": "@{recipientName}" },
+    { "action": "tap", "id": "transfer_button" }
+  ]
+}
+```
+
 ## External Description Files
 
 For detailed test case documentation, you can reference external files instead of inline descriptions:
