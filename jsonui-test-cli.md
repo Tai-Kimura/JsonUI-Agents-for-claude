@@ -91,6 +91,7 @@ pyenv local 3.11.0
 | `generate description flow` | `g d flow` | Generate description JSON for flow test case |
 | `generate doc` | `g doc` | Generate HTML/MD documentation for single file |
 | `generate html` | `g html` | Generate HTML directory with index for all test files |
+| `generate mermaid` | `g mermaid` | Generate Mermaid flow diagram from flow tests |
 
 ---
 
@@ -356,6 +357,10 @@ jsonui-test g html tests/ -o docs/html
 
 # Specify custom title
 jsonui-test g html tests/ -o docs/html -t "My App Tests"
+
+# Include additional documentation (Swagger/OpenAPI files)
+jsonui-test g html tests/ -o docs/html --docs path/to/docs
+jsonui-test g html tests/ -d api_docs/
 ```
 
 ### Options
@@ -365,25 +370,81 @@ jsonui-test g html tests/ -o docs/html -t "My App Tests"
 | `input` | Input directory containing .test.json files (required) |
 | `-o, --output` | Output directory (default: `html`) |
 | `-t, --title` | Title for index page (default: `JsonUI Test Documentation`) |
+| `-d, --docs` | Directory containing additional documentation (Swagger/OpenAPI files) |
+
+### Swagger/OpenAPI Support
+
+When using the `--docs` option, the CLI automatically detects Swagger/OpenAPI files (JSON files containing `openapi` or `swagger` key) and generates HTML documentation pages with:
+
+- Sidebar navigation integrated with test documentation
+- API endpoints grouped by tags
+- HTTP method color coding (GET=blue, POST=green, PUT=orange, DELETE=red)
+- Parameters, request body, and response documentation
+- Schema type information
 
 ### Output Structure
 
 ```
 html/
-├── index.html          # Index with links to all tests
+├── index.html          # Index with links to all tests and API docs
+├── diagram.html        # Flow diagram (if flow tests exist)
 ├── screens/
 │   ├── login.html
 │   └── home.html
-└── flows/
-    └── checkout.html
+├── flows/
+│   └── checkout.html
+├── docs/               # Document pages from source.document
+│   └── screens/
+│       └── html/
+└── api/                # Generated from --docs option
+    └── my_api_swagger.html
 ```
 
 ### Index Page Features
 
 - Summary statistics (total files, screen tests, flow tests, cases, steps)
 - Links to all test documentation organized by type (Screen Tests, Flow Tests)
+- API Docs section (when --docs option is used with Swagger files)
+- Documents section (from source.document in test files)
 - Test metadata displayed (platform, case count, description)
 - Responsive design for viewing on different devices
+
+---
+
+## 6. generate mermaid (g mermaid) - Generate Flow Diagram
+
+Generates Mermaid flow diagram from flow test files, showing screen transitions.
+
+```bash
+# Generate Mermaid code to stdout
+jsonui-test generate mermaid tests/
+jsonui-test g mermaid tests/
+
+# Generate HTML file with embedded diagram
+jsonui-test g mermaid tests/ -o docs/diagram.html
+
+# Specify custom title
+jsonui-test g mermaid tests/ -o docs/diagram.html -t "App Flow Diagram"
+
+# Specify screens directory (if not auto-detected)
+jsonui-test g mermaid tests/ -o docs/diagram.html -s tests/screens
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `input` | Input directory containing tests (with flows/ and screens/ subdirs) |
+| `-o, --output` | Output HTML file path (if not specified, outputs Mermaid code to stdout) |
+| `-t, --title` | Title for diagram page (default: `Flow Diagram`) |
+| `-s, --screens` | Path to screens directory (default: auto-detect) |
+
+### Features
+
+- Visualizes screen transitions from flow tests
+- Clickable nodes linking to screen test documentation
+- Auto-detects flows/ and screens/ directories
+- Outputs either raw Mermaid code or standalone HTML page
 
 ---
 
