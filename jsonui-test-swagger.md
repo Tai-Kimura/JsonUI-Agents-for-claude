@@ -191,6 +191,143 @@ For documenting REST APIs. Located in `docs/api/` directory.
 }
 ```
 
+## Database-Specific Extensions
+
+Use custom `x-*` extensions for database-specific metadata:
+
+### Primary Key
+
+```json
+{
+  "id": {
+    "type": "integer",
+    "description": "ID",
+    "x-primary-key": true,
+    "x-auto-increment": true
+  }
+}
+```
+
+### Unique Constraint
+
+```json
+{
+  "email": {
+    "type": "string",
+    "description": "Email address",
+    "x-unique": true
+  }
+}
+```
+
+### Foreign Key
+
+```json
+{
+  "user_id": {
+    "type": "integer",
+    "description": "User ID",
+    "x-foreign-key": {
+      "table": "users",
+      "column": "id"
+    }
+  }
+}
+```
+
+Or simple string format:
+
+```json
+{
+  "user_id": {
+    "type": "integer",
+    "description": "User ID",
+    "x-foreign-key": "users.id"
+  }
+}
+```
+
+### Index
+
+```json
+{
+  "uuid": {
+    "type": "string",
+    "description": "UUID",
+    "x-index": true
+  }
+}
+```
+
+### Notes/Remarks
+
+For additional notes or remarks about a field:
+
+```json
+{
+  "member_id": {
+    "type": "string",
+    "description": "Member ID",
+    "maxLength": 15,
+    "x-notes": "12-digit number"
+  }
+}
+```
+
+Or multiple notes as an array:
+
+```json
+{
+  "member_id": {
+    "type": "string",
+    "description": "Member ID",
+    "maxLength": 15,
+    "x-notes": [
+      "12-digit number",
+      "410000000000-417998999999: Point card",
+      "419000000000-419009999999: EC registration"
+    ]
+  }
+}
+```
+
+### Combined Example
+
+```json
+{
+  "id": {
+    "type": "integer",
+    "description": "ID",
+    "x-primary-key": true,
+    "x-auto-increment": true
+  },
+  "uuid": {
+    "type": "string",
+    "format": "uuid",
+    "description": "UUID",
+    "maxLength": 40,
+    "x-unique": true,
+    "x-index": true,
+    "x-notes": "Auto-generated on record creation"
+  },
+  "user_id": {
+    "type": "integer",
+    "description": "User ID",
+    "x-foreign-key": {
+      "table": "users",
+      "column": "id"
+    },
+    "x-index": true
+  },
+  "sign_in_count": {
+    "type": "integer",
+    "description": "Sign in count",
+    "default": 0,
+    "x-notes": "devise auto-generated"
+  }
+}
+```
+
 ## Enum Schema Definitions
 
 For enum columns, define a separate schema:
@@ -253,11 +390,18 @@ Document custom validation rules using `x-custom-validations`:
         "properties": {
           "id": {
             "type": "integer",
-            "description": "ID"
+            "description": "ID",
+            "x-primary-key": true,
+            "x-auto-increment": true
           },
           "user_id": {
             "type": "integer",
-            "description": "User ID"
+            "description": "User ID",
+            "x-foreign-key": {
+              "table": "users",
+              "column": "id"
+            },
+            "x-index": true
           },
           "bank_code": {
             "type": "string",
@@ -280,7 +424,8 @@ Document custom validation rules using `x-custom-validations`:
             "type": "string",
             "description": "Account number",
             "maxLength": 7,
-            "pattern": "^\\d{7}$"
+            "pattern": "^\\d{7}$",
+            "x-unique": true
           },
           "account_holder": {
             "type": "string",
@@ -288,9 +433,9 @@ Document custom validation rules using `x-custom-validations`:
             "maxLength": 30
           },
           "is_default": {
-            "type": "string",
-            "enum": [true, false],
-            "description": "Default account flag"
+            "type": "boolean",
+            "description": "Default account flag",
+            "default": false
           },
           "created_at": {
             "type": "string",
