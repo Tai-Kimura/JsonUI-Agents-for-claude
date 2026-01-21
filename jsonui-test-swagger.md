@@ -25,8 +25,8 @@ For documenting database tables. Located in `docs/db/` directory.
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "モデル名",
-    "description": "モデルの説明",
+    "title": "Model Name",
+    "description": "Model description",
     "version": "1.0.0",
     "x-table-name": "table_name"
   },
@@ -35,17 +35,17 @@ For documenting database tables. Located in `docs/db/` directory.
     "schemas": {
       "ModelName": {
         "type": "object",
-        "description": "モデルの説明",
+        "description": "Model description",
         "properties": {
-          // フィールド定義
+          // field definitions
         },
         "required": ["field1", "field2"],
         "x-custom-validations": [
-          // カスタムバリデーション
+          // custom validations
         ]
       },
       "ModelName_EnumName": {
-        // Enum定義
+        // enum definition
       }
     }
   }
@@ -55,7 +55,7 @@ For documenting database tables. Located in `docs/db/` directory.
 **Key Points:**
 - `paths` is empty `{}` (required for OpenAPI compliance but not used)
 - Use `info.x-table-name` for database table name display
-- Use `info.title` for h1 heading (Japanese model name)
+- Use `info.title` for h1 heading (model name in your language)
 - Use `info.description` for model description
 
 ### 2. API Specification Files
@@ -74,7 +74,7 @@ For documenting REST APIs. Located in `docs/api/` directory.
   "servers": [
     {
       "url": "https://api.example.com",
-      "description": "本番環境"
+      "description": "Production"
     }
   ],
   "tags": [
@@ -103,7 +103,7 @@ For documenting REST APIs. Located in `docs/api/` directory.
 {
   "field_name": {
     "type": "string",
-    "description": "フィールドの説明"
+    "description": "Field description"
   }
 }
 ```
@@ -120,12 +120,12 @@ For documenting REST APIs. Located in `docs/api/` directory.
   "email": {
     "type": "string",
     "format": "email",
-    "description": "メールアドレス"
+    "description": "Email address"
   },
   "created_at": {
     "type": "string",
     "format": "date-time",
-    "description": "作成日時"
+    "description": "Created timestamp"
   }
 }
 ```
@@ -136,21 +136,21 @@ For documenting REST APIs. Located in `docs/api/` directory.
 {
   "name": {
     "type": "string",
-    "description": "名前",
+    "description": "Name",
     "maxLength": 20,
     "minLength": 1
   },
   "age": {
     "type": "integer",
-    "description": "年齢",
+    "description": "Age",
     "minimum": 0,
     "maximum": 150
   },
   "mobile": {
     "type": "string",
-    "description": "携帯電話番号",
+    "description": "Mobile phone number",
     "maxLength": 11,
-    "pattern": "^(070|080|090)\\d{4}\\d{4}$"
+    "pattern": "^[0-9]{10,11}$"
   }
 }
 ```
@@ -161,7 +161,7 @@ For documenting REST APIs. Located in `docs/api/` directory.
 {
   "optional_field": {
     "type": "string",
-    "description": "オプションフィールド",
+    "description": "Optional field",
     "nullable": true
   }
 }
@@ -174,7 +174,7 @@ For documenting REST APIs. Located in `docs/api/` directory.
   "status": {
     "type": "string",
     "enum": ["active", "inactive", "pending"],
-    "description": "ステータス"
+    "description": "Status"
   }
 }
 ```
@@ -186,7 +186,7 @@ For documenting REST APIs. Located in `docs/api/` directory.
   "is_active": {
     "type": "string",
     "enum": [true, false],
-    "description": "有効フラグ"
+    "description": "Active flag"
   }
 }
 ```
@@ -205,7 +205,7 @@ For enum columns, define a separate schema:
       "inactive": 1,
       "suspended": 2
     },
-    "description": "ユーザーステータス enum values"
+    "description": "User status enum values"
   }
 }
 ```
@@ -221,13 +221,13 @@ Document custom validation rules using `x-custom-validations`:
   "x-custom-validations": [
     {
       "name": "email_and_confirmation_match",
-      "conditions": "新規レコードでstep=1,4の場合",
-      "description": "emailとemail_confirmationが一致するか確認"
+      "conditions": "When creating new record with step=1,4",
+      "description": "Check that email matches email_confirmation"
     },
     {
       "name": "password_strength",
-      "conditions": "パスワード設定時",
-      "description": "パスワードは8文字以上、英数字混合が必要"
+      "conditions": "When setting password",
+      "description": "Password must be at least 8 characters with alphanumeric mix"
     }
   ]
 }
@@ -239,8 +239,8 @@ Document custom validation rules using `x-custom-validations`:
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "銀行口座",
-    "description": "ユーザーの銀行口座情報",
+    "title": "Bank Account",
+    "description": "User bank account information",
     "version": "1.0.0",
     "x-table-name": "bank_accounts"
   },
@@ -249,7 +249,7 @@ Document custom validation rules using `x-custom-validations`:
     "schemas": {
       "BankAccount": {
         "type": "object",
-        "description": "銀行口座モデル",
+        "description": "Bank account model",
         "properties": {
           "id": {
             "type": "integer",
@@ -257,50 +257,50 @@ Document custom validation rules using `x-custom-validations`:
           },
           "user_id": {
             "type": "integer",
-            "description": "ユーザーID"
+            "description": "User ID"
           },
           "bank_code": {
             "type": "string",
-            "description": "銀行コード",
+            "description": "Bank code",
             "maxLength": 4,
             "pattern": "^\\d{4}$"
           },
           "branch_code": {
             "type": "string",
-            "description": "支店コード",
+            "description": "Branch code",
             "maxLength": 3,
             "pattern": "^\\d{3}$"
           },
           "account_type": {
             "type": "string",
             "enum": ["ordinary", "checking", "savings"],
-            "description": "口座種別"
+            "description": "Account type"
           },
           "account_number": {
             "type": "string",
-            "description": "口座番号",
+            "description": "Account number",
             "maxLength": 7,
             "pattern": "^\\d{7}$"
           },
           "account_holder": {
             "type": "string",
-            "description": "口座名義（カタカナ）",
+            "description": "Account holder name",
             "maxLength": 30
           },
           "is_default": {
             "type": "string",
             "enum": [true, false],
-            "description": "デフォルト口座フラグ"
+            "description": "Default account flag"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "作成日時"
+            "description": "Created timestamp"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "更新日時"
+            "description": "Updated timestamp"
           }
         },
         "required": [
@@ -314,8 +314,8 @@ Document custom validation rules using `x-custom-validations`:
         "x-custom-validations": [
           {
             "name": "valid_bank_code",
-            "conditions": "常に",
-            "description": "有効な銀行コードかチェック"
+            "conditions": "Always",
+            "description": "Check if bank code is valid"
           }
         ]
       },
@@ -348,7 +348,7 @@ Document custom validation rules using `x-custom-validations`:
 
 ## Tips
 
-- Use Japanese for `title` and `description` fields (user-facing)
+- Use the user's language for `title` and `description` fields (user-facing)
 - Use English for property names and type values (technical)
 - Always include `description` for every property
 - Use `maxLength` for string fields when known
