@@ -254,12 +254,20 @@ When generating the specification, also create an HTML version with the followin
       background: none;
       padding: 0;
     }
+    .mermaid {
+      text-align: center;
+      margin: 20px 0;
+    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 </head>
 <body>
   <div class="content">
     <!-- Convert markdown content to HTML here -->
   </div>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
 </body>
 </html>
 ```
@@ -273,6 +281,7 @@ When generating the specification, also create an HTML version with the followin
 - Code blocks → `<pre><code>...</code></pre>`
 - Inline code → `<code>...</code>`
 - Paragraphs → `<p>...</p>`
+- Mermaid code blocks → `<div class="mermaid">...</div>` (NOT `<pre><code>`)
 
 ## Example Dialogue Flow
 
