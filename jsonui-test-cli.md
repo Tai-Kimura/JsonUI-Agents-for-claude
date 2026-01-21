@@ -358,9 +358,12 @@ jsonui-test g html tests/ -o docs/html
 # Specify custom title
 jsonui-test g html tests/ -o docs/html -t "My App Tests"
 
-# Include additional documentation (Swagger/OpenAPI files)
-jsonui-test g html tests/ -o docs/html --docs path/to/docs
-jsonui-test g html tests/ -d api_docs/
+# Include OpenAPI/Swagger documentation (can specify multiple directories)
+jsonui-test g html tests/ -d docs/api
+jsonui-test g html tests/ -d docs/api -d docs/db
+
+# Full example with multiple doc directories
+jsonui-test g html tests/ -o html -t "My App" -d docs/api -d docs/db
 ```
 
 ### Options
@@ -370,17 +373,23 @@ jsonui-test g html tests/ -d api_docs/
 | `input` | Input directory containing .test.json files (required) |
 | `-o, --output` | Output directory (default: `html`) |
 | `-t, --title` | Title for index page (default: `JsonUI Test Documentation`) |
-| `-d, --docs` | Directory containing additional documentation (Swagger/OpenAPI files) |
+| `-d, --docs` | Directory containing OpenAPI/Swagger files (can be specified multiple times) |
 
 ### Swagger/OpenAPI Support
 
-When using the `--docs` option, the CLI automatically detects Swagger/OpenAPI files (JSON files containing `openapi` or `swagger` key) and generates HTML documentation pages with:
+When using the `--docs` option, the CLI automatically detects Swagger/OpenAPI files (JSON files containing `openapi` or `swagger` key) and generates HTML documentation pages using Redoc.
 
-- Sidebar navigation integrated with test documentation
-- API endpoints grouped by tags
-- HTTP method color coding (GET=blue, POST=green, PUT=orange, DELETE=red)
-- Parameters, request body, and response documentation
-- Schema type information
+**Multiple Directory Support:**
+- Specify `-d` multiple times for different categories (e.g., `-d api -d db`)
+- Each directory becomes a separate category in the index
+- Category names are derived from directory names (api → API, db → DB)
+- Output paths preserve category structure (`api/*.html`, `db/*.html`)
+
+**Features:**
+- Interactive API documentation with Redoc
+- Expandable request/response schemas
+- Search functionality within API docs
+- "Back to Index" link for navigation
 
 ### Output Structure
 
@@ -396,15 +405,19 @@ html/
 ├── docs/               # Document pages from source.document
 │   └── screens/
 │       └── html/
-└── api/                # Generated from --docs option
-    └── my_api_swagger.html
+├── api/                # Generated from -d docs/api
+│   └── pango_api_swagger.html
+└── db/                 # Generated from -d docs/db
+    ├── user.html
+    ├── bank_account.html
+    └── ...
 ```
 
 ### Index Page Features
 
 - Summary statistics (total files, screen tests, flow tests, cases, steps)
 - Links to all test documentation organized by type (Screen Tests, Flow Tests)
-- API Docs section (when --docs option is used with Swagger files)
+- Separate sections for each docs directory (API, DB, etc.)
 - Documents section (from source.document in test files)
 - Test metadata displayed (platform, case count, description)
 - Responsive design for viewing on different devices
