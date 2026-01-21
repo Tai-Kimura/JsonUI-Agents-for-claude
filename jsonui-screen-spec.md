@@ -189,8 +189,83 @@ flowchart TD
 
 ## File Naming
 
-- **Output location:** `docs/screens/md/{ScreenName}.md`
-- **File name:** Use PascalCase (e.g., `Login.md`, `UserProfile.md`, `SmsConfirmation.md`)
+- **Markdown:** `docs/screens/md/{ScreenName}.md`
+- **HTML:** `docs/screens/html/{ScreenName}.html`
+- **File name:** Use PascalCase (e.g., `Login.md`, `UserProfile.html`)
+
+## HTML Generation
+
+When generating the specification, also create an HTML version with the following style:
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{ScreenName} - {Localized Name}</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      color: #333;
+    }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    h2 { border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }
+    h3 { margin-top: 25px; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f5f5f5;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'SF Mono', Consolas, monospace;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <!-- Convert markdown content to HTML here -->
+  </div>
+</body>
+</html>
+```
+
+### HTML Conversion Rules
+
+- `# Heading` → `<h1>Heading</h1>`
+- `## Heading` → `<h2>Heading</h2>`
+- `### Heading` → `<h3>Heading</h3>`
+- Markdown tables → HTML `<table>` with `<thead>` and `<tbody>`
+- Code blocks → `<pre><code>...</code></pre>`
+- Inline code → `<code>...</code>`
+- Paragraphs → `<p>...</p>`
 
 ## Example Dialogue Flow
 
