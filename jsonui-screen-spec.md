@@ -34,12 +34,17 @@ When this skill is invoked:
    - For each unclear or missing item, ask the user directly
    - Continue dialogue until all necessary information is gathered
 
-4. **Generate the specification document**
+4. **Generate the markdown specification**
    - Create the markdown file only after gathering all required information
    - Present for user review
 
 5. **Iterate based on feedback**
    - Make changes as requested by the user
+
+6. **Generate HTML (after user approval)**
+   - Ask user: "Is the markdown content finalized? Should I generate the HTML version?"
+   - Only generate HTML after explicit user approval
+   - This saves time by avoiding repeated HTML generation during iterations
 
 ## Important Rules
 
