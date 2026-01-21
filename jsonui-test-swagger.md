@@ -337,7 +337,7 @@ Document custom validation rules using `x-custom-validations`:
 ## File Naming
 
 - **DB Models:** `docs/db/{table_name}.json` (e.g., `user.json`, `bank_account.json`)
-- **API Specs:** `docs/api/{api_name}_swagger.json` (e.g., `pango_api_swagger.json`)
+- **API Specs:** `docs/api/{api_name}_swagger.json` (e.g., `my_api_swagger.json`)
 
 ## Workflow
 
