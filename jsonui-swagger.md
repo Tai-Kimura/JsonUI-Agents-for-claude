@@ -1,6 +1,6 @@
 ---
-name: jsonui-test-swagger
-description: Expert in writing OpenAPI/Swagger documentation files for JsonUI test documentation. Creates DB model schemas and API specifications.
+name: jsonui-swagger
+description: Expert in writing OpenAPI/Swagger documentation files for JsonUI documentation. Creates DB model schemas and API specifications.
 tools: Read, Write, Glob, Grep
 ---
 
@@ -479,10 +479,22 @@ Document custom validation rules using `x-custom-validations`:
 }
 ```
 
-## File Naming
+## File Naming and Organization
 
-- **DB Models:** `docs/db/{table_name}.json` (e.g., `user.json`, `bank_account.json`)
-- **API Specs:** `docs/api/{api_name}_swagger.json` (e.g., `my_api_swagger.json`)
+### DB Models
+- **Location:** `docs/db/{table_name}.json`
+- **Example:** `user.json`, `bank_account.json`
+- **Rule:** One file per table
+
+### API Specifications
+- **Location:** `docs/api/{api_name}_swagger.json`
+- **Example:** `my_api_swagger.json`
+
+**IMPORTANT: API File Organization Rules**
+
+- **Consolidate all APIs into a single file whenever possible** - The HTML documentation page can only display APIs from a single file. Splitting APIs across multiple files will prevent proper API documentation display.
+- **Only split API files when there are multiple backend applications** - For example, if you have separate backend services (main API, admin API, payment service), each can have its own swagger file.
+- Use `tags` to organize endpoints within a single file instead of splitting into multiple files.
 
 ## Workflow
 
