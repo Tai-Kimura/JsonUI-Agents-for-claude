@@ -19,6 +19,8 @@ Therefore, all sections must be thoroughly and accurately documented. The Screen
 
 ## Initial Workflow
 
+**CRITICAL: Follow this workflow EXACTLY in order. Do NOT skip steps or combine them.**
+
 When this skill is invoked:
 
 1. **Ask for the screen's functional requirements**
