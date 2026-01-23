@@ -479,6 +479,97 @@ Document custom validation rules using `x-custom-validations`:
 }
 ```
 
+## ER Diagram Extensions
+
+DB model files can specify ER diagram grouping for the auto-generated ER diagram page.
+
+### x-erd-group
+
+Specifies which ER diagram tab(s) this table appears in.
+
+**Single group:**
+```json
+{
+  "info": {
+    "x-table-name": "users",
+    "x-erd-group": "user"
+  }
+}
+```
+
+**Multiple groups (table appears in multiple tabs):**
+```json
+{
+  "info": {
+    "x-table-name": "notifications",
+    "x-erd-group": ["user", "notification"]
+  }
+}
+```
+
+### x-erd-main
+
+Specifies that this table is the main/central table for a group. The main table is rendered first in the diagram.
+
+**Main for all groups:**
+```json
+{
+  "info": {
+    "x-table-name": "users",
+    "x-erd-group": "user",
+    "x-erd-main": true
+  }
+}
+```
+
+**Main for specific group only:**
+```json
+{
+  "info": {
+    "x-table-name": "notifications",
+    "x-erd-group": ["user", "notification"],
+    "x-erd-main": "notification"
+  }
+}
+```
+
+**Main for multiple groups:**
+```json
+{
+  "info": {
+    "x-table-name": "orders",
+    "x-erd-group": ["user", "order", "payment"],
+    "x-erd-main": ["order", "payment"]
+  }
+}
+```
+
+### Complete Example
+
+```json
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ユーザー",
+    "description": "User account information",
+    "version": "1.0.0",
+    "x-table-name": "users",
+    "x-erd-group": "user",
+    "x-erd-main": true
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "User": {
+        // ... properties
+      }
+    }
+  }
+}
+```
+
+The ER diagram is automatically generated when running `jsonui-test g html` with DB schema files. Tables without `x-erd-group` will only appear in the "All Tables" tab.
+
 ## File Naming and Organization
 
 ### DB Models
