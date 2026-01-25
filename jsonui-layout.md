@@ -294,7 +294,7 @@ Bindings are ONLY for referencing ViewModel variables or functions. You must NEV
 - `@{price * quantity}` - Calculation
 - `@{user.name + ' ' + user.lastName}` - String concatenation
 - `@{!isHidden}` - Negation
-- Any expression with `?`, `==`, `!=`, `>`, `<`, `>=`, `<=`, `+`, `-`, `*`, `/`, `!`, `&&`, `||`
+- Any expression with operators: ? == != > < >= <= + - * / ! && ||
 
 **CORRECT - Only simple variable/function references:**
 - `@{searchTabColor}` - ViewModel computed property
