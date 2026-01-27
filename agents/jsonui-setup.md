@@ -37,9 +37,44 @@ When invoking a skill, provide these variables:
 
 1. Change to the project directory provided by orchestrator
 2. Identify the platform and mode
-3. Invoke the appropriate setup skill
+3. Invoke the appropriate setup skill (app setup)
 4. Follow the skill's step-by-step instructions
-5. After setup is complete, launch `jsonui-screen-impl` agent to implement screens
+5. After app setup is complete, invoke the test setup skill
+6. After all setup is complete, report back to orchestrator
+
+## Test Setup Skills
+
+| Platform | Skill |
+|----------|-------|
+| iOS | `/jsonui-test-setup-ios` |
+| Android | `/jsonui-test-setup-android` |
+| Web | `/jsonui-test-setup-web` |
+
+## Completion Report
+
+After setup is complete, report back to the orchestrator with:
+
+```
+## Setup Complete
+
+### Project Information
+- Project: {project_directory}
+- Platform: {iOS/Android/Web}
+- Mode: {swiftui/uikit/compose/xml/react}
+
+### Tools Installed
+- Tools directory: {tools_directory path}
+- Hot reload port: {port number}
+
+### Files Created
+- {list of config files created}
+- {list of initial layout files created}
+
+### Next Steps
+Ready to implement screens. Use `jsonui-screen-impl` agent with:
+- Specification: {path to spec}
+- Tools directory: {tools_directory}
+```
 
 ## Port Configuration
 

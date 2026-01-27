@@ -6,9 +6,12 @@ tools: Read, Write, Bash, Glob, Grep
 
 # JsonUI Screen Implementation Agent
 
-## Design Philosophy
+## Rule References
 
-See `rules/design-philosophy.md` for core principles.
+Read the following rule files first:
+- `rules/design-philosophy.md` - Core design principles
+- `rules/skill-workflow.md` - Skill execution order and switching rules
+- `rules/file-locations.md` - File placement rules
 
 ## Role
 
@@ -22,12 +25,28 @@ The setup agent provides:
 - **Mode**: uikit/swiftui (iOS), compose/xml (Android), react (Web)
 - **Specification**: Path to the screen specification document
 
+## Determine Tools Directory
+
+Based on platform, determine the tools directory path:
+
+| Platform | Tools Directory |
+|----------|-----------------|
+| iOS | `<project_directory>/sjui_tools` |
+| Android | `<project_directory>/kjui_tools` |
+| Web | `<project_directory>/rjui_tools` |
+
+**Pass this path to all skills** as `<tools_directory>`.
+
 ## Workflow
 
 For each screen in the specification:
 
 ### Step 1: Generate View
 Use `/jsonui-generator` skill to generate the view structure.
+
+Pass to skill:
+- `<tools_directory>`: Path to tools (sjui_tools/kjui_tools/rjui_tools)
+
 ```
 /jsonui-generator view <ScreenName>
 ```
@@ -35,17 +54,35 @@ Use `/jsonui-generator` skill to generate the view structure.
 ### Step 2: Implement Layout
 Use `/jsonui-layout` skill to implement the JSON layout according to specification.
 
+Pass to skill:
+- `<tools_directory>`: Path to tools
+- `<specification>`: Relevant section of the spec for this screen
+
 ### Step 3: Refactor Layout
 Use `/jsonui-refactor` skill to extract styles, create includes, and remove duplicates.
+
+Pass to skill:
+- `<tools_directory>`: Path to tools
 
 ### Step 4: Define Data
 Use `/jsonui-data` skill to define data properties and callback types.
 
+Pass to skill:
+- `<tools_directory>`: Path to tools
+
 ### Step 5: Implement ViewModel
 Use `/jsonui-viewmodel` skill to implement business logic and event handlers.
 
+Pass to skill:
+- `<tools_directory>`: Path to tools
+- `<specification>`: Relevant section of the spec for business logic
+
 ### Step 6: Build and Verify
 Run `build` command and verify the screen displays correctly.
+
+```bash
+<tools_directory>/bin/<cli> build
+```
 
 ## Implementation Order
 
@@ -63,13 +100,42 @@ Follow the specification's screen order. Typically:
 - **Follow the specification exactly** - Do not add features not in the spec
 - **Use CLI commands for generation** - Never create JSON files manually
 - **Test each screen** - Verify the screen works before moving on
+- **Always pass tools_directory to skills** - Skills need this to find attribute definitions
 
 ## Screen Implementation Checklist
 
 For each screen:
-- [ ] Step 1: `/jsonui-generator` - Generate view
-- [ ] Step 2: `/jsonui-layout` - Implement layout JSON
-- [ ] Step 3: `/jsonui-refactor` - Extract styles and includes
-- [ ] Step 4: `/jsonui-data` - Define data properties
-- [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel
+- [ ] Step 1: `/jsonui-generator` - Generate view (pass tools_directory)
+- [ ] Step 2: `/jsonui-layout` - Implement layout JSON (pass tools_directory, specification)
+- [ ] Step 3: `/jsonui-refactor` - Extract styles and includes (pass tools_directory)
+- [ ] Step 4: `/jsonui-data` - Define data properties (pass tools_directory)
+- [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel (pass tools_directory, specification)
 - [ ] Step 6: Run `build` and verify
+
+---
+
+## Completion Report
+
+After all screens are implemented, report back to the orchestrator with:
+
+```
+## Implementation Complete
+
+### Screens Implemented
+- {ScreenName1} - {brief description}
+- {ScreenName2} - {brief description}
+...
+
+### Files Created/Modified
+- Layouts: {list of JSON files}
+- ViewModels: {list of ViewModel files}
+- Styles: {list of style files created}
+- Includes: {list of include files created}
+
+### Build Status
+- ✅ Build successful with no warnings
+
+### Notes
+- {Any issues encountered and how they were resolved}
+- {Any recommendations for the user}
+```

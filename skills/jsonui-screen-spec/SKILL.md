@@ -46,6 +46,7 @@ When this skill is invoked:
 6. **Generate HTML (after user approval)**
    - Ask user: "Is the markdown content finalized? Should I generate the HTML version?"
    - Only generate HTML after explicit user approval
+   - Invoke `/jsonui-md-to-html` skill to convert the markdown to HTML
    - This saves time by avoiding repeated HTML generation during iterations
 
 ## Important Rules
@@ -56,6 +57,51 @@ When this skill is invoked:
 - **Use the user's language** for descriptions and comments
 - **Use English** for technical names (IDs, variable names, types)
 - **Be thorough in all sections** - This document feeds into multiple agents (layout, data, viewmodel). Each section must be complete and accurate.
+
+## Component Type Reference
+
+**Reference file:** `{jsonui-cli}/shared/core/attribute_definitions.json`
+
+Read this file to understand available component types and their attributes.
+
+### Key Component Types
+
+| Type | Use Case |
+|------|----------|
+| View | Container (zstack by default) |
+| ScrollView | Scrollable container |
+| SafeAreaView | Safe area respecting container |
+| Label | Text display |
+| TextField | Single-line text input |
+| TextView | Multi-line text input |
+| Button | Tappable button |
+| Image | Image display |
+| **Collection** | **List/grid of repeating items** |
+| **TabView** | **Tab-based navigation** |
+| SelectBox | Dropdown/picker |
+| CheckBox | Checkbox input |
+| Switch | Toggle switch |
+| Web | WebView |
+
+### When to Use Collection
+
+Use `Collection` when:
+- Displaying a **list of similar items** (e.g., product list, message list, settings list)
+- Items are **repeatable** with the same structure
+- Content may **scroll** vertically or horizontally
+- Data comes from an **array** in the ViewModel
+
+**Collection Structure must include:**
+- Header (optional)
+- Cell template (required)
+- Footer (optional)
+
+### When to Use TabView
+
+Use `TabView` when:
+- Screen has **multiple top-level sections** accessible via tabs
+- User needs to **switch between views** without navigation
+- Bottom tab bar or top tab bar UI pattern
 
 ## Output Format
 
@@ -84,6 +130,27 @@ Generate markdown files following this structure:
 │   ├── {nested1}
 │   └── {nested2}
 └── {child2} (ComponentType)
+```
+
+### Collection Structure (if applicable)
+
+```
+{collection_id} (Collection)
+├── header (optional)
+│   └── {header components}
+├── cell
+│   └── {cell template components}
+└── footer (optional)
+    └── {footer components}
+```
+
+### TabView Structure (if applicable)
+
+```
+{tabview_id} (TabView)
+├── Tab 1: {tab_title} → {layout_file}
+├── Tab 2: {tab_title} → {layout_file}
+└── Tab 3: {tab_title} → {layout_file}
 ```
 
 ## Data Flow
@@ -202,141 +269,14 @@ flowchart TD
 
 ## HTML Generation
 
-When generating the specification, also create an HTML version with the following style:
+After the markdown specification is finalized and approved by the user, invoke the `/jsonui-md-to-html` skill to generate the HTML version.
 
-```html
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{ScreenName} - {Localized Name}</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      line-height: 1.6;
-      padding: 20px;
-      color: #333;
-    }
-    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
-    h2 { border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }
-    h3 { margin-top: 25px; }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 15px 0;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px 12px;
-      text-align: left;
-    }
-    th {
-      background-color: #f5f5f5;
-      font-weight: 600;
-    }
-    tr:nth-child(even) {
-      background-color: #fafafa;
-    }
-    code {
-      background-color: #f4f4f4;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'SF Mono', Consolas, monospace;
-    }
-    pre {
-      background-color: #f4f4f4;
-      padding: 15px;
-      border-radius: 5px;
-      overflow-x: auto;
-    }
-    pre code {
-      background: none;
-      padding: 0;
-    }
-    .mermaid {
-      text-align: center;
-      margin: 20px 0;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-</head>
-<body>
-  <div class="content">
-    <!-- Convert markdown content to HTML here -->
-  </div>
-  <script>
-    mermaid.initialize({ startOnLoad: true });
-  </script>
-</body>
-</html>
-```
+## Examples
 
-### HTML Conversion Rules
-
-- `# Heading` → `<h1>Heading</h1>`
-- `## Heading` → `<h2>Heading</h2>`
-- `### Heading` → `<h3>Heading</h3>`
-- Markdown tables → HTML `<table>` with `<thead>` and `<tbody>`
-- Code blocks → `<pre><code>...</code></pre>`
-- Inline code → `<code>...</code>`
-- Paragraphs → `<p>...</p>`
-- Mermaid code blocks → `<div class="mermaid">...</div>` (NOT `<pre><code>`)
-
-## Example Dialogue Flow
-
-**Agent:** "I'll create a screen specification document. Please provide the functional requirements for this screen. Any format is fine - PDF, Figma, bullet points, etc."
-
-**User:** [Provides PDF or description]
-
-**Agent:** "Thank you. I extracted the following information:
-- Screen Name: Login
-- Overview: User login screen
-- UI Components: [extracted list]
-
-I need to confirm a few things:
-1. What is the localized screen name?
-2. There was no mention of validation rules. What validation rules apply?"
-
-**User:** [Provides answers]
-
-**Agent:** [Continues until all information is gathered, then generates the document]
-
-## Example Sections
-
-### UI Components Table Example
-
-| Component | ID | Description | Initial State |
-|---|---|---|---|
-| View | root_view | Root container | Background: white |
-| ScrollView | scroll_view | Scrollable area | SafeArea enabled |
-| TextField | email_field | Email input field | Keyboard: email |
-| Button | submit_btn | Submit button | Dark green, 68×36pt |
-| Label | error_label | Error message | Hidden |
-
-### Layout Structure Example
-
-```
-root_view (View)
-├── navi (NavigationBar - include)
-└── scroll_view (ScrollView)
-    └── main_view (SafeAreaView)
-        ├── header_section
-        │   ├── title_label
-        │   └── subtitle_label
-        ├── form_section
-        │   ├── email_field
-        │   └── password_field
-        └── button_section
-            ├── submit_btn
-            └── cancel_btn
-```
-
-### UI Data Variables Example
-
-| Variable Name | Type | Description |
-|---|---|---|
-| isLoading | Bool | Loading indicator state |
-| errorMessage | String? | Error message to display |
-| submitButtonEnabled | Bool | Submit button enabled state |
-| formVisibility | Visibility | Form section visibility |
+See [examples/sections.md](examples/sections.md) for:
+- UI Components Table example
+- Layout Structure example
+- Collection Structure example
+- TabView Structure example
+- UI Data Variables example
+- Dialogue Flow example
