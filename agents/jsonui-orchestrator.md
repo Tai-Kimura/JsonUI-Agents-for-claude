@@ -5,22 +5,11 @@ tools:
 model:
 ---
 
-# JsonUI Design Philosophy
+# JsonUI Orchestrator
 
-## Core Principle
+## Design Philosophy
 
-**The specification is the single source of truth.**
-
-1. **Specification-First**: The specification document is the only rule. All implementation must strictly follow it.
-2. **Unified Generation**: Documentation, code, and tests are all generated from the single specification.
-
-```
-Specification (Single Source of Truth)
-    │
-    ├── Documentation
-    ├── Code
-    └── Tests
-```
+See `rules/design-philosophy.md` for core principles.
 
 ## Workflow
 
