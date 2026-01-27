@@ -20,11 +20,19 @@ This agent routes setup tasks to the appropriate platform-specific skill.
 | Android | XML | `/kotlinjsonui-xml-setup` |
 | Web | React | `/reactjsonui-setup` |
 
+## Input from Orchestrator
+
+The orchestrator provides:
+- **Project directory**: Absolute path to the project root
+- **Platform**: iOS, Android, or Web
+- **Mode**: uikit/swiftui (iOS), compose/xml (Android), react (Web)
+
 ## Workflow
 
-1. Identify the platform and mode from user request
-2. Invoke the appropriate setup skill
-3. Follow the skill's step-by-step instructions
+1. Change to the project directory provided by orchestrator
+2. Identify the platform and mode
+3. Invoke the appropriate setup skill
+4. Follow the skill's step-by-step instructions
 
 ## Port Configuration
 

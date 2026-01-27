@@ -33,8 +33,8 @@ description: Setup and development workflow for SwiftJsonUI with SwiftUI mode.
 
 ## Step 1: Go to project root
 ```bash
-cd /path/to/project  # Where .xcodeproj is located
-ls *.xcodeproj       # VERIFY: Must show .xcodeproj file
+cd <project_directory>  # Provided by setup agent
+ls *.xcodeproj          # VERIFY: Must show .xcodeproj file
 ```
 
 ## Step 2: Copy sjui_tools to project

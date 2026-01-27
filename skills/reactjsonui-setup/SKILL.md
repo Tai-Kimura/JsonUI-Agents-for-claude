@@ -29,8 +29,8 @@ description: Setup and development workflow for ReactJsonUI with React/Next.js.
 
 ## Step 1: Go to project root
 ```bash
-cd /path/to/project
-ls package.json  # VERIFY: Must show package.json
+cd <project_directory>  # Provided by setup agent
+ls package.json         # VERIFY: Must show package.json
 ```
 
 ## Step 2: Copy rjui_tools to project

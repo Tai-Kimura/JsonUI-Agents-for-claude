@@ -33,8 +33,8 @@ Kotlin import:    com.kotlinjsonui.core
 
 ## Step 1: Go to project root
 ```bash
-cd /path/to/project
-ls build.gradle.kts settings.gradle.kts  # VERIFY
+cd <project_directory>  # Provided by setup agent
+ls build.gradle.kts settings.gradle.kts  # VERIFY: Both files must exist
 ```
 
 ## Step 2: Check KotlinJsonUI version requirements

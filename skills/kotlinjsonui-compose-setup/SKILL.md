@@ -39,7 +39,7 @@ import com.kotlinjsonui.core.Configuration
 
 ## Step 1: Go to project root
 ```bash
-cd /path/to/project  # Where build.gradle.kts is (NOT app/ folder)
+cd <project_directory>  # Provided by setup agent (NOT app/ folder)
 ls build.gradle.kts settings.gradle.kts  # VERIFY: Both files must exist
 ```
 
