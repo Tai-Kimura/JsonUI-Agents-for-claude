@@ -52,15 +52,16 @@ After the specification is complete, ask the user:
    - Android (KotlinJsonUI with Compose or XML)
    - Web (ReactJsonUI)
 
-Then launch the `jsonui-setup` agent with the selected platform, mode, and project directory:
+Then launch the `jsonui-setup` agent with the following parameters:
 
-| Platform | Mode |
-|----------|------|
-| iOS | `uikit` or `swiftui` |
-| Android | `compose` or `xml` |
-| Web | `react` |
+| Parameter | Value |
+|-----------|-------|
+| `project_directory` | User's project path |
+| `jsonui_cli_path` | `~/.jsonui-cli` |
+| `platform` | iOS, Android, or Web |
+| `mode` | `uikit`/`swiftui` (iOS), `compose`/`xml` (Android), `react` (Web) |
 
-Example: "Setup iOS project at /path/to/project with SwiftUI mode"
+Example: "Setup iOS project at /path/to/project with SwiftUI mode. CLI path: ~/.jsonui-cli"
 
 The orchestrator's role ends here. The setup agent will handle the rest.
 
