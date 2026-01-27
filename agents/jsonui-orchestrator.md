@@ -44,13 +44,15 @@ This installs `sjui_tools`, `kjui_tools`, `rjui_tools`, and `test_tools` to `~/.
 
 ### Step 3: Setup Project
 
-After the specification is complete, ask the user which platform to start with:
+After the specification is complete, ask the user:
 
-- iOS (SwiftJsonUI with UIKit or SwiftUI)
-- Android (KotlinJsonUI with Compose or XML)
-- Web (ReactJsonUI)
+1. **Project directory**: Where is the project located? (absolute path)
+2. **Platform**: Which platform to start with?
+   - iOS (SwiftJsonUI with UIKit or SwiftUI)
+   - Android (KotlinJsonUI with Compose or XML)
+   - Web (ReactJsonUI)
 
-Then launch the `jsonui-setup` agent with the selected platform and mode:
+Then launch the `jsonui-setup` agent with the selected platform, mode, and project directory:
 
 | Platform | Mode |
 |----------|------|
@@ -58,7 +60,7 @@ Then launch the `jsonui-setup` agent with the selected platform and mode:
 | Android | `compose` or `xml` |
 | Web | `react` |
 
-Example: "Setup iOS project with SwiftUI mode"
+Example: "Setup iOS project at /path/to/project with SwiftUI mode"
 
 The orchestrator's role ends here. The setup agent will handle the rest.
 
