@@ -39,6 +39,7 @@ When invoking a skill, provide these variables:
 2. Identify the platform and mode
 3. Invoke the appropriate setup skill
 4. Follow the skill's step-by-step instructions
+5. After setup is complete, launch `jsonui-screen` agent to implement screens
 
 ## Port Configuration
 
