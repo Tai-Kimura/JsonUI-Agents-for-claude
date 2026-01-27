@@ -35,7 +35,7 @@ ls package.json         # VERIFY: Must show package.json
 
 ## Step 2: Copy rjui_tools to project
 ```bash
-cp -r ~/.jsonui-cli/rjui_tools ./
+cp -r <jsonui_cli_path>/rjui_tools ./
 ls rjui_tools/bin/rjui  # VERIFY: File must exist
 ```
 

@@ -55,7 +55,7 @@ dependencies {
 
 ## Step 4: Copy kjui_tools to project
 ```bash
-cp -r ~/.jsonui-cli/kjui_tools ./
+cp -r <jsonui_cli_path>/kjui_tools ./
 ls kjui_tools/bin/kjui  # VERIFY: File must exist
 ```
 

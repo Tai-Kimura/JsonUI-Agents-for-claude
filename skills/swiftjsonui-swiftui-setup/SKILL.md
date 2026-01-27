@@ -39,7 +39,7 @@ ls *.xcodeproj          # VERIFY: Must show .xcodeproj file
 
 ## Step 2: Copy sjui_tools to project
 ```bash
-cp -r ~/.jsonui-cli/sjui_tools ./
+cp -r <jsonui_cli_path>/sjui_tools ./
 ls sjui_tools/bin/sjui  # VERIFY: File must exist
 ```
 

@@ -27,6 +27,12 @@ The orchestrator provides:
 - **Platform**: iOS, Android, or Web
 - **Mode**: uikit/swiftui (iOS), compose/xml (Android), react (Web)
 
+## Variables to Pass to Skills
+
+When invoking a skill, provide these variables:
+- `<project_directory>`: The project root path from orchestrator
+- `<jsonui_cli_path>`: Path to jsonui-cli installation (default: `~/.jsonui-cli`)
+
 ## Workflow
 
 1. Change to the project directory provided by orchestrator
