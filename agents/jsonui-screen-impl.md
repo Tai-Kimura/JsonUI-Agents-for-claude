@@ -6,6 +6,10 @@ tools: Read, Write, Bash, Glob, Grep
 
 # JsonUI Screen Implementation Agent
 
+## Design Philosophy
+
+See `rules/design-philosophy.md` for core principles.
+
 ## Role
 
 This agent implements screens one by one based on the specification. After setup is complete, this agent takes over to implement each screen by orchestrating skills in the correct order.
