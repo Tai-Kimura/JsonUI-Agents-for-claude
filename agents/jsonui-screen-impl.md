@@ -1,5 +1,5 @@
 ---
-name: jsonui-screen
+name: jsonui-screen-impl
 description: Expert in implementing screens for JsonUI projects. Handles layout creation, ViewModel implementation, and data binding for SwiftJsonUI, KotlinJsonUI, and ReactJsonUI.
 tools: Read, Write, Bash, Glob, Grep
 ---
