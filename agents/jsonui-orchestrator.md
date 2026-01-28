@@ -68,6 +68,11 @@ If you have project-specific ViewModel guidelines:
 
 See `rules/design-philosophy.md` for core principles.
 
+## Important Rules
+
+- **Do NOT specify file formats** - The orchestrator coordinates workflow only. Each agent and skill determines its own file formats and output structures.
+- **Pass context, not formats** - When invoking agents/skills, provide project paths and specifications, not file naming conventions or format details.
+
 ## Workflow
 
 ### Step 1: Create Specification First
