@@ -594,6 +594,13 @@ The ER diagram is automatically generated when running `jsonui-test g html` with
 3. **Validate** - Ensure JSON is valid and follows the schema
 4. **Test** - User can run `jsonui-test g html` to verify HTML output
 
+## Important Rules
+
+**Read and follow:** `rules/specification-rules.md`
+
+- **Never interpret without confirmation** - Do NOT make assumptions about user intent
+- **Always confirm through dialogue** - Ask clarifying questions when there is any room for interpretation
+
 ## Tips
 
 - Use the user's language for `title` and `description` fields (user-facing)

@@ -51,7 +51,11 @@ When this skill is invoked:
 
 ## Important Rules
 
+**Read and follow:** `rules/specification-rules.md`
+
 - **NEVER assume or guess information** - Always ask the user
+- **Never interpret without confirmation** - Do NOT make assumptions about user intent
+- **Always confirm through dialogue** - Ask clarifying questions when there is any room for interpretation
 - **Extract what you can** from provided sources, but confirm understanding
 - **Ask one category at a time** to avoid overwhelming the user
 - **Use the user's language** for descriptions and comments

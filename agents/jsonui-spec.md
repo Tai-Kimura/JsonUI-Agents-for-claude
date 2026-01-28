@@ -113,7 +113,10 @@ Finally, let's design the screen.
 
 ## Important Rules
 
+**Read and follow:** `rules/specification-rules.md`
+
 - **Design before implementation** - All specs should be created before coding
 - **API/DB first** - Design backend before UI when applicable
 - **Single source of truth** - These docs feed into all downstream agents
-- **Ask, don't assume** - Always gather requirements through dialogue
+- **Never interpret without confirmation** - Do NOT make assumptions about user intent
+- **Always confirm through dialogue** - Ask clarifying questions when there is any room for interpretation
