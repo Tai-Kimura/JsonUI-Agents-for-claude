@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # JsonUI Agents Installer for Claude Code
-# This script installs JsonUI agents to Claude Code's agents directory
+# This script installs JsonUI agents and skills to Claude Code's directories
 #
 # Usage:
 #   ./install.sh                    # Install from main branch
@@ -49,91 +49,134 @@ done
 
 REPO_URL="https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/$REF"
 AGENTS_DIR=".claude/agents"
-COMMANDS_DIR=".claude/commands"
 SKILLS_DIR=".claude/skills"
+RULES_DIR=".claude/rules"
 
-# Agent files to download
+# Agent files (in agents/ directory)
 AGENT_FILES=(
+    "jsonui-orchestrator.md"
+    "jsonui-screen-impl.md"
     "jsonui-setup.md"
-    "jsonui-generator.md"
-    "jsonui-layout.md"
-    "jsonui-refactor.md"
-    "jsonui-data.md"
-    "jsonui-viewmodel.md"
+    "jsonui-spec.md"
     "jsonui-test.md"
-    "jsonui-screen-test-implement.md"
-    "jsonui-flow-test-implement.md"
-    "jsonui-test-document.md"
-    "jsonui-test-cli.md"
-    "jsonui-test-setup-ios.md"
-    "jsonui-test-setup-android.md"
-    "jsonui-test-setup-web.md"
-    "jsonui-mermaid.md"
-    "jsonui-swagger.md"
-    "jsonui-screen-spec.md"
-    "swiftjsonui-swiftui.md"
-    "swiftjsonui-uikit.md"
-    "kotlinjsonui-compose.md"
-    "kotlinjsonui-xml.md"
-    "reactjsonui.md"
 )
+
+# Skill directories (each contains SKILL.md and optionally examples/)
+SKILL_DIRS=(
+    "jsonui-converter"
+    "jsonui-data"
+    "jsonui-flow-test-implement"
+    "jsonui-generator"
+    "jsonui-layout"
+    "jsonui-md-to-html"
+    "jsonui-refactor"
+    "jsonui-screen-spec"
+    "jsonui-screen-test-implement"
+    "jsonui-swagger"
+    "jsonui-test-cli"
+    "jsonui-test-document"
+    "jsonui-test-setup-android"
+    "jsonui-test-setup-ios"
+    "jsonui-test-setup-web"
+    "jsonui-viewmodel"
+    "kotlinjsonui-compose-setup"
+    "kotlinjsonui-xml-setup"
+    "reactjsonui-setup"
+    "swiftjsonui-swiftui-setup"
+    "swiftjsonui-uikit-setup"
+)
+
+# Rule files (in rules/ directory)
+RULE_FILES=(
+    "design-philosophy.md"
+    "file-locations.md"
+    "skill-workflow.md"
+)
+
+# Example files for skills that have them
+declare -A SKILL_EXAMPLES
+SKILL_EXAMPLES["jsonui-data"]="binding-missing-data.json binding-with-data.json collection-data-definition.json collection-items.json collection-legacy.json data-section-basic.json data-with-callbacks.json platform-specific-type.json twoway-binding-correct.json twoway-binding-wrong.json"
+SKILL_EXAMPLES["jsonui-layout"]="binding-correct.json binding-wrong.json collection-swiftui-basic.json collection-swiftui-full.json collection-uikit.json collection-wrong.json color-correct.json color-wrong.json id-naming-correct.json id-naming-wrong.json include-correct.json include-wrong.json screen-root-structure.json screen-root-wrong.json strings-json.json"
+SKILL_EXAMPLES["jsonui-refactor"]="collection-swiftui.json collection-uikit.json include-header.json include-usage.json include-wrong.json padding-correct.json padding-wrong.json style-apply.json style-card.json style-primary-button.json tabview.json"
+SKILL_EXAMPLES["jsonui-screen-spec"]="sections.md"
+SKILL_EXAMPLES["jsonui-viewmodel"]="collection-kotlin.kt collection-swift.swift colormanager-kotlin.kt colormanager-swift.swift event-handler-kotlin.kt event-handler-swift.swift hardcode-correct.kt hardcode-correct.swift hardcode-wrong.kt hardcode-wrong.swift logger-correct.swift logger-wrong.swift repository-pattern.swift stringmanager-swift.swift strings-kotlin.kt viewmodel-kotlin.kt viewmodel-swift.swift"
 
 echo "Installing JsonUI Agents for Claude Code..."
 echo "  Source: $REF_TYPE '$REF'"
 
-# Create agents directory if it doesn't exist
-if [ ! -d "$AGENTS_DIR" ]; then
-    echo "Creating agents directory: $AGENTS_DIR"
-    mkdir -p "$AGENTS_DIR"
-fi
-
-# Create commands directory if it doesn't exist
-if [ ! -d "$COMMANDS_DIR" ]; then
-    echo "Creating commands directory: $COMMANDS_DIR"
-    mkdir -p "$COMMANDS_DIR"
-fi
-
-# Create skills directory if it doesn't exist
-if [ ! -d "$SKILLS_DIR" ]; then
-    echo "Creating skills directory: $SKILLS_DIR"
-    mkdir -p "$SKILLS_DIR"
-fi
+# Create directories
+for dir in "$AGENTS_DIR" "$SKILLS_DIR" "$RULES_DIR"; do
+    if [ ! -d "$dir" ]; then
+        echo "Creating directory: $dir"
+        mkdir -p "$dir"
+    fi
+done
 
 # Download agent files
-echo "Downloading agent files..."
+echo ""
+echo "Downloading agents..."
 for file in "${AGENT_FILES[@]}"; do
-    echo "  - $file"
-    if ! curl -sLf "$REPO_URL/$file" -o "$AGENTS_DIR/$file"; then
-        echo "Error: Failed to download $file" >&2
+    echo "  - agents/$file"
+    if ! curl -sLf "$REPO_URL/agents/$file" -o "$AGENTS_DIR/$file"; then
+        echo "Error: Failed to download agents/$file" >&2
         echo "Please check if the $REF_TYPE '$REF' exists." >&2
         exit 1
     fi
-    # Also copy to commands directory
-    cp "$AGENTS_DIR/$file" "$COMMANDS_DIR/$file"
+done
 
-    # Create skill directory and copy as SKILL.md
-    skill_name="${file%.md}"
-    mkdir -p "$SKILLS_DIR/$skill_name"
-    cp "$AGENTS_DIR/$file" "$SKILLS_DIR/$skill_name/SKILL.md"
+# Download skill files
+echo ""
+echo "Downloading skills..."
+for skill in "${SKILL_DIRS[@]}"; do
+    echo "  - skills/$skill/SKILL.md"
+    mkdir -p "$SKILLS_DIR/$skill"
+    if ! curl -sLf "$REPO_URL/skills/$skill/SKILL.md" -o "$SKILLS_DIR/$skill/SKILL.md"; then
+        echo "Error: Failed to download skills/$skill/SKILL.md" >&2
+        echo "Please check if the $REF_TYPE '$REF' exists." >&2
+        exit 1
+    fi
+
+    # Download examples if they exist for this skill
+    if [ -n "${SKILL_EXAMPLES[$skill]}" ]; then
+        mkdir -p "$SKILLS_DIR/$skill/examples"
+        for example in ${SKILL_EXAMPLES[$skill]}; do
+            echo "    - examples/$example"
+            if ! curl -sLf "$REPO_URL/skills/$skill/examples/$example" -o "$SKILLS_DIR/$skill/examples/$example" 2>/dev/null; then
+                echo "    (skipped - not found)"
+            fi
+        done
+    fi
+done
+
+# Download rule files
+echo ""
+echo "Downloading rules..."
+for file in "${RULE_FILES[@]}"; do
+    echo "  - rules/$file"
+    if ! curl -sLf "$REPO_URL/rules/$file" -o "$RULES_DIR/$file"; then
+        echo "Error: Failed to download rules/$file" >&2
+        echo "Please check if the $REF_TYPE '$REF' exists." >&2
+        exit 1
+    fi
 done
 
 echo ""
 echo "Installation complete!"
 echo ""
-echo "Installed agents:"
-for file in "${AGENT_FILES[@]}"; do
-    echo "  - ${file%.md}"
-done
+echo "Installed:"
+echo "  Agents: ${#AGENT_FILES[@]}"
+echo "  Skills: ${#SKILL_DIRS[@]}"
+echo "  Rules: ${#RULE_FILES[@]}"
 echo ""
 echo "Files installed to:"
-echo "  - $AGENTS_DIR (for agents)"
-echo "  - $COMMANDS_DIR (for slash commands)"
-echo "  - $SKILLS_DIR (for skills)"
+echo "  - $AGENTS_DIR"
+echo "  - $SKILLS_DIR"
+echo "  - $RULES_DIR"
 echo ""
 echo "You can now use JsonUI agents in Claude Code."
-echo "Example: \"Use the jsonui-layout agent to create a login screen\""
+echo "Example: \"Use the jsonui-layout skill to create a login screen\""
 echo ""
 echo "----------------------------------------"
 echo "IMPORTANT: Please restart your Claude Code session"
-echo "to load the newly installed agents."
+echo "to load the newly installed agents and skills."
 echo "----------------------------------------"

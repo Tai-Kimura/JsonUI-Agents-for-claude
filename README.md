@@ -1,6 +1,6 @@
 # JsonUI Agents for Claude Code
 
-A collection of specialized agents for Claude Code to support JsonUI framework development across iOS (SwiftUI/UIKit), Android (Compose/XML), and Web (React/Next.js).
+A collection of specialized agents and skills for Claude Code to support JsonUI framework development across iOS (SwiftUI/UIKit), Android (Compose/XML), and Web (React/Next.js).
 
 ## Installation
 
@@ -20,32 +20,95 @@ curl -sL .../install.sh | bash -s -- -c abc123
 curl -sL .../install.sh | bash -s -- -v 1.0.0
 ```
 
+## Directory Structure
+
+```
+.claude/
+├── agents/           # Orchestration agents
+├── skills/           # Implementation skills
+└── rules/            # Shared rules and guidelines
+```
+
 ## Agents
 
-### Core Agents
+Agents orchestrate workflows and coordinate skills.
 
 | Agent | Description |
 |-------|-------------|
+| `jsonui-orchestrator` | Main entry point - coordinates full implementation flow |
+| `jsonui-spec` | Creates specification documents (API, DB, Screen) |
 | `jsonui-setup` | Project initialization and configuration |
+| `jsonui-screen-impl` | Screen implementation - coordinates layout/data/viewmodel skills |
+| `jsonui-test` | Test orchestration - coordinates test skills |
+
+## Skills
+
+Skills execute specific tasks. Agents invoke skills as needed.
+
+### Implementation Skills
+
+| Skill | Description |
+|-------|-------------|
 | `jsonui-generator` | Code generation for Views, Collections, Converters |
 | `jsonui-layout` | JSON layout creation and implementation |
-| `jsonui-refactor` | Layout review, style extraction, include separation, cleanup |
+| `jsonui-refactor` | Layout review, style extraction, include separation |
 | `jsonui-data` | Data section type definitions and bindings |
 | `jsonui-viewmodel` | ViewModel and business logic implementation |
+| `jsonui-converter` | Custom converter implementation |
 
-### Platform-Specific Agents
+### Specification Skills
 
-| Agent | Platform |
+| Skill | Description |
+|-------|-------------|
+| `jsonui-screen-spec` | Screen specification document creation |
+| `jsonui-swagger` | API/DB specification (OpenAPI/Swagger) |
+| `jsonui-md-to-html` | Markdown to HTML conversion |
+
+### Test Skills
+
+| Skill | Description |
+|-------|-------------|
+| `jsonui-test-cli` | Test CLI commands (validate, generate) |
+| `jsonui-screen-test-implement` | Screen test implementation |
+| `jsonui-flow-test-implement` | Flow test implementation |
+| `jsonui-test-document` | Test documentation generation |
+| `jsonui-test-setup-ios` | iOS test runner setup |
+| `jsonui-test-setup-android` | Android test runner setup |
+| `jsonui-test-setup-web` | Web test runner setup |
+
+### Platform Setup Skills
+
+| Skill | Platform |
 |-------|----------|
-| `swiftjsonui-swiftui` | iOS (SwiftUI) |
-| `swiftjsonui-uikit` | iOS (UIKit) |
-| `kotlinjsonui-compose` | Android (Jetpack Compose) |
-| `kotlinjsonui-xml` | Android (XML Views) |
-| `reactjsonui` | Web (React/Next.js) |
+| `swiftjsonui-swiftui-setup` | iOS (SwiftUI) |
+| `swiftjsonui-uikit-setup` | iOS (UIKit) |
+| `kotlinjsonui-compose-setup` | Android (Jetpack Compose) |
+| `kotlinjsonui-xml-setup` | Android (XML Views) |
+| `reactjsonui-setup` | Web (React/Next.js) |
 
 ## Workflow
 
-Recommended sequence when creating new Views/features:
+### Full Implementation Flow
+
+```
+jsonui-orchestrator
+├── Step 1: jsonui-spec (create specification)
+│   ├── /jsonui-swagger (API/DB design)
+│   └── /jsonui-screen-spec (screen design)
+├── Step 2: jsonui-setup (project configuration)
+├── Step 3: jsonui-screen-impl (implementation)
+│   ├── /jsonui-generator
+│   ├── /jsonui-layout
+│   ├── /jsonui-refactor
+│   ├── /jsonui-data
+│   └── /jsonui-viewmodel
+└── Step 4: jsonui-test (testing)
+    ├── /jsonui-test-cli
+    ├── /jsonui-screen-test-implement
+    └── /jsonui-test-document
+```
+
+### Screen Implementation Flow
 
 ```
 jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonui-viewmodel
@@ -59,47 +122,86 @@ jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonu
 
 ## Usage
 
-Invoke agents in Claude Code like this:
-
 ```
+# Full project implementation
+"Use the jsonui-orchestrator agent to create a new feature"
+
+# Create specification only
+"Use the jsonui-spec agent to design the login screen"
+
 # Set up a new project
 "Use the jsonui-setup agent to set up an iOS project"
 
-# Generate a View
-"Use the jsonui-generator agent to generate a LoginView"
+# Implement a screen (after spec is ready)
+"Use the jsonui-screen-impl agent to implement the login screen"
 
-# Edit JSON layout
-"Use the jsonui-layout agent to create the login screen layout"
-
-# Define data section
-"Use the jsonui-data agent to set up data bindings"
-
-# Implement business logic
-"Use the jsonui-viewmodel agent to implement the LoginViewModel"
+# Run tests
+"Use the jsonui-test agent to create tests for the login screen"
 ```
 
-## JsonUI Philosophy
+## Philosophy: Constrain AI to Reduce Output Variance
 
-JsonUI is a **cross-platform UI framework**:
+### The Problem with AI in Product Development
 
-1. **JSON-Driven UI**: Define UI structure in JSON, generate native code
-2. **Hot Reload**: Edit JSON and see changes instantly without rebuilding
-3. **Cross-Platform**: Same JSON works on iOS, Android, and Web
-4. **Separation of Concerns**: JSON handles layout, ViewModel handles business logic
-5. **Auto-Generated Code**: Bindings are generated from JSON - never edit them manually
+AI excels at vibe coding (one-off prototypes), but struggles with product development:
 
-## Important Rules
+```
+Normal AI Development:
+Quality = Spec Quality × Prompt Skill × Context Management
+              (unstable)    (unstable)     (unstable)
+```
 
-- **Never edit auto-generated files**: `*GeneratedView.swift`, `*Data.swift`, `*Binding.kt`, etc.
-- **Never hardcode strings or colors**: Use StringManager/ColorManager
-- **No logic in bindings**: `@{selectedTab == 0 ? #FF0000 : #0000FF}` is forbidden
-- **Validate with build**: Always run `sjui build` / `kjui build` after JSON changes
+Every variable is unstable, causing output to vary wildly.
+
+### The Solution: Constrain What AI Can Do
+
+JsonUI takes a different approach - **don't let AI do everything**:
+
+1. **Code Constraints**: Rules are embedded in tools, not prompts
+   - Wrong format? Automatic error
+   - No need to explain rules every time
+
+2. **Specialized Agents**: Separate responsibilities
+   - Layout agent only knows layout
+   - ViewModel agent only knows logic
+   - Each agent has minimal context
+
+```
+JsonUI Approach:
+Quality = Spec Quality × Code Constraints × Specialized Agents
+              (unstable)     (stable)           (stable)
+```
+
+Only "Spec Quality" remains as a variable - everything else is stabilized by architecture.
+
+### Result
+
+- **Specification is the single source of truth**
+- AI output becomes predictable and consistent
+- Quality depends on spec quality, not prompt engineering skill
 
 ## Related Repositories
 
-- [SwiftJsonUI](https://github.com/Tai-Kimura/SwiftJsonUI) - JsonUI framework for iOS
-- [KotlinJsonUI](https://github.com/Tai-Kimura/KotlinJsonUI) - JsonUI framework for Android
-- [ReactJsonUI](https://github.com/Tai-Kimura/ReactJsonUI) - JsonUI framework for Web
+### Core Frameworks
+
+- [SwiftJsonUI](https://github.com/Tai-Kimura/SwiftJsonUI) - JsonUI framework for iOS (SwiftUI / UIKit)
+- [KotlinJsonUI](https://github.com/Tai-Kimura/KotlinJsonUI) - JsonUI framework for Android (Jetpack Compose / XML Views)
+- [ReactJsonUI](https://github.com/Tai-Kimura/ReactJsonUI) - JsonUI framework for Web (React / Tailwind CSS)
+
+### CLI Tools
+
+- [jsonui-cli](https://github.com/Tai-Kimura/jsonui-cli) - CLI tools for all platforms (sjui_tools, kjui_tools, rjui_tools)
+
+### Test Runners
+
+- [jsonui-test-runner](https://github.com/Tai-Kimura/jsonui-test-runner) - Test CLI and documentation generator
+- [jsonui-test-runner-ios](https://github.com/Tai-Kimura/jsonui-test-runner-ios) - iOS test driver (XCUITest)
+- [jsonui-test-runner-android](https://github.com/Tai-Kimura/jsonui-test-runner-android) - Android test driver (UIAutomator)
+- [jsonui-test-runner-web](https://github.com/Tai-Kimura/jsonui-test-runner-web) - Web test driver (Playwright)
+
+### Developer Tools
+
+- [swiftjsonui-helper](https://github.com/Tai-Kimura/swiftjsonui-helper) - VSCode extension for SwiftJsonUI
 
 ## License
 
