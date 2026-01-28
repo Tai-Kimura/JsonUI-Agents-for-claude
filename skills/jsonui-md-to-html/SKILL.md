@@ -8,10 +8,15 @@ tools: Read, Write, Glob
 
 ## Role
 
-Convert markdown specification documents to styled HTML files with:
-- Clean, readable styling
-- Mermaid diagram rendering support
-- Proper table formatting
+Convert markdown specification documents to styled HTML files for **single screens only**.
+
+## Important Rules
+
+1. **Single Screen Only**: This skill generates HTML for one screen at a time. Navigation links, screen indexes, and cross-screen references are handled by the CLI tool - NOT by this skill.
+
+2. **Design Consistency is Critical**: The HTML template below must be used **exactly as-is** for every screen. Do NOT modify styles, colors, fonts, or layout. All screens must look identical in design.
+
+3. **No Custom Styling**: Never add custom CSS, inline styles, or design variations. The template ensures visual consistency across all documentation.
 
 ## Input/Output
 
@@ -19,6 +24,8 @@ Convert markdown specification documents to styled HTML files with:
 - **Output:** `docs/screens/html/{ScreenName}.html`
 
 ## HTML Template
+
+**Use this template exactly. Do NOT modify the styles.**
 
 ```html
 <!DOCTYPE html>
@@ -163,12 +170,20 @@ flowchart TD
 | `- item` | `<ul><li>item</li></ul>` |
 | `1. item` | `<ol><li>item</li></ol>` |
 
+## What NOT to Do
+
+- **Do NOT add navigation links** - CLI handles cross-screen navigation
+- **Do NOT add headers/footers with links to other screens** - CLI handles this
+- **Do NOT modify the CSS template** - Design must be identical across all screens
+- **Do NOT add custom colors or fonts** - Use the template exactly
+- **Do NOT generate index pages** - CLI handles documentation aggregation
+
 ## Workflow
 
 1. Read the markdown file
 2. Parse content section by section
-3. Apply conversion rules
-4. Wrap in HTML template
+3. Apply conversion rules exactly as specified
+4. Wrap in HTML template (unmodified)
 5. Write to output file
 
 ## Usage
@@ -177,10 +192,4 @@ Invoke this skill after markdown specification is finalized:
 
 ```
 /jsonui-md-to-html docs/screens/md/Login.md
-```
-
-Or batch convert:
-
-```
-/jsonui-md-to-html docs/screens/md/
 ```

@@ -134,17 +134,42 @@ Generate markdown files following this structure:
 
 ### Collection Structure (if applicable)
 
+**Note:** Document header, cell, and footer as separate Layout Structure sections below the collection definition. Each has its own component hierarchy.
+
 ```
 {collection_id} (Collection)
-├── header (optional)
-│   └── {header components}
-├── cell
-│   └── {cell template components}
-└── footer (optional)
-    └── {footer components}
+├── header (optional) → see "Header Layout Structure"
+├── cell → see "Cell Layout Structure"
+└── footer (optional) → see "Footer Layout Structure"
+```
+
+#### Header Layout Structure (if applicable)
+
+```
+{header_root} (View)
+├── {component1}
+└── {component2}
+```
+
+#### Cell Layout Structure
+
+```
+{cell_root} (View)
+├── {component1}
+├── {component2}
+└── {component3}
+```
+
+#### Footer Layout Structure (if applicable)
+
+```
+{footer_root} (View)
+└── {component1}
 ```
 
 ### TabView Structure (if applicable)
+
+**Note:** Only document the tab titles and content screens. The tab bar implementation details (icons, styling, etc.) are handled by the implementation agent - do NOT specify them here.
 
 ```
 {tabview_id} (TabView)
