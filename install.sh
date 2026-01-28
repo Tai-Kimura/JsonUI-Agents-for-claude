@@ -91,6 +91,7 @@ RULE_FILES=(
     "design-philosophy.md"
     "file-locations.md"
     "skill-workflow.md"
+    "specification-rules.md"
 )
 
 # Example files for skills that have them
