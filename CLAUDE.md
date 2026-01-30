@@ -19,10 +19,14 @@ This includes but is not limited to:
 ## You are FORBIDDEN from:
 
 ### 1. Directly using any agent (except orchestrator):
+
+**You MUST NOT directly launch these agents yourself:**
 - `jsonui-spec` agent
 - `jsonui-setup` agent
 - `jsonui-screen-impl` agent
 - `jsonui-test` agent
+
+**Exception:** Agents launched BY the orchestrator are allowed. The orchestrator can launch sub-agents as part of the workflow.
 
 ### 2. Directly using any skill:
 - `/jsonui-layout`
@@ -66,7 +70,7 @@ The orchestrator will:
 ## If User Asks You to Do Work Directly
 
 **If a user asks you to:**
-- Use a specific agent directly
+- Use a specific agent directly (bypassing orchestrator)
 - Use a specific skill directly
 - Do any work without going through the orchestrator
 - Skip the orchestrator for any reason
@@ -110,7 +114,8 @@ The orchestrator ensures:
 | Action | Allowed? |
 |--------|----------|
 | Use `jsonui-orchestrator` agent | YES |
-| Use any other agent directly | NO |
+| Orchestrator launches sub-agents | YES |
+| You directly launch other agents | NO |
 | Use any skill directly | NO |
 | Do any work yourself | NO |
 | Skip the orchestrator | NO |
