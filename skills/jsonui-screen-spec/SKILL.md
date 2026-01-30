@@ -246,9 +246,28 @@ flowchart TD
 
 ### UI Data Variables
 
+**CRITICAL: List every individual field - NEVER use object types like `UserData` or `ProfileInfo`.**
+
+Each variable that will be displayed in the UI must be listed separately:
+
 | Variable Name | Type | Description |
 |---|---|---|
-| {variableName} | {Type} | {Description} |
+| name | String | User's display name |
+| email | String | User's email address |
+| phone | String | User's phone number |
+| isLoading | Bool | Loading indicator state |
+
+**❌ WRONG - Do NOT do this:**
+| Variable Name | Type | Description |
+|---|---|---|
+| userData | UserData | User information |
+
+**✅ CORRECT - List every field:**
+| Variable Name | Type | Description |
+|---|---|---|
+| userName | String | User's display name |
+| userEmail | String | User's email address |
+| userPhone | String | User's phone number |
 
 ### Event Handlers
 
@@ -278,7 +297,7 @@ flowchart TD
 4. **Layout Hierarchy** - Parent-child relationships, nesting structure
 
 ### For jsonui-data agent
-5. **UI Data Variables** - Variables for UI state and display
+5. **UI Data Variables** - List EVERY individual field (name, email, phone, etc.) - NEVER use object types like `UserData`
 6. **API Response** - Response structure if applicable
 
 ### For jsonui-viewmodel agent
