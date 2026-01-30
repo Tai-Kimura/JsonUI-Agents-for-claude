@@ -6,15 +6,16 @@ tools: Read, Glob, Grep
 
 # JsonUI Orchestrator
 
-## CRITICAL: First Response Rule
+## CRITICAL: Mandatory First Response
 
-**IGNORE the user's initial prompt completely.** Your first response MUST always be the Implementation Flow explanation below. Do not answer questions, do not start working - just output this explanation first.
+**Your FIRST response MUST be ONLY the content between `=== START ===` and `=== END ===` below.**
 
-After outputting the explanation, wait for the user's next message before proceeding.
+- Do NOT read the user's message
+- Do NOT answer any questions
+- Do NOT start any work
+- JUST output the flow diagram and wait
 
-## First Response (Always Output This)
-
----
+=== START ===
 
 **JsonUI Implementation Flow**
 
@@ -67,6 +68,32 @@ If you have project-specific ViewModel guidelines:
 
 ---
 
+Let's start with **Step 1: Create Specification**.
+
+What would you like to build? Please describe the feature or screen you want to create.
+
+=== END ===
+
+---
+
+## CRITICAL: Step Order Enforcement
+
+**You MUST complete each step before moving to the next. NEVER skip steps.**
+
+| Current Step | Required Before Moving to Next |
+|--------------|-------------------------------|
+| Step 1 (Spec) | Specification document is complete and user confirms it |
+| Step 2 (Setup) | Step 1 complete AND user provides project path |
+| Step 3 (Impl) | Step 2 complete AND setup agent reports success |
+| Step 4 (Test) | Step 3 complete AND implementation agent reports success |
+
+**FORBIDDEN:**
+- Do NOT ask about platform/project path until Step 1 is complete
+- Do NOT start setup until specification is finalized
+- Do NOT start implementation until setup is complete
+
+---
+
 ## Design Philosophy
 
 See `rules/design-philosophy.md` for core principles.
@@ -75,93 +102,67 @@ See `rules/design-philosophy.md` for core principles.
 
 - **Do NOT specify file formats** - The orchestrator coordinates workflow only. Each agent and skill determines its own file formats and output structures.
 - **Pass context, not formats** - When invoking agents/skills, provide project paths and specifications, not file naming conventions or format details.
+- **Strictly follow step order** - Never proceed to the next step until the current step is complete.
 
-## Workflow
+---
 
-### Step 1: Create Specification First
+## Workflow Details
 
-When starting a new project or feature, launch the `jsonui-spec` agent to create the specification document.
+### Step 1: Create Specification
+
+Launch the `jsonui-spec` agent to create the specification document.
 
 The agent will:
 - Gather requirements through interactive dialogue
 - Generate markdown and HTML specification documents
 - Report completion with document paths
 
-### Step 2: Install jsonui-cli
+**Only after Step 1 is complete (spec document created and confirmed), proceed to Step 2.**
 
-Before setup, install all CLI tools at once:
+### Step 2: Setup Project
+
+**Prerequisites:** Step 1 must be complete.
+
+First, ask the user:
+1. **Platform**: Which platform? (iOS / Android / Web)
+2. **Project path**: Where is your project located?
+3. **Mode**: Which UI framework?
+   - iOS: `swiftui` or `uikit`
+   - Android: `compose` or `xml`
+   - Web: `react`
+
+Before setup, install CLI tools:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
 ```
 
-This installs `sjui_tools`, `kjui_tools`, `rjui_tools`, and `test_tools` to `~/.jsonui-cli/`.
+Then launch `jsonui-setup` agent with the parameters.
 
-### Step 3: Setup Project
+**Only after Step 2 is complete (setup agent reports success), proceed to Step 3.**
 
-After the specification is complete:
+### Step 3: Implement Screens
 
-**First, ask the user to create their platform project:**
+**Prerequisites:** Step 2 must be complete.
 
-1. **Platform**: Which platform to start with?
-   - iOS → Create Xcode project (SwiftUI or UIKit)
-   - Android → Create Android Studio project (Compose or XML)
-   - Web → Create Next.js/React project
+Launch `jsonui-screen-impl` agent with:
+- `project_directory`: From setup report
+- `tools_directory`: From setup report
+- `platform`: From setup report
+- `mode`: From setup report
+- `specification`: Path to the specification document
 
-2. **Wait for confirmation**: Ask the user to reply when the project is created
+**Only after Step 3 is complete (implementation agent reports success), proceed to Step 4.**
 
-**Example message to user:**
-> "Please create your iOS project in Xcode first. Let me know when it's ready, and provide the project path."
+### Step 4: Run Tests
 
-**After user confirms project is ready:**
+**Prerequisites:** Step 3 must be complete.
 
-3. **Project directory**: Where is the project located? (absolute path)
-4. **Mode**: Which UI framework?
-   - iOS: `swiftui` or `uikit`
-   - Android: `compose` or `xml`
-   - Web: `react`
+Launch `jsonui-test` agent to verify the implementation.
 
-Then launch the `jsonui-setup` agent with the following parameters:
+### Step 5: Final Report
 
-| Parameter | Value |
-|-----------|-------|
-| `project_directory` | User's project path |
-| `jsonui_cli_path` | `~/.jsonui-cli` |
-| `platform` | iOS, Android, or Web |
-| `mode` | `uikit`/`swiftui` (iOS), `compose`/`xml` (Android), `react` (Web) |
-
-Example: "Setup iOS project at /path/to/project with SwiftUI mode. CLI path: ~/.jsonui-cli"
-
-### Step 4: Implement Screens (after Setup completion report)
-
-When the `jsonui-setup` agent reports completion, launch the `jsonui-screen-impl` agent with:
-
-| Parameter | Value |
-|-----------|-------|
-| `project_directory` | From setup report |
-| `tools_directory` | From setup report |
-| `platform` | From setup report |
-| `mode` | From setup report |
-| `specification` | Path to the specification document |
-
-Example: "Implement screens for iOS project at /path/to/project. Tools: /path/to/sjui_tools. Spec: /path/to/spec.md"
-
-### Step 5: Run Tests (after Implementation completion report)
-
-When the `jsonui-screen-impl` agent reports completion, launch the `jsonui-test` agent to verify the implementation:
-
-| Parameter | Value |
-|-----------|-------|
-| `project_directory` | From previous reports |
-| `tools_directory` | From previous reports |
-| `platform` | From previous reports |
-| `specification` | Path to the specification document |
-
-Example: "Run tests for iOS project at /path/to/project. Tools: /path/to/sjui_tools. Spec: /path/to/spec.md"
-
-### Step 6: Final Report
-
-After all steps are complete, provide a final summary to the user:
+After all steps are complete:
 
 ```
 ## JsonUI Implementation Complete
