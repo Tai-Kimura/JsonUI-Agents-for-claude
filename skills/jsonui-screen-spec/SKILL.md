@@ -43,11 +43,11 @@ When this skill is invoked:
 5. **Iterate based on feedback**
    - Make changes as requested by the user
 
-6. **Generate HTML (after user approval)**
+6. **Generate HTML (MANDATORY - after user approval)**
    - Ask user: "Is the markdown content finalized? Should I generate the HTML version?"
-   - Only generate HTML after explicit user approval
-   - Invoke `/jsonui-md-to-html` skill to convert the markdown to HTML
-   - This saves time by avoiding repeated HTML generation during iterations
+   - After user confirms, you MUST invoke `/jsonui-md-to-html` skill
+   - **Do NOT skip this step** - The specification is incomplete without HTML
+   - **Do NOT end the workflow** until HTML is generated
 
 ## Important Rules
 
@@ -296,9 +296,21 @@ flowchart TD
 - **HTML:** `docs/screens/html/{ScreenName}.html`
 - **File name:** Use PascalCase (e.g., `Login.md`, `UserProfile.html`)
 
-## HTML Generation
+## HTML Generation (MANDATORY)
 
-After the markdown specification is finalized and approved by the user, invoke the `/jsonui-md-to-html` skill to generate the HTML version.
+**This step is REQUIRED. You MUST generate HTML after markdown is finalized.**
+
+After the user approves the markdown specification:
+
+1. **Ask for confirmation:** "Is the markdown content finalized? Should I generate the HTML version?"
+2. **After user confirms:** Immediately invoke `/jsonui-md-to-html` skill
+3. **Do NOT skip this step** - HTML generation is part of the specification workflow
+
+```
+Invoke: /jsonui-md-to-html docs/screens/md/{ScreenName}.md
+```
+
+**NEVER complete this skill without generating HTML.** The specification is not complete until both markdown AND HTML files exist.
 
 ## Examples
 
