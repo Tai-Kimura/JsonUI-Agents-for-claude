@@ -153,17 +153,14 @@ for file in $RULE_FILES; do
     rule_count=$((rule_count + 1))
 done
 
-# Download CLAUDE.md to .claude directory
+# Download CLAUDE.md to project root
 echo ""
 echo "Downloading CLAUDE.md..."
-CLAUDE_DIR=".claude"
-if [ ! -d "$CLAUDE_DIR" ]; then
-    mkdir -p "$CLAUDE_DIR"
-fi
-if ! curl -sLf "$REPO_URL/CLAUDE.md" -o "$CLAUDE_DIR/CLAUDE.md"; then
+if ! curl -sLf "$REPO_URL/CLAUDE.md" -o "CLAUDE.md"; then
     echo "Warning: Failed to download CLAUDE.md (optional)" >&2
+else
+    echo "  - CLAUDE.md (project root)"
 fi
-echo "  - CLAUDE.md"
 
 echo ""
 echo "Installation complete!"
