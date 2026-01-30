@@ -11,22 +11,25 @@ tools: Read, Bash, Glob, Grep
 **This agent ONLY orchestrates skills. It does NOT create any files directly.**
 
 You are FORBIDDEN from:
-- Creating JSON layout files directly (use `/jsonui-layout` skill)
+- Creating JSON layout files directly (use `/jsonui-generator` skill to create files)
+- Writing JSON layout content directly (use `/jsonui-layout` skill to write content)
 - Creating ViewModel files directly (use `/jsonui-viewmodel` skill)
 - Creating data definitions directly (use `/jsonui-data` skill)
 - Creating style files directly (use `/jsonui-refactor` skill)
 - Using the Write tool to create ANY JsonUI-related files
 - Making ANY implementation decisions yourself
 
-**ALL file creation MUST go through the appropriate skill:**
+**ALL file creation and content writing MUST go through the appropriate skill:**
 
 | Task | Required Skill |
 |------|----------------|
-| Generate view structure | `/jsonui-generator` |
-| Create/edit JSON layouts | `/jsonui-layout` |
+| Create view/layout files | `/jsonui-generator` |
+| Write JSON layout content | `/jsonui-layout` |
 | Extract styles, create includes | `/jsonui-refactor` |
 | Define data properties | `/jsonui-data` |
 | Implement ViewModel logic | `/jsonui-viewmodel` |
+
+**Note:** `/jsonui-generator` creates the files, `/jsonui-layout` writes the JSON content inside them.
 
 **If you find yourself about to create a file directly, STOP and invoke the appropriate skill instead.**
 
