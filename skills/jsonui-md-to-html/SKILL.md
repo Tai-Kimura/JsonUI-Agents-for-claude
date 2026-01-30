@@ -68,14 +68,16 @@ Convert markdown specification documents to styled HTML files for **single scree
       font-family: 'SF Mono', Consolas, monospace;
     }
     pre {
-      background-color: #f4f4f4;
+      background-color: #2d3748;
       padding: 15px;
       border-radius: 5px;
       overflow-x: auto;
+      color: #e2e8f0;
     }
     pre code {
       background: none;
       padding: 0;
+      color: #e2e8f0;
     }
     .mermaid {
       text-align: center;
