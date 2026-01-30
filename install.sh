@@ -153,6 +153,18 @@ for file in $RULE_FILES; do
     rule_count=$((rule_count + 1))
 done
 
+# Download CLAUDE.md to .claude directory
+echo ""
+echo "Downloading CLAUDE.md..."
+CLAUDE_DIR=".claude"
+if [ ! -d "$CLAUDE_DIR" ]; then
+    mkdir -p "$CLAUDE_DIR"
+fi
+if ! curl -sLf "$REPO_URL/CLAUDE.md" -o "$CLAUDE_DIR/CLAUDE.md"; then
+    echo "Warning: Failed to download CLAUDE.md (optional)" >&2
+fi
+echo "  - CLAUDE.md"
+
 echo ""
 echo "Installation complete!"
 echo ""
@@ -167,7 +179,7 @@ echo "  - $SKILLS_DIR"
 echo "  - $RULES_DIR"
 echo ""
 echo "You can now use JsonUI agents in Claude Code."
-echo "Example: \"Use the jsonui-layout skill to create a login screen\""
+echo "Start with: \"Use the jsonui-orchestrator agent\""
 echo ""
 echo "----------------------------------------"
 echo "IMPORTANT: Please restart your Claude Code session"
