@@ -11,6 +11,16 @@
 
 ---
 
+## How the Workflow Works
+
+1. **You launch `jsonui-orchestrator`** - It will show the implementation flow
+2. **Orchestrator tells you which agent to launch next** - Follow its instructions
+3. **You launch the specified agent** - Complete that step
+4. **Return to orchestrator** - It will tell you the next step
+5. **Repeat until complete**
+
+---
+
 ## ABSOLUTE RULE: ALL Work Goes Through the Orchestrator
 
 **This is a HARD REQUIREMENT. There are NO exceptions.**
@@ -29,7 +39,7 @@ This includes but is not limited to:
 
 ## You are FORBIDDEN from:
 
-### 1. Directly using any agent (except orchestrator):
+### 1. Directly using any agent (without orchestrator direction):
 
 **You MUST NOT directly launch these agents yourself:**
 - `jsonui-spec` agent
@@ -37,7 +47,7 @@ This includes but is not limited to:
 - `jsonui-screen-impl` agent
 - `jsonui-test` agent
 
-**Exception:** Agents launched BY the orchestrator are allowed. The orchestrator can launch sub-agents as part of the workflow.
+**Exception:** When the orchestrator tells you to launch an agent, you MUST launch it.
 
 ### 2. Directly using any skill:
 - `/jsonui-layout`
@@ -109,9 +119,9 @@ The orchestrator ensures:
 
 | Action | Allowed? |
 |--------|----------|
-| Use `jsonui-orchestrator` agent | YES |
-| Orchestrator launches sub-agents | YES |
-| You directly launch other agents | NO |
+| Launch `jsonui-orchestrator` agent | YES |
+| Launch agent when orchestrator tells you to | YES |
+| Launch any agent without orchestrator direction | NO |
 | Use any skill directly | NO |
 | Do any work yourself | NO |
 | Skip the orchestrator | NO |
