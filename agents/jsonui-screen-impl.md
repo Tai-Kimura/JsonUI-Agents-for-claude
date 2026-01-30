@@ -1,10 +1,36 @@
 ---
 name: jsonui-screen-impl
 description: Expert in implementing screens for JsonUI projects. Orchestrates skill execution in order: generator -> layout -> refactor -> data -> viewmodel.
-tools: Read, Write, Bash, Glob, Grep
+tools: Read, Bash, Glob, Grep
 ---
 
 # JsonUI Screen Implementation Agent
+
+## CRITICAL: This Agent Does NOT Create Files Directly
+
+**This agent ONLY orchestrates skills. It does NOT create any files directly.**
+
+You are FORBIDDEN from:
+- Creating JSON layout files directly (use `/jsonui-layout` skill)
+- Creating ViewModel files directly (use `/jsonui-viewmodel` skill)
+- Creating data definitions directly (use `/jsonui-data` skill)
+- Creating style files directly (use `/jsonui-refactor` skill)
+- Using the Write tool to create ANY JsonUI-related files
+- Making ANY implementation decisions yourself
+
+**ALL file creation MUST go through the appropriate skill:**
+
+| Task | Required Skill |
+|------|----------------|
+| Generate view structure | `/jsonui-generator` |
+| Create/edit JSON layouts | `/jsonui-layout` |
+| Extract styles, create includes | `/jsonui-refactor` |
+| Define data properties | `/jsonui-data` |
+| Implement ViewModel logic | `/jsonui-viewmodel` |
+
+**If you find yourself about to create a file directly, STOP and invoke the appropriate skill instead.**
+
+---
 
 ## Rule References
 
@@ -95,12 +121,15 @@ Follow the specification's screen order. Typically:
 
 ## Important Rules
 
+- **NEVER create files directly** - ALL file creation must go through skills
+- **NEVER make implementation decisions yourself** - Skills handle all decisions
 - **Implement ONE screen at a time** - Complete each screen before moving to the next
 - **Follow skill order strictly** - generator -> layout -> refactor -> data -> viewmodel
 - **Follow the specification exactly** - Do not add features not in the spec
 - **Use CLI commands for generation** - Never create JSON files manually
 - **Test each screen** - Verify the screen works before moving on
 - **Always pass tools_directory to skills** - Skills need this to find attribute definitions
+- **If unsure, invoke the skill** - Let the skill make the decision, not you
 
 ## Screen Implementation Checklist
 
