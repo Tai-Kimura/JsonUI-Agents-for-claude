@@ -40,12 +40,14 @@ When this skill is invoked:
    - Create the markdown file only after gathering all required information
    - Present for user review
 
-5. **Iterate based on feedback**
-   - Make changes as requested by the user
+5. **Confirm the specification is correct (MANDATORY)**
+   - After generating markdown, you MUST ask: "Is this specification correct? Please review and let me know if any changes are needed."
+   - **Do NOT proceed until user explicitly confirms the specification is correct**
+   - If user requests changes, make the changes and ask for confirmation again
+   - Only proceed to HTML generation after user confirms
 
-6. **Generate HTML (MANDATORY - after user approval)**
-   - Ask user: "Is the markdown content finalized? Should I generate the HTML version?"
-   - After user confirms, you MUST invoke `/jsonui-md-to-html` skill
+6. **Generate HTML (MANDATORY - after user confirmation)**
+   - After user confirms the specification is correct, immediately invoke `/jsonui-md-to-html` skill
    - **Do NOT skip this step** - The specification is incomplete without HTML
    - **Do NOT end the workflow** until HTML is generated
 
@@ -296,21 +298,33 @@ flowchart TD
 - **HTML:** `docs/screens/html/{ScreenName}.html`
 - **File name:** Use PascalCase (e.g., `Login.md`, `UserProfile.html`)
 
-## HTML Generation (MANDATORY)
+## Confirmation and HTML Generation (MANDATORY)
 
-**This step is REQUIRED. You MUST generate HTML after markdown is finalized.**
+**Both steps are REQUIRED. You MUST confirm the specification AND generate HTML.**
 
-After the user approves the markdown specification:
+### Step 1: Confirm Specification
 
-1. **Ask for confirmation:** "Is the markdown content finalized? Should I generate the HTML version?"
-2. **After user confirms:** Immediately invoke `/jsonui-md-to-html` skill
-3. **Do NOT skip this step** - HTML generation is part of the specification workflow
+After generating the markdown specification:
+
+1. Ask: "Is this specification correct? Please review and let me know if any changes are needed."
+2. Wait for user to explicitly confirm (e.g., "yes", "correct", "looks good", "OK")
+3. If user requests changes, make changes and ask for confirmation again
+4. **Do NOT proceed until user confirms**
+
+### Step 2: Generate HTML
+
+After user confirms the specification is correct:
+
+1. Immediately invoke `/jsonui-md-to-html` skill
+2. **Do NOT ask again** - Just generate HTML automatically after confirmation
 
 ```
 Invoke: /jsonui-md-to-html docs/screens/md/{ScreenName}.md
 ```
 
-**NEVER complete this skill without generating HTML.** The specification is not complete until both markdown AND HTML files exist.
+**NEVER complete this skill without:**
+1. User confirmation that the specification is correct
+2. HTML file generation
 
 ## Examples
 
