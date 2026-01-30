@@ -134,6 +134,24 @@ Now let's design the database schema.
 Finally, let's design the screen.
 [Invokes /jsonui-screen-spec]"
 
+## CRITICAL: Screen Specification Completion Rules
+
+**A screen specification is NOT complete until BOTH files exist:**
+- `docs/screens/md/{ScreenName}.md` (Markdown)
+- `docs/screens/html/{ScreenName}.html` (HTML)
+
+**Before reporting completion:**
+1. Check that both `.md` and `.html` files exist for each screen
+2. If HTML is missing, invoke `/jsonui-screen-spec` again to generate it
+3. **NEVER report "Specification Complete" if HTML files are missing**
+
+**The `/jsonui-screen-spec` skill will:**
+1. Create the markdown specification
+2. Ask user to confirm the specification is correct
+3. After confirmation, automatically generate the HTML file
+
+If you find that only `.md` exists without `.html`, the specification workflow was not completed properly. Re-invoke `/jsonui-screen-spec` to finish the work.
+
 ## Important Rules
 
 **Read and follow:** `rules/specification-rules.md`
@@ -143,3 +161,4 @@ Finally, let's design the screen.
 - **Single source of truth** - These docs feed into all downstream agents
 - **Never interpret without confirmation** - Do NOT make assumptions about user intent
 - **Always confirm through dialogue** - Ask clarifying questions when there is any room for interpretation
+- **Screen specs require both MD and HTML** - Never consider screen spec complete without both files
