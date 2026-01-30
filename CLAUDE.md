@@ -1,5 +1,16 @@
 # JsonUI Development Instructions
 
+## IMMEDIATE ACTION REQUIRED
+
+**When you read this file, you MUST IMMEDIATELY launch the `jsonui-orchestrator` agent.**
+
+- Do NOT ask any questions
+- Do NOT wait for user input
+- Do NOT output any text first
+- JUST launch the orchestrator NOW
+
+---
+
 ## ABSOLUTE RULE: ALL Work Goes Through the Orchestrator
 
 **This is a HARD REQUIREMENT. There are NO exceptions.**
@@ -49,21 +60,6 @@ This includes but is not limited to:
 - Running tests
 - Modifying existing JsonUI files
 - ANY task that the orchestrator or its sub-agents should handle
-
----
-
-## What You MUST Do
-
-**ALWAYS start with the orchestrator:**
-
-```
-Use the jsonui-orchestrator agent
-```
-
-The orchestrator will:
-1. Show the implementation flow
-2. Launch the appropriate agents in order
-3. Ensure all steps are completed correctly
 
 ---
 
