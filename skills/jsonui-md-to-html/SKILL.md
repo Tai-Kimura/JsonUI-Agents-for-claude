@@ -10,6 +10,24 @@ tools: Read, Write, Glob
 
 Convert markdown specification documents to styled HTML files for **single screens only**.
 
+## CRITICAL: No Content Loss
+
+**Every single element in the markdown file MUST appear in the HTML output.**
+
+- **NEVER skip any section, heading, table, code block, or text**
+- **NEVER summarize or abbreviate content**
+- **NEVER omit any rows from tables**
+- **NEVER truncate code blocks**
+- **Convert ALL content from the markdown file - 100% completeness is required**
+
+If you are unsure whether something should be included, **include it**.
+
+**Before finishing, verify:**
+1. All headings from markdown appear in HTML
+2. All tables have the same number of rows
+3. All code blocks are fully converted
+4. All paragraphs and lists are present
+
 ## Important Rules
 
 1. **Single Screen Only**: This skill generates HTML for one screen at a time. Navigation links, screen indexes, and cross-screen references are handled by the CLI tool - NOT by this skill.
@@ -17,6 +35,8 @@ Convert markdown specification documents to styled HTML files for **single scree
 2. **Design Consistency is Critical**: The HTML template below must be used **exactly as-is** for every screen. Do NOT modify styles, colors, fonts, or layout. All screens must look identical in design.
 
 3. **No Custom Styling**: Never add custom CSS, inline styles, or design variations. The template ensures visual consistency across all documentation.
+
+4. **Complete Conversion**: Every element in the markdown must be converted to HTML. No exceptions.
 
 ## Input/Output
 
