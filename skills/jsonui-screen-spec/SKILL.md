@@ -186,11 +186,23 @@ Generate markdown files following this structure:
 
 ## Data Flow
 
+**IMPORTANT:** When writing API paths in mermaid, `/` is a special character. Always wrap paths in double quotes.
+
 ```mermaid
 flowchart TD
     VIEW[View] --> VM[ViewModel]
     VM --> REPO[Repository]
-    REPO --> API[API]
+    REPO --> API["/api/v1/users"]
+```
+
+**❌ WRONG:**
+```
+REPO --> API[/api/v1/users]
+```
+
+**✅ CORRECT:**
+```
+REPO --> API["/api/v1/users"]
 ```
 
 *Describe the data flow specific to this screen*
