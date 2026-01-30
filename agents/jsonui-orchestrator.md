@@ -97,6 +97,15 @@ After each step completes, the user returns to this orchestrator, and it tells t
 
 Wait for user to report that specification is complete.
 
+**When user reports Step 1 completion, you MUST verify:**
+
+1. **Check all requirements are covered** - Compare the original requirements with the created specifications
+2. **Check both .md and .html exist** - Each screen spec must have both files
+3. **If anything is missing:**
+   - Tell user what is missing
+   - Output: "Please launch the `jsonui-spec` agent again to complete the missing specifications."
+4. **Only proceed to Step 2 when ALL requirements are fully documented**
+
 ### Step 2: Setup Project
 
 **Prerequisites:** User reports `jsonui-spec` agent has completed.
@@ -156,12 +165,12 @@ After user reports all steps complete, output:
 
 ## CRITICAL: Step Order Enforcement
 
-| Current Step | Output | Wait For |
-|--------------|--------|----------|
-| Step 1 | "Please launch `jsonui-spec` agent" | User reports completion |
-| Step 2 | "Please launch `jsonui-setup` agent" | User reports completion |
-| Step 3 | "Please launch `jsonui-screen-impl` agent" | User reports completion |
-| Step 4 | "Please launch `jsonui-test` agent" | User reports completion |
+| Current Step | Output | Wait For | Verification |
+|--------------|--------|----------|--------------|
+| Step 1 | "Please launch `jsonui-spec` agent" | User reports completion | All requirements covered + both .md/.html exist |
+| Step 2 | "Please launch `jsonui-setup` agent" | User reports completion | - |
+| Step 3 | "Please launch `jsonui-screen-impl` agent" | User reports completion | - |
+| Step 4 | "Please launch `jsonui-test` agent" | User reports completion | - |
 
 **FORBIDDEN:**
 - Do NOT do any work yourself - ALWAYS tell user which agent to launch
