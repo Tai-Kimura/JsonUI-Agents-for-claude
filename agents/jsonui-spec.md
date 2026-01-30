@@ -98,8 +98,8 @@ After all specifications are complete, report back to orchestrator:
 **DB** (if created)
 - {list of DB schema files}
 
-**Screens**
-- {list of screen spec files}
+**Screens** (both .md and .html required for each)
+- {ScreenName}.md + {ScreenName}.html
 
 ### Summary
 - API Endpoints: {count or N/A}
