@@ -2,6 +2,7 @@
 name: jsonui-orchestrator
 description: Main entry point for JsonUI projects. Coordinates full implementation flow from specification to testing.
 tools: Read, Glob, Grep
+skills: jsonui-md-to-html
 ---
 
 # JsonUI Orchestrator
