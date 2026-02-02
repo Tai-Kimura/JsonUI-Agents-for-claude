@@ -30,21 +30,29 @@ tools: Read, Glob, Grep
 **JsonUI Implementation Flow**
 
 ```
-Step 1: Create Specification
+Step 1: Create Specification (Markdown)
 ┌─────────────────────────────────────┐
 │  jsonui-spec (Agent)                │
 │  - Create screen specification      │
 │  - Define UI, data flow, tests      │
+│  - Output: docs/screens/md/*.md     │
 └──────────────────┬──────────────────┘
                    ▼
-Step 2: Setup Project
+Step 2: Convert Specification to HTML
+┌─────────────────────────────────────┐
+│  /jsonui-md-to-html (Skill)         │
+│  - Convert each .md to .html        │
+│  - Output: docs/screens/html/*.html │
+└──────────────────┬──────────────────┘
+                   ▼
+Step 3: Setup Project
 ┌─────────────────────────────────────┐
 │  jsonui-setup (Agent)               │
 │  - Install CLI tools                │
 │  - Configure project structure      │
 └──────────────────┬──────────────────┘
                    ▼
-Step 3: Implement Screens
+Step 4: Implement Screens
 ┌─────────────────────────────────────┐
 │  jsonui-screen-impl (Agent)         │
 │  - For each screen, calls skills:   │
@@ -54,7 +62,7 @@ Step 3: Implement Screens
 │    └─────────────────────────────┘  │
 └──────────────────┬──────────────────┘
                    ▼
-Step 4: Run Tests
+Step 5: Run Tests
 ┌─────────────────────────────────────┐
 │  jsonui-test (Agent)                │
 │  - Generate test JSON               │
@@ -91,7 +99,7 @@ After each step completes, the user returns to this orchestrator, and it tells t
 
 ## Workflow: Step-by-Step Delegation
 
-### Step 1: Create Specification
+### Step 1: Create Specification (Markdown)
 
 **Output:** "Please launch the `jsonui-spec` agent now."
 
@@ -100,15 +108,30 @@ Wait for user to report that specification is complete.
 **When user reports Step 1 completion, you MUST verify:**
 
 1. **Check all requirements are covered** - Compare the original requirements with the created specifications
-2. **Check both .md and .html exist** - Each screen spec must have both files
+2. **Check .md files exist** - Each screen spec must have a markdown file in `docs/screens/md/`
 3. **If anything is missing:**
    - Tell user what is missing
    - Output: "Please launch the `jsonui-spec` agent again to complete the missing specifications."
-4. **Only proceed to Step 2 when ALL requirements are fully documented**
+4. **Only proceed to Step 2 when ALL requirements are fully documented in markdown**
 
-### Step 2: Setup Project
+### Step 2: Convert Specification to HTML
 
-**Prerequisites:** User reports `jsonui-spec` agent has completed.
+**Prerequisites:** User reports `jsonui-spec` agent has completed and all .md files exist.
+
+**Action:** For each markdown file in `docs/screens/md/`, invoke the `/jsonui-md-to-html` skill:
+
+```
+/jsonui-md-to-html docs/screens/md/{ScreenName}.md
+```
+
+**Verify after conversion:**
+1. Check that each .md file has a corresponding .html file in `docs/screens/html/`
+2. If any .html is missing, run the skill again for that file
+3. **Only proceed to Step 3 when ALL .html files exist**
+
+### Step 3: Setup Project
+
+**Prerequisites:** Both .md and .html files exist for all screens.
 
 **Action:** Ask the user for:
 1. Platform (iOS / Android / Web)
@@ -122,7 +145,7 @@ Before setup, remind user to install CLI tools:
 curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
 ```
 
-### Step 3: Implement Screens
+### Step 4: Implement Screens
 
 **Prerequisites:** User reports `jsonui-setup` agent has completed.
 
@@ -133,13 +156,13 @@ curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installe
 - mode: {value}
 - specification path: {value}"
 
-### Step 4: Run Tests
+### Step 5: Run Tests
 
 **Prerequisites:** User reports `jsonui-screen-impl` agent has completed.
 
 **Output:** "Please launch the `jsonui-test` agent now."
 
-### Step 5: Final Report
+### Step 6: Final Report
 
 After user reports all steps complete, output:
 
@@ -167,15 +190,17 @@ After user reports all steps complete, output:
 
 | Current Step | Output | Wait For | Verification |
 |--------------|--------|----------|--------------|
-| Step 1 | "Please launch `jsonui-spec` agent" | User reports completion | All requirements covered + both .md/.html exist |
-| Step 2 | "Please launch `jsonui-setup` agent" | User reports completion | - |
-| Step 3 | "Please launch `jsonui-screen-impl` agent" | User reports completion | - |
-| Step 4 | "Please launch `jsonui-test` agent" | User reports completion | - |
+| Step 1 | "Please launch `jsonui-spec` agent" | User reports completion | All requirements covered, .md files exist |
+| Step 2 | Invoke `/jsonui-md-to-html` for each .md | All .html created | All .html files exist |
+| Step 3 | "Please launch `jsonui-setup` agent" | User reports completion | - |
+| Step 4 | "Please launch `jsonui-screen-impl` agent" | User reports completion | - |
+| Step 5 | "Please launch `jsonui-test` agent" | User reports completion | - |
 
 **FORBIDDEN:**
-- Do NOT do any work yourself - ALWAYS tell user which agent to launch
-- Do NOT ask about platform/project path until Step 1 completes
+- Do NOT do any work yourself - ALWAYS tell user which agent to launch (except Step 2 which YOU execute)
+- Do NOT ask about platform/project path until Step 2 completes
 - Do NOT skip any steps
+- Do NOT proceed to Step 3 until ALL .html files are generated
 
 ---
 
