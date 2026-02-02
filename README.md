@@ -20,6 +20,16 @@ curl -sL .../install.sh | bash -s -- -c abc123
 curl -sL .../install.sh | bash -s -- -v 1.0.0
 ```
 
+### After Installation
+
+After installing, prompt Claude Code to start the workflow:
+
+```
+CLAUDE.mdを読んで
+```
+
+This will automatically launch the `jsonui-orchestrator` agent which guides you through the entire implementation flow.
+
 ## Directory Structure
 
 ```
@@ -92,17 +102,18 @@ Skills execute specific tasks. Agents invoke skills as needed.
 
 ```
 jsonui-orchestrator
-├── Step 1: jsonui-spec (create specification)
+├── Step 1: jsonui-spec (create specification - markdown)
 │   ├── /jsonui-swagger (API/DB design)
 │   └── /jsonui-screen-spec (screen design)
-├── Step 2: jsonui-setup (project configuration)
-├── Step 3: jsonui-screen-impl (implementation)
+├── Step 2: /jsonui-md-to-html (convert specs to HTML)
+├── Step 3: jsonui-setup (project configuration)
+├── Step 4: jsonui-screen-impl (implementation)
 │   ├── /jsonui-generator
 │   ├── /jsonui-layout
 │   ├── /jsonui-refactor
 │   ├── /jsonui-data
 │   └── /jsonui-viewmodel
-└── Step 4: jsonui-test (testing)
+└── Step 5: jsonui-test (testing)
     ├── /jsonui-test-cli
     ├── /jsonui-screen-test-implement
     └── /jsonui-test-document
