@@ -79,15 +79,15 @@ Received from parent agent:
 
 ```bash
 # SwiftJsonUI
-<tools_directory>/bin/sjui g collection <ViewName>/<CellName>
+<tools_directory>/bin/sjui g collection <directory_name>/<CellName>
 
 # KotlinJsonUI
-<tools_directory>/bin/kjui g collection <ViewName>/<CellName>
+<tools_directory>/bin/kjui g collection <directory_name>/<CellName>
 ```
 
 **Example:**
 ```bash
-<tools_directory>/bin/sjui g collection Inventory/InventoryItem
+<tools_directory>/bin/sjui g collection inventory/InventoryItem
 ```
 
 **Generated Files:**

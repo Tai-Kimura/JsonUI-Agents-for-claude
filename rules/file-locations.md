@@ -33,12 +33,12 @@ Subdirectories allowed:
 
 ```bash
 # ❌ WRONG - Generate then move
-./sjui_tools/bin/sjui g collection Home/ItemCell
-mv Layouts/Home/ItemCell.json Layouts/cells/ItemCell.json  # FORBIDDEN
+./sjui_tools/bin/sjui g collection home/ItemCell
+mv Layouts/home/item_cell.json Layouts/cells/item_cell.json  # FORBIDDEN
 
 # ✅ CORRECT - CLI automatically places cell under screen directory
-./sjui_tools/bin/sjui g collection Home/ItemCell
-# → Generates: Layouts/Home/ItemCell.json (automatically under Home/)
+./sjui_tools/bin/sjui g collection home/ItemCell
+# → Generates: Layouts/home/item_cell.json
 ```
 
 **The CLI determines file locations. Never move files after generation.**
