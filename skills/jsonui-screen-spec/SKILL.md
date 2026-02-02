@@ -44,12 +44,7 @@ When this skill is invoked:
    - After generating markdown, you MUST ask: "Is this specification correct? Please review and let me know if any changes are needed."
    - **Do NOT proceed until user explicitly confirms the specification is correct**
    - If user requests changes, make the changes and ask for confirmation again
-   - Only proceed to HTML generation after user confirms
-
-6. **Generate HTML (MANDATORY - after user confirmation)**
-   - After user confirms the specification is correct, immediately invoke `/jsonui-md-to-html` skill
-   - **Do NOT skip this step** - The specification is incomplete without HTML
-   - **Do NOT end the workflow** until HTML is generated
+   - After user confirms, the workflow is complete (HTML conversion is handled by the orchestrator)
 
 ## Important Rules
 
@@ -326,36 +321,19 @@ Each variable that will be displayed in the UI must be listed separately:
 ## File Naming
 
 - **Markdown:** `docs/screens/md/{ScreenName}.md`
-- **HTML:** `docs/screens/html/{ScreenName}.html`
-- **File name:** Use PascalCase (e.g., `Login.md`, `UserProfile.html`)
+- **File name:** Use PascalCase (e.g., `Login.md`)
+- **Note:** HTML conversion is handled by the orchestrator, not this skill
 
-## Confirmation and HTML Generation (MANDATORY)
-
-**Both steps are REQUIRED. You MUST confirm the specification AND generate HTML.**
-
-### Step 1: Confirm Specification
+## Confirmation (MANDATORY)
 
 After generating the markdown specification:
 
 1. Ask: "Is this specification correct? Please review and let me know if any changes are needed."
 2. Wait for user to explicitly confirm (e.g., "yes", "correct", "looks good", "OK")
 3. If user requests changes, make changes and ask for confirmation again
-4. **Do NOT proceed until user confirms**
+4. **Do NOT end the workflow until user confirms**
 
-### Step 2: Generate HTML
-
-After user confirms the specification is correct:
-
-1. Immediately invoke `/jsonui-md-to-html` skill
-2. **Do NOT ask again** - Just generate HTML automatically after confirmation
-
-```
-Invoke: /jsonui-md-to-html docs/screens/md/{ScreenName}.md
-```
-
-**NEVER complete this skill without:**
-1. User confirmation that the specification is correct
-2. HTML file generation
+After confirmation, report completion. The orchestrator will handle HTML conversion.
 
 ## Examples
 
