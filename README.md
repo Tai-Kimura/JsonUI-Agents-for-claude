@@ -25,7 +25,7 @@ curl -sL .../install.sh | bash -s -- -v 1.0.0
 After installing, prompt Claude Code to start the workflow:
 
 ```
-CLAUDE.mdを読んで
+Read CLAUDE.md
 ```
 
 This will automatically launch the `jsonui-orchestrator` agent which guides you through the entire implementation flow.
