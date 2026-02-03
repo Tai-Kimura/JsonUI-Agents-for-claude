@@ -17,22 +17,24 @@ Create `.spec.json` specification documents for screens/views through interactiv
 
 ## Workflow
 
-### Step 1: Confirm tools_directory
-If not provided, ask: "Where are the JsonUI CLI tools installed? (default: current directory)"
+### Step 1: Confirm directories
+Ask the user:
+1. "Where are the JsonUI CLI tools installed? (default: current directory)" → `{tools_directory}`
+2. "Where is your project directory?" → `{project_directory}`
 
 ### Step 2: Get screen name and create template
 Ask: "What is the screen name? (PascalCase, e.g., Login, UserProfile)"
 
 Then run:
 ```bash
-cd {tools_directory}/jsonui-cli && jsonui-doc init spec {ScreenName} -d "{DisplayName}"
+jsonui-doc init spec {ScreenName} -d "{DisplayName}" -o {project_directory}/docs/screens/json
 ```
 
-This creates `docs/screens/json/{screenname}.spec.json` with the correct structure.
+This creates `{project_directory}/docs/screens/json/{screenname}.spec.json` with the correct structure.
 
 ### Step 3: Read the generated template
 ```bash
-cat docs/screens/json/{screenname}.spec.json
+cat {project_directory}/docs/screens/json/{screenname}.spec.json
 ```
 
 ### Step 4: Gather information via dialogue
@@ -47,11 +49,11 @@ Ask about each section one at a time:
 8. **Navigation** - Screen transitions
 
 ### Step 5: Update the specification file
-Edit `docs/screens/json/{screenname}.spec.json` with gathered information.
+Edit `{project_directory}/docs/screens/json/{screenname}.spec.json` with gathered information.
 
 ### Step 6: Validate
 ```bash
-cd {tools_directory}/jsonui-cli && jsonui-doc validate spec docs/screens/json/{screenname}.spec.json
+jsonui-doc validate spec {project_directory}/docs/screens/json/{screenname}.spec.json
 ```
 
 ### Step 7: Confirm with user
@@ -61,7 +63,7 @@ Ask: "Is this specification correct?"
 
 ### Step 8: Generate HTML documentation
 ```bash
-cd {tools_directory}/jsonui-cli && jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{screenname}.html
+jsonui-doc generate spec {project_directory}/docs/screens/json/{screenname}.spec.json -o {project_directory}/docs/screens/html/{screenname}.html
 ```
 
 ## Important Rules
@@ -93,8 +95,8 @@ cd {tools_directory}/jsonui-cli && jsonui-doc generate spec docs/screens/json/{s
 ## CLI Commands Reference
 
 ```bash
-# Create new specification template
-jsonui-doc init spec {ScreenName} -d "{DisplayName}"
+# Create new specification template (in project directory)
+jsonui-doc init spec {ScreenName} -d "{DisplayName}" -o {project_directory}/docs/screens/json
 
 # Validate specification
 jsonui-doc validate spec {file}
