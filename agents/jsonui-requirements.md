@@ -152,11 +152,11 @@ The skill will create:
 
 ---
 
-## MANDATORY: Final Step - Create requirements.md
+## MANDATORY: Final Step - Create REQUIREMENTS.md
 
-**After the skill completes all screen definitions, you MUST create a `requirements.md` file in the project root.**
+**After the skill completes all screen definitions, you MUST create a `REQUIREMENTS.md` file in the project root.**
 
-Create file: `{project_directory}/requirements.md`
+Create file: `{project_directory}/REQUIREMENTS.md`
 
 ```markdown
 # Requirements
