@@ -76,6 +76,9 @@ get_skill_examples() {
         jsonui-screen-spec)
             echo "component.json data-flow.json layout.json state-management.json transitions.json user-actions.json validation.json"
             ;;
+        jsonui-swagger)
+            echo "db-extensions.json db-model-template.json property-types.json"
+            ;;
         jsonui-viewmodel)
             echo "collection-kotlin.kt collection-swift.swift colormanager-kotlin.kt colormanager-swift.swift event-handler-kotlin.kt event-handler-swift.swift hardcode-correct.kt hardcode-correct.swift hardcode-wrong.kt hardcode-wrong.swift logger-correct.swift logger-wrong.swift repository-pattern.swift stringmanager-swift.swift strings-kotlin.kt viewmodel-kotlin.kt viewmodel-swift.swift"
             ;;
