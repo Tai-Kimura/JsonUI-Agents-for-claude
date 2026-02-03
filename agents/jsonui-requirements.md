@@ -147,5 +147,26 @@ Let me help you define the screens for this app.
 This agent does NOT create output files. It collects basic information and delegates to the skill.
 
 The skill will create:
-- `docs/screens/json/{screen_name}.spec.json` - Screen specification (one per screen)
+- `docs/requirements/{screen_name}.md` - Screen requirements (one per screen)
 - `docs/requirements/screens-summary.md` - Summary of all screens
+
+---
+
+## MANDATORY: Final Step - Create requirements.md
+
+**After the skill completes all screen definitions, you MUST create a `requirements.md` file in the project root.**
+
+Create file: `{project_directory}/requirements.md`
+
+```markdown
+# Requirements
+
+See `docs/requirements/` for detailed screen requirements.
+
+## Files
+
+- [screens-summary.md](docs/requirements/screens-summary.md) - Overview of all screens
+- Individual screen requirements in `docs/requirements/`
+```
+
+**This file is MANDATORY.** Do not skip this step.
