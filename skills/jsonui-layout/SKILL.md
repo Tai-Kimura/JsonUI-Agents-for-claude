@@ -89,6 +89,41 @@ Define cell/header/footer structure via `sections`. Each view requires a JSON fi
 
 ---
 
+## TabView (Tab Navigation)
+
+**⛔ NEVER create custom tab bars manually. Always use the built-in TabView component.**
+
+TabView provides native tab navigation with:
+- Platform-native tab bar appearance
+- Automatic icon and title rendering
+- Proper view switching
+
+→ Examples: `examples/tabview.json`, `examples/tabview-wrong.json`
+
+### Correct Usage
+
+```json
+{
+  "type": "TabView",
+  "tabs": [
+    { "title": "Home", "icon": "house", "view": "home" },
+    { "title": "Search", "icon": "magnifyingglass", "view": "search" }
+  ]
+}
+```
+
+### Prohibited Patterns
+
+**DO NOT:**
+- Create a View with horizontal buttons as a tab bar
+- Manually implement tab switching logic in ViewModel
+- Use onClick handlers to switch between tabs
+- Create custom tab indicator views
+
+**If you need tab-based navigation, use TabView. Period.**
+
+---
+
 ## Include Syntax
 
 **Include is NOT a type** - It's a reference directive.

@@ -1,0 +1,21 @@
+{
+  "_comment": "TabView - Use this component for tab navigation. DO NOT create custom tab bars.",
+  "type": "TabView",
+  "tabs": [
+    {
+      "title": "Home",
+      "icon": "house",
+      "view": "home"
+    },
+    {
+      "title": "Search",
+      "icon": "magnifyingglass",
+      "view": "search"
+    },
+    {
+      "title": "Profile",
+      "icon": "person",
+      "view": "profile"
+    }
+  ]
+}

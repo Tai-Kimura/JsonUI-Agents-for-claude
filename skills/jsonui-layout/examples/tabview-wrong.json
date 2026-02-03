@@ -1,0 +1,37 @@
+{
+  "_comment": "WRONG: Do NOT create custom tab bars manually!",
+  "type": "View",
+  "orientation": "vertical",
+  "children": [
+    {
+      "_comment": "WRONG: Custom content switching",
+      "type": "View",
+      "id": "contentArea"
+    },
+    {
+      "_comment": "WRONG: Custom tab bar implementation",
+      "type": "View",
+      "orientation": "horizontal",
+      "children": [
+        {
+          "type": "Button",
+          "id": "homeTabButton",
+          "text": "Home",
+          "onClick": "@{onHomeTabTap}"
+        },
+        {
+          "type": "Button",
+          "id": "searchTabButton",
+          "text": "Search",
+          "onClick": "@{onSearchTabTap}"
+        },
+        {
+          "type": "Button",
+          "id": "profileTabButton",
+          "text": "Profile",
+          "onClick": "@{onProfileTabTap}"
+        }
+      ]
+    }
+  ]
+}

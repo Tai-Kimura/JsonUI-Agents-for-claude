@@ -68,7 +68,7 @@ get_skill_examples() {
             echo "binding-missing-data.json binding-with-data.json collection-data-definition.json collection-items.json collection-legacy.json data-section-basic.json data-with-callbacks.json platform-specific-type.json twoway-binding-correct.json twoway-binding-wrong.json"
             ;;
         jsonui-layout)
-            echo "binding-correct.json binding-wrong.json collection-swiftui-basic.json collection-swiftui-full.json collection-uikit.json collection-wrong.json color-correct.json color-wrong.json id-naming-correct.json id-naming-wrong.json include-correct.json include-wrong.json screen-root-structure.json screen-root-wrong.json strings-json.json"
+            echo "binding-correct.json binding-wrong.json collection-swiftui-basic.json collection-swiftui-full.json collection-uikit.json collection-wrong.json color-correct.json color-wrong.json id-naming-correct.json id-naming-wrong.json include-correct.json include-wrong.json screen-root-structure.json screen-root-wrong.json strings-json.json tabview.json tabview-wrong.json"
             ;;
         jsonui-refactor)
             echo "collection-swiftui.json collection-uikit.json include-header.json include-usage.json include-wrong.json padding-correct.json padding-wrong.json style-apply.json style-card.json style-primary-button.json tabview.json"
