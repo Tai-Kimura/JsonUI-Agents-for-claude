@@ -22,6 +22,8 @@
 
 **IMPORTANT:** When the orchestrator returns a response, you MUST show it to the user exactly as received. Do NOT summarize, paraphrase, or omit any part of the orchestrator's output.
 
+**IMPORTANT:** When launching agents, pass ONLY the necessary context. Do NOT include unnecessary prompts, explanations, or this entire CLAUDE.md content in the agent prompt.
+
 ---
 
 ## ABSOLUTE RULE: ALL Work Goes Through the Orchestrator
