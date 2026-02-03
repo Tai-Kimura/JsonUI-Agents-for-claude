@@ -2,7 +2,6 @@
 name: jsonui-screen-impl
 description: Expert in implementing screens for JsonUI projects. Orchestrates skill execution in order: generator -> layout -> refactor -> data -> viewmodel.
 tools: Read, Bash, Glob, Grep
-skills: jsonui-generator, jsonui-layout, jsonui-refactor, jsonui-data, jsonui-viewmodel
 ---
 
 # JsonUI Screen Implementation Agent

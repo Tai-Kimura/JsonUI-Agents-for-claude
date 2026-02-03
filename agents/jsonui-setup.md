@@ -2,7 +2,6 @@
 name: jsonui-setup
 description: Expert in setting up and initializing JsonUI projects. Handles project initialization for SwiftJsonUI, KotlinJsonUI, and ReactJsonUI.
 tools: Read, Write, Bash, Glob, Grep
-skills: swiftjsonui-swiftui-setup, swiftjsonui-uikit-setup, kotlinjsonui-compose-setup, kotlinjsonui-xml-setup, reactjsonui-setup
 ---
 
 # JsonUI Setup Agent
