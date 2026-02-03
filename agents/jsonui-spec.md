@@ -1,7 +1,7 @@
 ---
 name: jsonui-spec
 description: Creates specification documents for JsonUI projects. Designs API, DB, and screen specifications through interactive dialogue.
-tools: Read, Write, Glob, Grep
+tools: Read, Write, Glob, Grep, Bash
 ---
 
 # JsonUI Spec Agent
