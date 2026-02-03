@@ -53,7 +53,8 @@ After the user responds to your first question, confirm which specifications to 
 
 3. **Screen Design** (UI screens)
    - Use `/jsonui-screen-spec` skill
-   - Location: `docs/screens/{ScreenName}.spec.json`
+   - **MUST pass:** `tools_directory`, `project_directory`, `skill_directory`
+   - Location: `{project_directory}/docs/screens/json/{screen_name}.spec.json`
 
 ### Step 2: Design in Order
 
@@ -85,7 +86,12 @@ For each design task, invoke the appropriate skill:
 | DB model schema | `/jsonui-swagger` |
 | Screen specification | `/jsonui-screen-spec` |
 
-**Pass `{tools_directory}` to the screen spec skill** so it can validate the generated JSON.
+**When invoking `/jsonui-screen-spec`, you MUST pass these variables:**
+- `tools_directory` - Where CLI tools are installed
+- `project_directory` - Where spec files will be created
+- `skill_directory` - Path to the skill's examples (`.claude/skills/jsonui-screen-spec`)
+
+The skill will use `jsonui-doc init spec` to create template files.
 
 ### Step 4: Report Completion
 
@@ -103,8 +109,8 @@ After all specifications are complete, report back to orchestrator:
 - {list of DB schema files}
 
 **Screens**
-- {ScreenName}.spec.json (validated)
-- {ScreenName}.html (generated)
+- {project_directory}/docs/screens/json/{screen_name}.spec.json (validated)
+- {project_directory}/docs/screens/html/{screen_name}.html (generated)
 
 ### Summary
 - API Endpoints: {count or N/A}
@@ -139,7 +145,10 @@ Now let's design the database schema.
 ...
 
 Finally, let's design the screen.
-[Invokes /jsonui-screen-spec with tools_directory=./tools]"
+[Invokes /jsonui-screen-spec with:
+  tools_directory=./tools
+  project_directory=.
+  skill_directory=.claude/skills/jsonui-screen-spec]"
 
 ## Important Rules
 
@@ -151,4 +160,5 @@ Finally, let's design the screen.
 - **Single source of truth** - These docs feed into all downstream agents
 - **Never interpret without confirmation** - Do NOT make assumptions about user intent
 - **Always confirm through dialogue** - Ask clarifying questions when there is any room for interpretation
-- **Pass tools_directory** - Skills need to know where CLI tools are installed
+- **Pass required variables** - `/jsonui-screen-spec` needs `tools_directory`, `project_directory`, and `skill_directory`
+- **Use CLI for screen specs** - `/jsonui-screen-spec` uses `jsonui-doc init spec` to create files
