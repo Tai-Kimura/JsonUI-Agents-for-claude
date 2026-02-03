@@ -28,18 +28,20 @@ This schema defines all valid fields, types, and constraints. You MUST follow th
 **Note:** `{tools_directory}` and `{project_directory}` are provided by the caller.
 
 ### Step 1: Get screen name and create template
-Ask: "What is the screen name? (PascalCase, e.g., Login, UserProfile)" and "What is the display name? (localized name)"
+Ask:
+1. "What is the screen name? (snake_case, e.g., login, user_profile)" → `{screen_name}`
+2. "What are the display names for each language?" → `{display_name_ja}`, `{display_name_en}`, etc.
 
 Then run:
 ```bash
-jsonui-doc init spec {ScreenName} -d "{DisplayName}" -o {project_directory}/docs/screens/json
+jsonui-doc init spec {screen_name} -d "{display_name_ja}" -o {project_directory}/docs/screens/json
 ```
 
-This creates `{project_directory}/docs/screens/json/{screenname}.spec.json` with the correct structure.
+This creates `{project_directory}/docs/screens/json/{screen_name}.spec.json` with the correct structure.
 
 ### Step 2: Read the generated template
 ```bash
-cat {project_directory}/docs/screens/json/{screenname}.spec.json
+cat {project_directory}/docs/screens/json/{screen_name}.spec.json
 ```
 
 ### Step 3: Gather information via dialogue
@@ -58,10 +60,10 @@ For each section below, ask the user one at a time. Wait for their response befo
 
 ### Step 4: Update and validate the specification file
 After gathering information for each section:
-1. Edit `{project_directory}/docs/screens/json/{screenname}.spec.json` with the user's answers
+1. Edit `{project_directory}/docs/screens/json/{screen_name}.spec.json` with the user's answers
 2. **ALWAYS run validate after every edit:**
 ```bash
-jsonui-doc validate spec {project_directory}/docs/screens/json/{screenname}.spec.json
+jsonui-doc validate spec {project_directory}/docs/screens/json/{screen_name}.spec.json
 ```
 3. If validation fails, fix the errors and validate again
 
@@ -73,7 +75,7 @@ Show the completed specification to the user and ask: "Is this specification cor
 ### Step 6: Generate HTML documentation
 Only after user confirmation:
 ```bash
-jsonui-doc generate spec {project_directory}/docs/screens/json/{screenname}.spec.json -o {project_directory}/docs/screens/html/{screenname}.html
+jsonui-doc generate spec {project_directory}/docs/screens/json/{screen_name}.spec.json -o {project_directory}/docs/screens/html/{screen_name}.html
 ```
 
 ## Important Rules
@@ -108,7 +110,7 @@ jsonui-doc generate spec {project_directory}/docs/screens/json/{screenname}.spec
 
 ```bash
 # Create new specification template (in project directory)
-jsonui-doc init spec {ScreenName} -d "{DisplayName}" -o {project_directory}/docs/screens/json
+jsonui-doc init spec {screen_name} -d "{display_name}" -o {project_directory}/docs/screens/json
 
 # Validate specification
 jsonui-doc validate spec {file}
