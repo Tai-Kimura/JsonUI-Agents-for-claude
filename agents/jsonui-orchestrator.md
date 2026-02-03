@@ -38,7 +38,7 @@ Store the user's answer as `{tools_directory}` (default: `.` if no answer).
 curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash -s -- -d {tools_directory}
 ```
 
-This installs CLI tools to the specified `{tools_directory}`.
+This installs CLI tools to `{tools_directory}/jsonui-cli/`.
 
 After installation completes, output the flow diagram below.
 
