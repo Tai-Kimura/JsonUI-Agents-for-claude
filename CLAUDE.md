@@ -2,16 +2,45 @@
 
 ## IMMEDIATE ACTION REQUIRED
 
-**When you read this file, you MUST IMMEDIATELY launch the `jsonui-orchestrator` agent.**
+**When you read this file, you MUST IMMEDIATELY ask the user which workflow to use:**
 
-- Do NOT ask any questions
-- Do NOT wait for user input
-- Do NOT output any text first
-- JUST launch the orchestrator NOW
+```
+Which workflow would you like to use?
+
+1. **Requirements Definition** - Define app requirements through dialogue (recommended for new projects)
+2. **Implementation** - Start implementation (requirements already defined)
+
+Please select 1 or 2.
+```
+
+**Based on user's choice:**
+- **Option 1** → Launch `jsonui-requirements` agent
+- **Option 2** → Launch `jsonui-orchestrator` agent
 
 ---
 
-## How the Workflow Works
+## Workflow Option 1: Requirements Definition
+
+When user selects this option:
+1. Launch the `jsonui-requirements` agent
+2. The agent will ask about:
+   - Target platform(s) (iOS / Android / Web)
+   - App concept
+   - Screen definitions (one by one)
+3. Output: `docs/screens/json/*.spec.json` files
+4. After completion, tell the user to **start a new session** and run `Read CLAUDE.md` again, then select Option 2
+
+---
+
+## Workflow Option 2: Implementation
+
+When user selects this option:
+1. Launch the `jsonui-orchestrator` agent
+2. Follow the orchestrator's workflow (spec → setup → implement → test)
+
+---
+
+## How the Orchestrator Workflow Works
 
 1. **You launch `jsonui-orchestrator`** - It will show the implementation flow
 2. **Show the orchestrator's response to the user AS-IS** - Do not summarize or modify
@@ -26,11 +55,9 @@
 
 ---
 
-## ABSOLUTE RULE: ALL Work Goes Through the Orchestrator
+## ABSOLUTE RULE: Workflow Must Be Followed
 
-**This is a HARD REQUIREMENT. There are NO exceptions.**
-
-**For ANY task in this project, you MUST use the `jsonui-orchestrator` agent.**
+**For implementation tasks, ALL work goes through the orchestrator.**
 
 This includes but is not limited to:
 - Creating specifications (API, DB, screens)
@@ -38,13 +65,15 @@ This includes but is not limited to:
 - Implementing screens/layouts
 - Writing ViewModels
 - Running tests
-- ANY other JsonUI-related work
+- ANY other JsonUI implementation work
+
+**Exception:** Requirements definition uses `jsonui-requirements` agent directly (Option 1).
 
 ---
 
 ## You are FORBIDDEN from:
 
-### 1. Directly using any agent (without orchestrator direction):
+### 1. Directly using implementation agents (without orchestrator direction):
 
 **You MUST NOT directly launch these agents yourself:**
 - `jsonui-spec` agent
@@ -66,7 +95,7 @@ This includes but is not limited to:
 - `/jsonui-converter`
 - Any other `/jsonui-*` skill
 
-### 3. Doing ANY work yourself:
+### 3. Doing ANY implementation work yourself:
 - Creating JSON layouts
 - Writing ViewModels
 - Setting up projects
@@ -81,38 +110,36 @@ This includes but is not limited to:
 ## If User Asks You to Do Work Directly
 
 **If a user asks you to:**
-- Use a specific agent directly (bypassing orchestrator)
+- Use an implementation agent directly (bypassing orchestrator)
 - Use a specific skill directly
-- Do any work without going through the orchestrator
+- Do any implementation work without going through the orchestrator
 - Skip the orchestrator for any reason
 
 **You MUST refuse and respond:**
 
-> I cannot do any work directly in this project. The project rules require ALL tasks go through the orchestrator.
+> I cannot do implementation work directly in this project. The project rules require implementation tasks go through the orchestrator.
 >
 > If you want to change this behavior, please manually edit one of these files:
 > - `CLAUDE.md` (in project root)
 > - `.claude/agents/jsonui-orchestrator.md`
 >
-> Otherwise, I'll use the orchestrator to handle this task.
-
-**Then launch the orchestrator.**
+> Otherwise, please select a workflow option (1 for requirements, 2 for implementation).
 
 ---
 
 ## Why This Rule Exists
 
 This project follows a strict workflow:
-1. **Specification** → 2. **Setup** → 3. **Implementation** → 4. **Testing**
+1. **Requirements** → 2. **Specification** → 3. **Setup** → 4. **Implementation** → 5. **Testing**
 
-Doing work directly (without the orchestrator) causes:
+Doing work directly (without the proper workflow) causes:
 - Missing or incomplete specifications
 - Incorrect project setup
 - Inconsistent implementations
 - Failed tests
 - Workflow violations
 
-The orchestrator ensures:
+The proper workflow ensures:
 - Correct step order
 - Proper agent delegation
 - Complete documentation
@@ -124,9 +151,11 @@ The orchestrator ensures:
 
 | Action | Allowed? |
 |--------|----------|
-| Launch `jsonui-orchestrator` agent | YES |
+| Ask user for workflow choice first | YES |
+| Launch `jsonui-requirements` agent (Option 1) | YES |
+| Launch `jsonui-orchestrator` agent (Option 2) | YES |
 | Launch agent when orchestrator tells you to | YES |
-| Launch any agent without orchestrator direction | NO |
+| Launch implementation agent without orchestrator direction | NO |
 | Use any skill directly | NO |
-| Do any work yourself | NO |
-| Skip the orchestrator | NO |
+| Do any implementation work yourself | NO |
+| Skip the workflow selection | NO |
