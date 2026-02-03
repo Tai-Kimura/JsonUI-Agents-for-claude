@@ -73,6 +73,9 @@ get_skill_examples() {
         jsonui-refactor)
             echo "collection-swiftui.json collection-uikit.json include-header.json include-usage.json include-wrong.json padding-correct.json padding-wrong.json style-apply.json style-card.json style-primary-button.json tabview.json"
             ;;
+        jsonui-requirements-gather)
+            echo "screen-spec-template.json"
+            ;;
         jsonui-screen-spec)
             echo "component.json data-flow.json layout.json state-management.json transitions.json user-actions.json validation.json"
             ;;
