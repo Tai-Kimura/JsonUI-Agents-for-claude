@@ -56,8 +56,8 @@ This includes but is not limited to:
 - `/jsonui-generator`
 - `/jsonui-refactor`
 - `/jsonui-screen-spec`
+- `/jsonui-spec-review`
 - `/jsonui-swagger`
-- `/jsonui-md-to-html`
 - `/jsonui-converter`
 - Any other `/jsonui-*` skill
 
