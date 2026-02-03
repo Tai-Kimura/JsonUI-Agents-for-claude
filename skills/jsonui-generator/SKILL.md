@@ -155,17 +155,24 @@ For reusable JSON components (headers, footers, navigation bars, cards):
 
 ### Converter Generation (Custom Components)
 
-**For custom native components, switch to the `jsonui-converter` skill.**
+**Converters are generated ONLY when a component specification exists.**
 
-When a converter is needed:
-1. Check if existing components can solve the problem first
-2. If converter is required, switch to `jsonui-converter` skill
-3. After converter generation, `jsonui-converter` will return control here
+**Workflow:**
+1. Check if component specifications exist in `docs/components/json/*.component.json`
+2. If component spec exists, switch to the `jsonui-converter` skill for that component
+3. If NO component spec exists, do NOT generate a converter
 
-**Use cases requiring converters:**
-- Third-party SDK components (GoogleMap, Charts, Video players)
-- Platform-specific native views (Camera, AR views)
-- Complex custom UI not achievable with standard components
+```bash
+# Check for component specifications
+ls docs/components/json/*.component.json
+```
+
+**For each component spec found:**
+- Read the `.component.json` file to understand the component requirements
+- Switch to `jsonui-converter` skill with the component spec path
+- After converter generation, `jsonui-converter` will return control here
+
+**DO NOT generate converters based on assumptions. Only generate when a `.component.json` file exists.**
 
 ---
 

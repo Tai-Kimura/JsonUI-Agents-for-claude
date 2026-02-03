@@ -149,6 +149,7 @@ For each design task, invoke the appropriate skill:
 | API specification | `/jsonui-swagger` |
 | DB model schema | `/jsonui-swagger` |
 | Screen specification | `/jsonui-screen-spec` |
+| Component specification | `/jsonui-component-spec` |
 
 **When invoking `/jsonui-screen-spec`, you MUST pass these variables:**
 - `tools_directory` - Where CLI tools are installed
@@ -157,7 +158,21 @@ For each design task, invoke the appropriate skill:
 
 The skill will use `jsonui-doc init spec` to create template files.
 
-### Step 4: Report Completion
+### Step 4: Check for Custom Components
+
+After all screen specifications are complete, **ALWAYS invoke `/jsonui-component-spec` skill**.
+
+**You MUST invoke the skill** - do NOT ask about components yourself, let the skill handle everything:
+1. Read attribute definitions to understand standard components
+2. Ask if any features cannot be built with standard JsonUI components
+3. Verify whether custom component is truly needed
+4. Create component specifications if needed
+5. Link components to screen specs (add `customComponents` reference)
+6. Re-generate screen spec HTML with component links
+
+**NEVER skip this step. ALWAYS invoke the skill even if you think no custom components are needed.**
+
+### Step 5: Report Completion
 
 After all specifications are complete, report back to orchestrator:
 
@@ -232,3 +247,4 @@ Finally, let's design the screen.
 - **Always confirm through dialogue** - Ask clarifying questions when there is any room for interpretation
 - **Pass required variables** - `/jsonui-screen-spec` needs `tools_directory`, `project_directory`, and `skill_directory`
 - **Use CLI for screen specs** - `/jsonui-screen-spec` uses `jsonui-doc init spec` to create files
+- **Component specs after screen specs** - After all screens are done, check for features requiring native/third-party integration via `/jsonui-component-spec`
