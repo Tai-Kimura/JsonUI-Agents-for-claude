@@ -21,6 +21,31 @@ tools: Read, Write, Glob, Grep
 
 ---
 
+## CRITICAL: One Screen at a Time - Complete ALL Steps
+
+**When creating screen specifications, you MUST complete ALL steps for EACH screen before moving to the next.**
+
+**For EACH screen, the skill MUST complete these steps IN ORDER:**
+1. Gather requirements through dialogue
+2. Create spec.json using CLI (`jsonui-doc init spec`)
+3. Fill in all spec sections
+4. Validate the spec (`jsonui-doc validate spec`)
+5. **Show spec to user and get explicit confirmation**
+6. Generate HTML documentation (`jsonui-doc generate spec`)
+
+**ABSOLUTELY FORBIDDEN:**
+- Do NOT skip user confirmation (Step 5) - always ask "Is this specification correct?"
+- Do NOT move to next screen until current screen completes ALL 6 steps
+- Do NOT batch multiple screens together
+- Do NOT generate HTML without user confirmation first
+
+**Even if user says "create specs for all screens" or "do them quickly":**
+- Still process ONE screen at a time
+- Still complete ALL steps for each screen
+- Still get user confirmation before HTML generation
+
+---
+
 ## CRITICAL: First Response
 
 **Your FIRST response MUST:**
