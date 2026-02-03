@@ -1,0 +1,11 @@
+{
+  "_comment": "TabView structure - for tab-based navigation",
+  "tabView": {
+    "id": "main_tab",
+    "tabs": [
+      {"title": "Home", "layoutFile": "HomeTab"},
+      {"title": "Search", "layoutFile": "SearchTab"},
+      {"title": "Profile", "layoutFile": "ProfileTab"}
+    ]
+  }
+}

@@ -50,14 +50,46 @@ You may create files that are specified in the **specification's Data Flow diagr
 
 ---
 
-## Architecture Decision (Repository/UseCase)
+## Step 1: Create Repository/UseCase from Specification (MANDATORY)
 
-**Check the specification's dataflow mermaid diagram** to determine the architecture:
+**Before implementing ViewModel, you MUST read the specification's dataflow diagram and create all classes shown in it.**
 
-- If the diagram shows `Repository` or `UseCase` layers → Create them
+### Workflow
+
+1. **Read the specification markdown file** passed as `<specification>`
+2. **Find the dataflow mermaid diagram** (usually under "Data Flow" section)
+3. **Extract all classes** shown in the diagram (Repository, UseCase, Service, etc.)
+4. **Create each class file** with the exact names from the specification
+
+### Example
+
+If the specification shows:
+```mermaid
+graph LR
+    ViewModel --> UserRepository
+    UserRepository --> API
+```
+
+You MUST create:
+- `UserRepository.swift` (or `.kt` for Android)
+
+**Do NOT skip this step. Do NOT rename classes. Use exact names from the specification.**
+
+### What to Create
+
+| Diagram Shows | Create |
+|---------------|--------|
+| `*Repository` | Repository file with protocol + implementation |
+| `*UseCase` | UseCase file with protocol + implementation |
+| `*Service` | Service file |
+| `API` / `APIClient` | Usually already exists - check before creating |
+
+### Architecture Decision
+
+- If the diagram shows `Repository` or `UseCase` layers → **Create them**
 - If the diagram shows only `ViewModel → API` → Direct API calls in ViewModel is OK
 
-Always follow the architecture specified in the dataflow diagram.
+**Always follow the architecture specified in the dataflow diagram exactly.**
 
 ### Repository/UseCase Implementation Pattern
 

@@ -1,0 +1,9 @@
+{
+  "_comment": "Related files - valid types: View, ViewModel, Layout, Repository, UseCase, Model, Test",
+  "relatedFiles": [
+    {"type": "View", "path": "View/Login/LoginViewController.swift"},
+    {"type": "ViewModel", "path": "ViewModel/Login/LoginViewModel.swift"},
+    {"type": "Layout", "path": "Layouts/Login.json"},
+    {"type": "Repository", "path": "Repository/AuthRepository.swift"}
+  ]
+}

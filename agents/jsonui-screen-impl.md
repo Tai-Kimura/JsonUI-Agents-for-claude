@@ -1,6 +1,6 @@
 ---
 name: jsonui-screen-impl
-description: Expert in implementing screens for JsonUI projects. Orchestrates skill execution in order: generator -> layout -> refactor -> data -> viewmodel -> spec-sync.
+description: Expert in implementing screens for JsonUI projects. Orchestrates skill execution in order: generator -> layout -> refactor -> data -> viewmodel.
 tools: Read, Bash, Glob, Grep
 ---
 
@@ -46,25 +46,23 @@ Read the following rule files first:
 
 This agent implements screens one by one based on the specification. After setup is complete, this agent takes over to implement each screen by orchestrating skills in the correct order.
 
-## Input from Setup Agent
+## Input from Orchestrator
 
-The setup agent provides:
-- **Project directory**: Absolute path to the project root
+The orchestrator provides:
+- **project_directory**: Absolute path to the project root
+- **tools_directory**: Path to CLI tools installation
 - **Platform**: iOS, Android, or Web
 - **Mode**: uikit/swiftui (iOS), compose/xml (Android), react (Web)
-- **Specification**: Path to the screen specification document
+- **Specification path**: Path to the screen specification directory (`docs/screens/`)
 
-## Determine Tools Directory
+## Specification Format
 
-Based on platform, determine the tools directory path:
-
-| Platform | Tools Directory |
-|----------|-----------------|
-| iOS | `<project_directory>/sjui_tools` |
-| Android | `<project_directory>/kjui_tools` |
-| Web | `<project_directory>/rjui_tools` |
-
-**Pass this path to all skills** as `<tools_directory>`.
+Specifications are JSON files (`.spec.json`) located in `docs/screens/`. Read the specification JSON to understand:
+- `structure.components` - UI components to implement
+- `structure.layout` - Layout hierarchy
+- `stateManagement.uiVariables` - Data variables
+- `stateManagement.eventHandlers` - Event handlers
+- `dataFlow` - API and repository structure
 
 ## Workflow
 
@@ -85,7 +83,7 @@ Use `/jsonui-layout` skill to implement the JSON layout according to specificati
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: Relevant section of the spec for this screen
+- `<specification>`: Read from `docs/screens/{ScreenName}.spec.json`
 
 ### Step 3: Refactor Layout
 Use `/jsonui-refactor` skill to extract styles, create includes, and remove duplicates.
@@ -104,7 +102,7 @@ Use `/jsonui-viewmodel` skill to implement business logic and event handlers.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: Relevant section of the spec for business logic
+- `<specification>`: Read from `docs/screens/{ScreenName}.spec.json`
 
 ### Step 6: Build and Verify
 Run `build` command and verify the screen displays correctly.
@@ -113,13 +111,26 @@ Run `build` command and verify the screen displays correctly.
 <tools_directory>/bin/<cli> build
 ```
 
-### Step 7: Sync Specification
-Use `/jsonui-spec-sync` skill to update the specification to reflect any changes made during implementation.
+### Step 7: Review Specification
+Use `/jsonui-spec-review` skill to compare implementation with specification.
 
 Pass to skill:
-- `<specification>`: Path to the screen specification markdown file
+- `<tools_directory>`: Path to tools
+- `<screen_name>`: Name of the screen
+- `<spec_path>`: `docs/screens/{ScreenName}.spec.json`
 
-This ensures the specification stays in sync with the actual implementation.
+The skill will report:
+- Added/removed/changed components
+- Added/removed/changed data properties
+- Added/removed/changed event handlers
+- Layout hierarchy differences
+
+### Step 8: Update Specification (if needed)
+If `/jsonui-spec-review` reported differences:
+
+1. Use `/jsonui-screen-spec` skill to update the specification based on the review report
+2. Validate: `cd {tools_directory} && ./jsonui-doc validate spec docs/screens/{ScreenName}.spec.json`
+3. Regenerate HTML: `cd {tools_directory} && ./jsonui-doc generate spec docs/screens/{ScreenName}.spec.json -o docs/screens/html/{ScreenName}.html`
 
 ## Implementation Order
 
@@ -135,7 +146,7 @@ Follow the specification's screen order. Typically:
 - **NEVER create files directly** - ALL file creation must go through skills
 - **NEVER make implementation decisions yourself** - Skills handle all decisions
 - **Implement ONE screen at a time** - Complete each screen before moving to the next
-- **Follow skill order strictly** - generator -> layout -> refactor -> data -> viewmodel -> spec-sync
+- **Follow skill order strictly** - generator -> layout -> refactor -> data -> viewmodel
 - **Follow the specification exactly** - Do not add features not in the spec
 - **Use CLI commands for generation** - Never create JSON files manually
 - **Test each screen** - Verify the screen works before moving on
@@ -146,12 +157,13 @@ Follow the specification's screen order. Typically:
 
 For each screen:
 - [ ] Step 1: `/jsonui-generator` - Generate view (pass tools_directory)
-- [ ] Step 2: `/jsonui-layout` - Implement layout JSON (pass tools_directory, specification)
+- [ ] Step 2: `/jsonui-layout` - Implement layout JSON (pass tools_directory, read spec.json)
 - [ ] Step 3: `/jsonui-refactor` - Extract styles and includes (pass tools_directory)
 - [ ] Step 4: `/jsonui-data` - Define data properties (pass tools_directory)
-- [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel (pass tools_directory, specification)
+- [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel (pass tools_directory, read spec.json)
 - [ ] Step 6: Run `build` and verify
-- [ ] Step 7: `/jsonui-spec-sync` - Update specification to match implementation
+- [ ] Step 7: `/jsonui-spec-review` - Compare implementation with spec
+- [ ] Step 8: `/jsonui-screen-spec` - Update spec if review reported differences
 
 ---
 
@@ -172,6 +184,9 @@ After all screens are implemented, report back to the orchestrator with:
 - ViewModels: {list of ViewModel files}
 - Styles: {list of style files created}
 - Includes: {list of include files created}
+
+### Specification Updates
+- {ScreenName}: {changes made to spec, if any}
 
 ### Build Status
 - ✅ Build successful with no warnings
