@@ -53,6 +53,29 @@ tools: Read, Write, Glob, Grep, Bash
 
 ---
 
+## CRITICAL: TabView Screen Structure
+
+**When the app has tab navigation, you MUST create SEPARATE specifications:**
+
+1. **TabView screen spec** - Contains only tab definitions (which tabs exist, icons, titles)
+2. **Content screen specs** - One for each tab's content (Home, Search, Profile, etc.)
+
+**Example for an app with 3 tabs:**
+```
+docs/screens/json/
+├── root.spec.json      (TabView definition only)
+├── home.spec.json      (Home tab content)
+├── search.spec.json    (Search tab content)
+└── profile.spec.json   (Profile tab content)
+```
+
+**DO NOT combine TabView and content in one specification.**
+
+The TabView screen spec should have minimal components - just the tab configuration.
+Each tab's content is a complete, separate screen specification.
+
+---
+
 ## CRITICAL: First Response
 
 **Your FIRST response MUST:**
