@@ -103,6 +103,12 @@ cat {skill_directory}/examples/data-flow.json
 Ask: "Does this screen call any APIs? If so, which ones?"
 → Update `dataFlow.apiEndpoints`, then validate, then release example.
 
+**⚠️ Mermaid Diagram: Quote API paths with slashes**
+
+When writing `dataFlow.diagram`, API paths containing `/` MUST be quoted:
+- ✅ Correct: `API["/api/v1/users"]`
+- ❌ Wrong: `API[/api/v1/users]` - Mermaid syntax error
+
 #### 3.6 User Actions
 ```bash
 cat {skill_directory}/examples/user-actions.json
