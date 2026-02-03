@@ -33,8 +33,8 @@ Create `.spec.json` specification documents for screens/views through interactiv
    - Continue dialogue until all information is gathered
 
 5. **Generate the JSON specification**
-   - Create the `.spec.json` file
-   - Run validation: `cd {tools_directory} && ./jsonui-doc validate spec {file}`
+   - Create the `.spec.json` file following the EXACT schema below
+   - Run validation: `cd {tools_directory}/jsonui-cli && ./document_tools/jsonui-doc validate spec {file}`
 
 6. **Validate and confirm (MANDATORY)**
    - If validation fails, fix errors and re-validate
@@ -42,7 +42,7 @@ Create `.spec.json` specification documents for screens/views through interactiv
    - **Do NOT proceed until user confirms**
 
 7. **Generate documentation**
-   - `cd {tools_directory} && ./jsonui-doc generate spec {file} -o {output_html}`
+   - `cd {tools_directory}/jsonui-cli && ./document_tools/jsonui-doc generate spec {file} -o {output_html}`
 
 ## Important Rules
 
@@ -53,8 +53,6 @@ Create `.spec.json` specification documents for screens/views through interactiv
 - **Validate before confirming** - Always run `jsonui-doc validate spec`
 
 ## Component Type Reference
-
-**Reference file:** `{jsonui-cli}/shared/core/attribute_definitions.json`
 
 | Type | Use Case |
 |------|----------|
@@ -79,25 +77,247 @@ Create `.spec.json` specification documents for screens/views through interactiv
 - **HTML (generated):** `docs/screens/html/{screenname}.html`
 - **File name:** Use lowercase (e.g., `login.spec.json`)
 
-## JSON Schema Reference
+---
 
-See examples directory for JSON format:
+## COMPLETE JSON SCHEMA (MANDATORY FORMAT)
 
-| Section | Example File |
-|---------|--------------|
-| Full structure | [schema-structure.json](examples/schema-structure.json) |
-| Component | [component.json](examples/component.json) |
-| Layout | [layout.json](examples/layout.json) |
-| Collection | [collection.json](examples/collection.json) |
-| TabView | [tabview.json](examples/tabview.json) |
-| Data Flow | [data-flow.json](examples/data-flow.json) |
-| State Management | [state-management.json](examples/state-management.json) |
-| User Actions | [user-actions.json](examples/user-actions.json) |
-| Validation | [validation.json](examples/validation.json) |
-| Transitions | [transitions.json](examples/transitions.json) |
-| Related Files | [related-files.json](examples/related-files.json) |
+**You MUST follow this exact structure. Do NOT invent your own format.**
 
-**CRITICAL for uiVariables:** List EVERY individual field - NEVER use object types like `UserData` or `ProfileInfo`.
+### Full Schema Structure
+
+```json
+{
+  "type": "screen_spec",
+  "version": "1.0",
+  "metadata": {
+    "name": "ScreenName",
+    "displayName": "ローカライズ画面名",
+    "description": "画面の目的の説明",
+    "author": "optional",
+    "createdAt": "YYYY-MM-DD",
+    "updatedAt": "YYYY-MM-DD"
+  },
+  "structure": {
+    "components": [],
+    "layout": {},
+    "collection": null,
+    "tabView": null,
+    "notes": "optional"
+  },
+  "dataFlow": {
+    "diagram": "flowchart TD\n    VIEW[View] --> VM[ViewModel]",
+    "repositories": [],
+    "apiEndpoints": [],
+    "notes": "optional"
+  },
+  "stateManagement": {
+    "states": [],
+    "uiVariables": [],
+    "eventHandlers": [],
+    "displayLogic": [],
+    "notes": "optional"
+  },
+  "userActions": [],
+  "validation": {
+    "clientSide": [],
+    "serverSide": [],
+    "notes": "optional"
+  },
+  "transitions": [],
+  "relatedFiles": [],
+  "notes": []
+}
+```
+
+### Component Definition
+
+```json
+{
+  "type": "View|Label|Button|TextField|Image|Collection|...",
+  "id": "component_id_snake_case",
+  "description": "What this component does",
+  "initialState": "Initial state/style (optional)",
+  "notes": "Additional notes (optional)"
+}
+```
+
+### Layout Definition
+
+```json
+{
+  "root": "root_view",
+  "children": [
+    "simple_child_id",
+    {
+      "id": "nested_container",
+      "children": [
+        "deeply_nested_1",
+        "deeply_nested_2"
+      ]
+    }
+  ]
+}
+```
+
+### Collection Structure (for lists/grids)
+
+```json
+{
+  "collection": {
+    "id": "items_collection",
+    "header": {
+      "root": "header_view",
+      "children": ["header_label"]
+    },
+    "cell": {
+      "root": "cell_view",
+      "children": ["item_image", "item_title", "item_price"]
+    },
+    "footer": {
+      "root": "footer_view",
+      "children": ["load_more_btn"]
+    }
+  }
+}
+```
+
+### Data Flow
+
+```json
+{
+  "dataFlow": {
+    "diagram": "flowchart TD\n    VIEW[View] --> VM[ViewModel]\n    VM --> REPO[Repository]\n    REPO --> API[\"/api/v1/users\"]",
+    "repositories": [
+      {
+        "name": "UserRepository",
+        "methods": ["fetchUser(id: String)", "updateUser(user: User)"]
+      }
+    ],
+    "apiEndpoints": [
+      {
+        "path": "/api/v1/users/{id}",
+        "method": "GET",
+        "request": null,
+        "response": {
+          "id": "String",
+          "name": "String",
+          "email": "String"
+        },
+        "notes": "Fetch user by ID"
+      }
+    ],
+    "notes": "optional"
+  }
+}
+```
+
+### State Management
+
+**CRITICAL: uiVariables must list EVERY individual field - NEVER use object types like `UserData` or `ProfileInfo`.**
+
+```json
+{
+  "stateManagement": {
+    "states": [
+      {
+        "name": "ViewState",
+        "values": [
+          {"value": "loading", "description": "Loading data", "visibleElements": ["loading_indicator"]},
+          {"value": "content", "description": "Showing content", "visibleElements": ["content_view"]},
+          {"value": "error", "description": "Error occurred", "visibleElements": ["error_view"]}
+        ],
+        "notes": "Main view state"
+      }
+    ],
+    "uiVariables": [
+      {"name": "userName", "type": "String", "description": "User's display name"},
+      {"name": "userEmail", "type": "String", "description": "User's email address"},
+      {"name": "isLoading", "type": "Bool", "description": "Loading indicator state"}
+    ],
+    "eventHandlers": [
+      {"name": "onSubmitTap", "description": "Handle submit button tap"},
+      {"name": "onTextChanged", "description": "Handle text field changes"}
+    ],
+    "displayLogic": [
+      {
+        "condition": "isLoading == true",
+        "effects": [
+          {"element": "loading_view", "state": "visible"},
+          {"element": "content_view", "state": "hidden"}
+        ]
+      }
+    ],
+    "notes": "optional"
+  }
+}
+```
+
+### User Actions
+
+```json
+{
+  "userActions": [
+    {
+      "action": "Tap submit button",
+      "processing": "Validate form and call API",
+      "destination": "HomeScreen",
+      "notes": "optional"
+    },
+    {
+      "action": "Enter email",
+      "processing": "Update email variable, validate form",
+      "destination": "-"
+    }
+  ]
+}
+```
+
+### Validation
+
+```json
+{
+  "validation": {
+    "clientSide": [
+      {"field": "email", "rule": "Required, valid email format"},
+      {"field": "password", "rule": "Required, minimum 8 characters"}
+    ],
+    "serverSide": [
+      {"condition": "401 Unauthorized", "handling": "Show invalid credentials error"},
+      {"condition": "Network error", "handling": "Show retry dialog"}
+    ],
+    "notes": "optional"
+  }
+}
+```
+
+### Transitions
+
+```json
+{
+  "transitions": [
+    {"condition": "Login successful", "destination": "HomeScreen"},
+    {"condition": "Tap register link", "destination": "RegisterScreen"},
+    {"condition": "Tap forgot password", "destination": "ForgotPasswordScreen"}
+  ]
+}
+```
+
+### Related Files
+
+Valid types: `View`, `ViewModel`, `Layout`, `Repository`, `UseCase`, `Model`, `Test`
+
+```json
+{
+  "relatedFiles": [
+    {"type": "View", "path": "View/Login/LoginViewController.swift"},
+    {"type": "ViewModel", "path": "ViewModel/Login/LoginViewModel.swift"},
+    {"type": "Layout", "path": "Layouts/Login.json"},
+    {"type": "Repository", "path": "Repository/AuthRepository.swift"}
+  ]
+}
+```
+
+---
 
 ## Information to Gather (via dialogue)
 
@@ -126,10 +346,10 @@ See examples directory for JSON format:
 
 ```bash
 # Validate the specification
-cd {tools_directory} && ./jsonui-doc validate spec docs/screens/json/{screenname}.spec.json
+cd {tools_directory}/jsonui-cli && ./document_tools/jsonui-doc validate spec docs/screens/json/{screenname}.spec.json
 
 # Generate HTML documentation
-cd {tools_directory} && ./jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{screenname}.html
+cd {tools_directory}/jsonui-cli && ./document_tools/jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{screenname}.html
 ```
 
 ## Confirmation (MANDATORY)
