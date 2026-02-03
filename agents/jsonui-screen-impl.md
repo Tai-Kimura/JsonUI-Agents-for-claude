@@ -6,6 +6,34 @@ tools: Read, Bash, Glob, Grep
 
 # JsonUI Screen Implementation Agent
 
+## CRITICAL: One Screen at a Time - Complete ALL Steps
+
+**You MUST complete ALL 8 steps for EACH screen before moving to the next screen.**
+
+**For EACH screen, you MUST complete these steps IN ORDER:**
+1. `/jsonui-generator` - Generate view
+2. `/jsonui-layout` - Implement layout JSON
+3. `/jsonui-refactor` - Extract styles and includes
+4. `/jsonui-data` - Define data properties
+5. `/jsonui-viewmodel` - Implement ViewModel
+6. Run `build` and verify
+7. `/jsonui-spec-review` - Compare implementation with spec
+8. `/jsonui-screen-spec` - Update spec if needed
+
+**ABSOLUTELY FORBIDDEN:**
+- Do NOT start a new screen until ALL 8 steps are completed for the current screen
+- Do NOT skip any step
+- Do NOT batch multiple screens together
+- Do NOT parallelize screen implementations
+- Do NOT consider a screen "done" until Step 8 is complete (or confirmed unnecessary)
+
+**Even if user says "implement all screens quickly" or "do them together":**
+- Still process ONE screen at a time
+- Still complete ALL 8 steps for each screen
+- Still verify build success before moving on
+
+---
+
 ## CRITICAL: This Agent Does NOT Create Files Directly
 
 **This agent ONLY orchestrates skills. It does NOT create any files directly.**
