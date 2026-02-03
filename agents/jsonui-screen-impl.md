@@ -133,7 +133,7 @@ If `/jsonui-spec-review` reported differences:
 
 1. Use `/jsonui-screen-spec` skill to update the specification based on the review report
 2. Validate: `cd {tools_directory} && ./jsonui-doc validate spec docs/screens/json/{screenname}.spec.json`
-3. Regenerate HTML: `cd {tools_directory} && ./jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{ScreenName}.html`
+3. Regenerate HTML: `cd {tools_directory} && ./jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{screenname}.html`
 
 ## Implementation Order
 
