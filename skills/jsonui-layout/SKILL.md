@@ -100,27 +100,67 @@ TabView provides native tab navigation with:
 
 → Examples: `examples/tabview.json`, `examples/tabview-wrong.json`
 
-### Correct Usage
+### ⛔ CRITICAL: TabView Structure
 
+**TabView is the ROOT of the app, NOT a child inside a screen.**
+
+Each tab's `view` attribute references a SEPARATE JSON file. The tab content is NOT defined inline.
+
+**CORRECT Structure:**
+```
+root.json (TabView only)
+├── home.json (Home screen content)
+├── search.json (Search screen content)
+└── profile.json (Profile screen content)
+```
+
+**TabView JSON (root.json):**
 ```json
 {
   "type": "TabView",
   "tabs": [
     { "title": "Home", "icon": "house", "view": "home" },
-    { "title": "Search", "icon": "magnifyingglass", "view": "search" }
+    { "title": "Search", "icon": "magnifyingglass", "view": "search" },
+    { "title": "Profile", "icon": "person", "view": "profile" }
   ]
+}
+```
+
+**Tab Content JSON (home.json):**
+```json
+{
+  "type": "SafeAreaView",
+  "child": {
+    "type": "ScrollView",
+    "child": {
+      "_comment": "Home screen content here"
+    }
+  }
 }
 ```
 
 ### Prohibited Patterns
 
 **DO NOT:**
+- Put TabView inside SafeAreaView or ScrollView
+- Put TabView as a child of another view
+- Define tab content inline inside TabView
 - Create a View with horizontal buttons as a tab bar
 - Manually implement tab switching logic in ViewModel
 - Use onClick handlers to switch between tabs
-- Create custom tab indicator views
 
-**If you need tab-based navigation, use TabView. Period.**
+**WRONG - TabView inside screen content:**
+```json
+{
+  "type": "SafeAreaView",
+  "child": [
+    { "type": "ScrollView", "child": { "...content..." } },
+    { "type": "TabView", "tabs": [...] }
+  ]
+}
+```
+
+**If you need tab-based navigation, TabView is the ROOT. Period.**
 
 ---
 

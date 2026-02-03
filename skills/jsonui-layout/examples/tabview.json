@@ -1,5 +1,6 @@
 {
-  "_comment": "TabView - Use this component for tab navigation. DO NOT create custom tab bars.",
+  "_comment": "TabView is the ROOT of the app. Each tab's view references a separate JSON file.",
+  "_note": "DO NOT put TabView inside SafeAreaView. TabView IS the root.",
   "type": "TabView",
   "tabs": [
     {
