@@ -31,13 +31,20 @@ tools: Read, Write, Glob, Grep
 3. Fill in all spec sections
 4. Validate the spec (`jsonui-doc validate spec`)
 5. **Show spec to user and get explicit confirmation**
-6. Generate HTML documentation (`jsonui-doc generate spec`)
+6. **Generate HTML documentation (`jsonui-doc generate spec`) - MANDATORY**
+
+**Step 6 is MANDATORY:**
+- After user confirms spec is correct, IMMEDIATELY run `jsonui-doc generate spec`
+- Do NOT skip HTML generation under any circumstances
+- Do NOT ask if user wants HTML - just generate it automatically
+- The screen spec is NOT complete until HTML is generated
 
 **ABSOLUTELY FORBIDDEN:**
 - Do NOT skip user confirmation (Step 5) - always ask "Is this specification correct?"
-- Do NOT move to next screen until current screen completes ALL 6 steps
+- Do NOT skip HTML generation (Step 6) - always run `jsonui-doc generate spec` after confirmation
+- Do NOT move to next screen until current screen completes ALL 6 steps including HTML
 - Do NOT batch multiple screens together
-- Do NOT generate HTML without user confirmation first
+- Do NOT consider a screen "done" without both .spec.json AND .html files
 
 **Even if user says "create specs for all screens" or "do them quickly":**
 - Still process ONE screen at a time

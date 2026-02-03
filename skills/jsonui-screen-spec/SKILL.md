@@ -118,10 +118,29 @@ Show the completed specification to the user and ask: "Is this specification cor
 - If user requests changes, make them and **re-validate**
 - **Do NOT proceed until user explicitly confirms**
 
-### Step 6: Generate HTML documentation
-Only after user confirmation:
+### Step 6: Generate HTML documentation (MANDATORY)
+
+**THIS STEP IS MANDATORY - YOU MUST EXECUTE IT AFTER USER CONFIRMATION**
+
+After user confirms the specification is correct:
 ```bash
 jsonui-doc generate spec {project_directory}/docs/screens/json/{screen_name}.spec.json -o {project_directory}/docs/screens/html/{screen_name}.html
+```
+
+**CRITICAL:**
+- This step is NOT optional
+- You MUST run the command above immediately after user says "yes", "OK", "correct", etc.
+- Do NOT skip this step under any circumstances
+- Do NOT ask if user wants HTML - just generate it
+- Do NOT end the screen spec workflow without generating HTML
+
+**After generating HTML, report:**
+```
+Screen specification complete!
+
+Files created:
+- {project_directory}/docs/screens/json/{screen_name}.spec.json
+- {project_directory}/docs/screens/html/{screen_name}.html
 ```
 
 ## Important Rules
