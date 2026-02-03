@@ -56,7 +56,7 @@ RULES_DIR=".claude/rules"
 AGENT_FILES="jsonui-orchestrator.md jsonui-screen-impl.md jsonui-setup.md jsonui-spec.md jsonui-test.md"
 
 # Skill directories (each contains SKILL.md and optionally examples/)
-SKILL_DIRS="jsonui-converter jsonui-data jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-md-to-html jsonui-refactor jsonui-screen-spec jsonui-screen-test-implement jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
+SKILL_DIRS="jsonui-converter jsonui-data jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-refactor jsonui-screen-spec jsonui-screen-test-implement jsonui-spec-review jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
 
 # Rule files (in rules/ directory)
 RULE_FILES="design-philosophy.md file-locations.md skill-workflow.md specification-rules.md"
@@ -74,7 +74,7 @@ get_skill_examples() {
             echo "collection-swiftui.json collection-uikit.json include-header.json include-usage.json include-wrong.json padding-correct.json padding-wrong.json style-apply.json style-card.json style-primary-button.json tabview.json"
             ;;
         jsonui-screen-spec)
-            echo "sections.md"
+            echo "collection.json component.json data-flow.json layout.json related-files.json schema-structure.json state-management.json tabview.json transitions.json user-actions.json validation.json"
             ;;
         jsonui-viewmodel)
             echo "collection-kotlin.kt collection-swift.swift colormanager-kotlin.kt colormanager-swift.swift event-handler-kotlin.kt event-handler-swift.swift hardcode-correct.kt hardcode-correct.swift hardcode-wrong.kt hardcode-wrong.swift logger-correct.swift logger-wrong.swift repository-pattern.swift stringmanager-swift.swift strings-kotlin.kt viewmodel-kotlin.kt viewmodel-swift.swift"
