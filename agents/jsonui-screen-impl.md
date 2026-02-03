@@ -16,9 +16,15 @@ tools: Read, Bash, Glob, Grep
 3. `/jsonui-refactor` - Extract styles and includes
 4. `/jsonui-data` - Define data properties
 5. `/jsonui-viewmodel` - Implement ViewModel
-6. Run `build` and verify
+6. Run `build` and verify (**ZERO warnings required**)
 7. `/jsonui-spec-review` - Compare implementation with spec
 8. `/jsonui-screen-spec` - Update spec if needed
+
+**⛔ Step 6: Build MUST have ZERO warnings**
+- ALL warnings must be fixed before proceeding to Step 7
+- Do NOT ignore any warning - investigate and fix each one
+- Do NOT proceed with warnings "to fix later"
+- The screen is NOT ready for review until build has zero warnings
 
 **ABSOLUTELY FORBIDDEN:**
 - Do NOT start a new screen until ALL 8 steps are completed for the current screen
