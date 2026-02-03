@@ -71,23 +71,21 @@ Step 2: Setup Project
 │  - Configure project structure      │
 └──────────────────┬──────────────────┘
                    ▼
-Step 3: Implement Screens
-┌─────────────────────────────────────┐
-│  jsonui-screen-impl (Agent)         │
-│  - For each screen, calls skills:   │
-│    ┌─────────────────────────────┐  │
-│    │ generator → layout →        │  │
-│    │ refactor → data → viewmodel │  │
-│    └─────────────────────────────┘  │
-└──────────────────┬──────────────────┘
-                   ▼
-Step 4: Run Tests
-┌─────────────────────────────────────┐
-│  jsonui-test (Agent)                │
-│  - Generate test JSON               │
-│  - Setup test runner                │
-│  - Execute tests                    │
-└─────────────────────────────────────┘
+Step 3 & 4: Implement + Test (ONE SCREEN AT A TIME)
+┌─────────────────────────────────────────────────────┐
+│  For EACH screen:                                   │
+│                                                     │
+│  ┌─ jsonui-screen-impl ──────────────────────────┐  │
+│  │ generator → layout → refactor → data →        │  │
+│  │ build → viewmodel → spec-review               │  │
+│  └──────────────────┬────────────────────────────┘  │
+│                     ▼                               │
+│  ┌─ jsonui-test ─────────────────────────────────┐  │
+│  │ Generate test JSON → Setup → Execute tests    │  │
+│  └───────────────────────────────────────────────┘  │
+│                                                     │
+│  → Repeat for next screen                           │
+└─────────────────────────────────────────────────────┘
 ```
 
 **Custom ViewModel Rules**
@@ -145,22 +143,41 @@ Wait for user to report that specification is complete.
 
 Then output: "Please launch the `jsonui-setup` agent with these parameters."
 
-### Step 3: Implement Screens
+### Step 3 & 4: Implement + Test (ONE SCREEN AT A TIME)
 
 **Prerequisites:** User reports `jsonui-setup` agent has completed.
 
-**Output:** "Please launch the `jsonui-screen-impl` agent with:
+**⛔ CRITICAL: One Screen at a Time - Implement THEN Test**
+
+For EACH screen, you MUST complete BOTH implementation AND testing before moving to the next screen:
+
+1. **Implement the screen** - Launch `jsonui-screen-impl` for ONE screen
+2. **Test the screen** - Launch `jsonui-test` for that SAME screen
+3. **Repeat** - Move to the next screen only after both complete
+
+**Output for each screen:**
+```
+Screen: {screen_name}
+
+Step 3a: Please launch the `jsonui-screen-impl` agent with:
 - project_directory: {project_path from Step 2}
 - tools_directory: {tools_directory from initial question}
 - platform: {platform from Step 2}
 - mode: {mode from Step 2}
-- specification path: docs/screens/json/"
+- screen: {screen_name}
+- specification: docs/screens/json/{screen_name}.spec.json
 
-### Step 4: Run Tests
+After implementation completes, report back.
 
-**Prerequisites:** User reports `jsonui-screen-impl` agent has completed.
+Step 3b: Please launch the `jsonui-test` agent for screen: {screen_name}
 
-**Output:** "Please launch the `jsonui-test` agent now."
+After testing completes, we will move to the next screen.
+```
+
+**ABSOLUTELY FORBIDDEN:**
+- Do NOT implement all screens first, then test all screens
+- Do NOT skip testing for any screen
+- Do NOT proceed to next screen until current screen is both implemented AND tested
 
 ### Step 5: Final Report
 
@@ -192,8 +209,9 @@ After user reports all steps complete, output:
 |--------------|--------|----------|--------------|
 | Step 1 | "Please launch `jsonui-spec` agent" | User reports completion | All requirements covered: API (docs/api/*.json), DB (docs/db/*.json), Screen (.spec.json and .html) |
 | Step 2 | "Please launch `jsonui-setup` agent" | User reports completion | - |
-| Step 3 | "Please launch `jsonui-screen-impl` agent" | User reports completion | - |
-| Step 4 | "Please launch `jsonui-test` agent" | User reports completion | - |
+| Step 3a | "Please launch `jsonui-screen-impl` agent for {screen}" | User reports completion | Screen implementation complete |
+| Step 3b | "Please launch `jsonui-test` agent for {screen}" | User reports completion | Screen tests pass |
+| (Repeat 3a+3b for each screen) | | | |
 
 **ABSOLUTELY FORBIDDEN - NEVER DO THESE:**
 - Do NOT create specifications yourself - NEVER write .spec.json, swagger, or any spec files
