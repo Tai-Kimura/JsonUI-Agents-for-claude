@@ -79,6 +79,23 @@ Ask: "What data/state does this screen manage? (list each field individually)"
 Ask: "What user actions should be handled? (button clicks, form submissions)"
 → Update `stateManagement.uiVariables` and `stateManagement.eventHandlers`, then validate, then release example.
 
+**⛔ CRITICAL: No Business Logic in UI Variables**
+
+UI Variables must be **direct values only** - no logic, no conditions, no calculations.
+
+**Prohibited patterns:**
+- `selectedTab == 0 ? "active" : "inactive"` - Ternary operators
+- `items.count > 0` - Comparisons
+- `price * quantity` - Calculations
+- `!isHidden` - Negation
+
+**Correct approach:**
+Instead of `selectedTab == 0 ? "#FF0000" : "#000000"`, define:
+- `homeTabColor: String` - ViewModel computes the color
+- `searchTabColor: String` - ViewModel computes the color
+
+All conditional logic belongs in the ViewModel, not in bindings.
+
 #### 3.5 API Endpoints
 ```bash
 cat {skill_directory}/examples/data-flow.json
