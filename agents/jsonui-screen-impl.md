@@ -73,7 +73,7 @@ Use `/jsonui-generator` skill to generate the view structure.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools (sjui_tools/kjui_tools/rjui_tools)
-- `<specification>`: `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/json/{screenname}.spec.json`
 
 ```
 /jsonui-generator view <ScreenName>
@@ -84,28 +84,28 @@ Use `/jsonui-layout` skill to implement the JSON layout according to specificati
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/json/{screenname}.spec.json`
 
 ### Step 3: Refactor Layout
 Use `/jsonui-refactor` skill to extract styles, create includes, and remove duplicates.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/json/{screenname}.spec.json`
 
 ### Step 4: Define Data
 Use `/jsonui-data` skill to define data properties and callback types.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/json/{screenname}.spec.json`
 
 ### Step 5: Implement ViewModel
 Use `/jsonui-viewmodel` skill to implement business logic and event handlers.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/json/{screenname}.spec.json`
 
 ### Step 6: Build and Verify
 Run `build` command and verify the screen displays correctly.
@@ -120,7 +120,7 @@ Use `/jsonui-spec-review` skill to compare implementation with specification.
 Pass to skill:
 - `<tools_directory>`: Path to tools
 - `<screen_name>`: Name of the screen
-- `<spec_path>`: `docs/screens/{ScreenName}.spec.json`
+- `<spec_path>`: `docs/screens/json/{screenname}.spec.json`
 
 The skill will report:
 - Added/removed/changed components
@@ -132,8 +132,8 @@ The skill will report:
 If `/jsonui-spec-review` reported differences:
 
 1. Use `/jsonui-screen-spec` skill to update the specification based on the review report
-2. Validate: `cd {tools_directory} && ./jsonui-doc validate spec docs/screens/{ScreenName}.spec.json`
-3. Regenerate HTML: `cd {tools_directory} && ./jsonui-doc generate spec docs/screens/{ScreenName}.spec.json -o docs/screens/html/{ScreenName}.html`
+2. Validate: `cd {tools_directory} && ./jsonui-doc validate spec docs/screens/json/{screenname}.spec.json`
+3. Regenerate HTML: `cd {tools_directory} && ./jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{ScreenName}.html`
 
 ## Implementation Order
 

@@ -17,7 +17,7 @@ Read the following rule files first:
 
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
-- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/Login.spec.json`)
+- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/json/login.spec.json`)
 
 ## Reading Specification (OPTIONAL)
 

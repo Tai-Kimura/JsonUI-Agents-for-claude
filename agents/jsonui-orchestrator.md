@@ -40,13 +40,13 @@ Then output the flow diagram below.
 
 ```
 Step 1: Create Specification (JSON)
-┌─────────────────────────────────────┐
-│  jsonui-spec (Agent)                │
-│  - Create screen specification      │
-│  - Define UI, data flow, tests      │
-│  - Output: docs/screens/*.spec.json │
-│  - Output: docs/screens/html/*.html │
-└──────────────────┬──────────────────┘
+┌───────────────────────────────────────────┐
+│  jsonui-spec (Agent)                      │
+│  - Create screen specification            │
+│  - Define UI, data flow, tests            │
+│  - Output: docs/screens/json/*.spec.json  │
+│  - Output: docs/screens/html/*.html       │
+└──────────────────┬────────────────────────┘
                    ▼
 Step 2: Setup Project
 ┌─────────────────────────────────────┐
@@ -109,7 +109,7 @@ Wait for user to report that specification is complete.
 **When user reports Step 1 completion, you MUST verify:**
 
 1. **Check all requirements are covered** - Compare the original requirements with the created specifications
-2. **Check .spec.json files exist** - Each screen spec must have a JSON file in `docs/screens/`
+2. **Check .spec.json files exist** - Each screen spec must have a JSON file in `docs/screens/json/`
 3. **Check .html files exist** - Each spec should have generated HTML in `docs/screens/html/`
 4. **If anything is missing:**
    - Tell user what is missing
@@ -146,7 +146,7 @@ curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installe
 - tools_directory: {tools_directory from initial question}
 - platform: {platform from Step 2}
 - mode: {mode from Step 2}
-- specification path: docs/screens/"
+- specification path: docs/screens/json/"
 
 ### Step 4: Run Tests
 

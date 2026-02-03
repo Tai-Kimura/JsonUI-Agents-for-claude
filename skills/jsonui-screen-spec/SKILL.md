@@ -75,9 +75,9 @@ Create `.spec.json` specification documents for screens/views through interactiv
 
 ## Output Format
 
-- **JSON:** `docs/screens/{ScreenName}.spec.json`
-- **HTML (generated):** `docs/screens/html/{ScreenName}.html`
-- **File name:** Use PascalCase (e.g., `Login.spec.json`)
+- **JSON:** `docs/screens/json/{screenname}.spec.json`
+- **HTML (generated):** `docs/screens/html/{screenname}.html`
+- **File name:** Use lowercase (e.g., `login.spec.json`)
 
 ## JSON Schema Reference
 
@@ -126,10 +126,10 @@ See examples directory for JSON format:
 
 ```bash
 # Validate the specification
-cd {tools_directory} && ./jsonui-doc validate spec docs/screens/{ScreenName}.spec.json
+cd {tools_directory} && ./jsonui-doc validate spec docs/screens/json/{screenname}.spec.json
 
 # Generate HTML documentation
-cd {tools_directory} && ./jsonui-doc generate spec docs/screens/{ScreenName}.spec.json -o docs/screens/html/{ScreenName}.html
+cd {tools_directory} && ./jsonui-doc generate spec docs/screens/json/{screenname}.spec.json -o docs/screens/html/{screenname}.html
 ```
 
 ## Confirmation (MANDATORY)

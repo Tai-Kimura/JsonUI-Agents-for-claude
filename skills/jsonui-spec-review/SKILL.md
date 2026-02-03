@@ -23,8 +23,8 @@ Use this skill after implementation is complete (after viewmodel step) to:
 
 Required inputs:
 - `tools_directory`: Path to CLI tools
-- `screen_name`: Name of the screen to review
-- `spec_path`: Path to specification (default: `docs/screens/{ScreenName}.spec.json`)
+- `screen_name`: Name of the screen to review (lowercase)
+- `spec_path`: Path to specification (default: `docs/screens/json/{screenname}.spec.json`)
 
 ### Step 2: Read Specification
 
