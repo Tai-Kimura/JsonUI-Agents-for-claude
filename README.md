@@ -8,16 +8,16 @@ A collection of specialized agents and skills for Claude Code to support JsonUI 
 
 ```bash
 # Install from main branch (default)
-curl -sL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | bash
+curl -H "Cache-Control: no-cache" -sL "https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh?$(date +%s)" | bash
 
 # Install from specific branch
-curl -sL .../install.sh | bash -s -- -b develop
+curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -b develop
 
 # Install from specific commit
-curl -sL .../install.sh | bash -s -- -c abc123
+curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -c abc123
 
 # Install from specific version tag
-curl -sL .../install.sh | bash -s -- -v 1.0.0
+curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -v 1.0.0
 ```
 
 ### After Installation
