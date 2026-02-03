@@ -32,7 +32,17 @@ Please provide the installation path, or press Enter to use the default.
 
 Store the user's answer as `{tools_directory}` (default: `.` if no answer).
 
-Then output the flow diagram below.
+**Then immediately install CLI tools:**
+
+```bash
+# If tools_directory is specified:
+cd {tools_directory} && curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
+
+# If tools_directory is "." (default):
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
+```
+
+After installation completes, output the flow diagram below.
 
 ---
 
@@ -126,16 +136,6 @@ Wait for user to report that specification is complete.
 3. Mode (swiftui/uikit, compose/xml, react)
 
 Then output: "Please launch the `jsonui-setup` agent with these parameters."
-
-Before setup, install CLI tools to `{tools_directory}`:
-```bash
-cd {tools_directory} && curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
-```
-
-If `{tools_directory}` is `.` (default), just run:
-```bash
-curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
-```
 
 ### Step 3: Implement Screens
 
