@@ -25,7 +25,7 @@ cat {tools_directory}/jsonui-cli/document_tools/jsonui_doc_cli/spec_doc/screen_s
 
 This schema defines all valid fields, types, and constraints. You MUST follow this schema exactly.
 
-**Note:** `{tools_directory}` and `{project_directory}` are provided by the caller.
+**Note:** `{tools_directory}`, `{project_directory}`, and `{skill_directory}` are provided by the caller.
 
 ### Step 1: Get screen name and create template
 Ask:
@@ -47,25 +47,71 @@ cat {project_directory}/docs/screens/json/{screen_name}.spec.json
 ### Step 3: Gather information via dialogue
 **CRITICAL: NEVER fill in any field without explicitly asking the user first.**
 
-For each section below, ask the user one at a time. Wait for their response before proceeding:
+For each section below:
+1. **Read the example file** before asking
+2. Ask the user and wait for response
+3. Update the spec file with the user's answer
+4. **Validate** after each update
+5. Release the example from memory
 
-1. **Overview** - "What is the purpose of this screen?"
-2. **UI Components** - "What UI components does this screen have? (e.g., labels, buttons, text fields)"
-3. **Layout Hierarchy** - "How are these components arranged? (parent-child relationships)"
-4. **UI Variables** - "What data/state does this screen manage? (list each field individually)"
-5. **Event Handlers** - "What user actions should be handled? (button clicks, form submissions)"
-6. **API Endpoints** - "Does this screen call any APIs? If so, which ones?"
-7. **Validation Rules** - "What validation rules apply? (client-side and server-side)"
-8. **Navigation** - "What screen transitions occur from this screen?"
+#### 3.1 Overview
+Ask: "What is the purpose of this screen?"
 
-### Step 4: Update and validate the specification file
-After gathering information for each section:
-1. Edit `{project_directory}/docs/screens/json/{screen_name}.spec.json` with the user's answers
-2. **ALWAYS run validate after every edit:**
+#### 3.2 UI Components
+```bash
+cat {skill_directory}/examples/component.json
+```
+Ask: "What UI components does this screen have? (e.g., labels, buttons, text fields)"
+→ Update `structure.components`, then validate, then release example.
+
+#### 3.3 Layout Hierarchy
+```bash
+cat {skill_directory}/examples/layout.json
+```
+Ask: "How are these components arranged? (parent-child relationships)"
+→ Update `structure.layout`, then validate, then release example.
+
+#### 3.4 UI Variables & Event Handlers
+```bash
+cat {skill_directory}/examples/state-management.json
+```
+Ask: "What data/state does this screen manage? (list each field individually)"
+Ask: "What user actions should be handled? (button clicks, form submissions)"
+→ Update `stateManagement.uiVariables` and `stateManagement.eventHandlers`, then validate, then release example.
+
+#### 3.5 API Endpoints
+```bash
+cat {skill_directory}/examples/data-flow.json
+```
+Ask: "Does this screen call any APIs? If so, which ones?"
+→ Update `dataFlow.apiEndpoints`, then validate, then release example.
+
+#### 3.6 User Actions
+```bash
+cat {skill_directory}/examples/user-actions.json
+```
+Ask: "What are the main user actions and their processing logic?"
+→ Update `userActions`, then validate, then release example.
+
+#### 3.7 Validation Rules
+```bash
+cat {skill_directory}/examples/validation.json
+```
+Ask: "What validation rules apply? (client-side and server-side)"
+→ Update `validation`, then validate, then release example.
+
+#### 3.8 Navigation
+```bash
+cat {skill_directory}/examples/transitions.json
+```
+Ask: "What screen transitions occur from this screen?"
+→ Update `transitions`, then validate, then release example.
+
+### Step 4: Final validation
+Run validate to ensure all sections are correct:
 ```bash
 jsonui-doc validate spec {project_directory}/docs/screens/json/{screen_name}.spec.json
 ```
-3. If validation fails, fix the errors and validate again
 
 ### Step 5: Final confirmation
 Show the completed specification to the user and ask: "Is this specification correct?"
