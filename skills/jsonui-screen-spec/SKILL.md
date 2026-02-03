@@ -17,6 +17,14 @@ Create `.spec.json` specification documents for screens/views through interactiv
 
 ## Workflow
 
+### Step 0: Read the schema
+**FIRST, read the schema file to understand the specification structure:**
+```bash
+cat {tools_directory}/jsonui-cli/document_tools/jsonui_doc_cli/spec_doc/screen_spec_schema.py
+```
+
+This schema defines all valid fields, types, and constraints. You MUST follow this schema exactly.
+
 ### Step 1: Confirm directories
 Ask the user:
 1. "Where are the JsonUI CLI tools installed? (default: current directory)" → `{tools_directory}`
