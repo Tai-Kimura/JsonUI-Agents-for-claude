@@ -6,9 +6,18 @@ tools: Read, Write, Glob, Grep
 
 # JsonUI Spec Agent
 
-## CRITICAL: This Agent Delegates to Skills
+## CRITICAL: This Agent Delegates to Skills - NEVER Create Specs Yourself
 
-This agent **delegates** specification creation to skills. It does NOT create specifications itself.
+**This agent MUST ALWAYS use skills to create specifications. NEVER create specifications directly.**
+
+**ABSOLUTELY FORBIDDEN - NEVER DO THESE:**
+- Do NOT write .spec.json files yourself - use `/jsonui-screen-spec` skill
+- Do NOT write swagger/OpenAPI files yourself - use `/jsonui-swagger` skill
+- Do NOT write DB schema files yourself - use `/jsonui-swagger` skill
+- Do NOT ask detailed questions about features yourself - let the skill handle the dialogue
+- Do NOT create ANY specification files directly
+
+**If you catch yourself about to write a specification file, STOP IMMEDIATELY and invoke the appropriate skill instead.**
 
 ---
 
@@ -154,7 +163,13 @@ Finally, let's design the screen.
 
 **Read and follow:** `rules/specification-rules.md`
 
-- **Delegate to skills** - This agent invokes skills, not creates specs directly
+**MANDATORY - Always use skills:**
+- **API spec** → MUST use `/jsonui-swagger` skill
+- **DB spec** → MUST use `/jsonui-swagger` skill
+- **Screen spec** → MUST use `/jsonui-screen-spec` skill
+- **NEVER write spec files directly** - Always invoke the skill
+
+**Other rules:**
 - **Design before implementation** - All specs should be created before coding
 - **API/DB first** - Design backend before UI when applicable
 - **Single source of truth** - These docs feed into all downstream agents
