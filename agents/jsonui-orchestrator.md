@@ -50,8 +50,11 @@ After installation completes, output the flow diagram below.
 Step 1: Create Specification (JSON)
 ┌───────────────────────────────────────────┐
 │  jsonui-spec (Agent)                      │
+│  - Create API specification (if needed)   │
+│  - Create DB specification (if needed)    │
 │  - Create screen specification            │
-│  - Define UI, data flow, tests            │
+│  - Output: docs/api/*.json (API)          │
+│  - Output: docs/db/*.json (DB)            │
 │  - Output: docs/screens/json/*.spec.json  │
 │  - Output: docs/screens/html/*.html       │
 └──────────────────┬────────────────────────┘
@@ -117,12 +120,14 @@ Wait for user to report that specification is complete.
 **When user reports Step 1 completion, you MUST verify:**
 
 1. **Check all requirements are covered** - Compare the original requirements with the created specifications
-2. **Check .spec.json files exist** - Each screen spec must have a JSON file in `docs/screens/json/`
-3. **Check .html files exist** - Each spec should have generated HTML in `docs/screens/html/`
-4. **If anything is missing:**
-   - Tell user what is missing
+2. **Check API specification exists (if needed)** - `docs/api/*.json` files for backend communication
+3. **Check DB specification exists (if needed)** - `docs/db/*.json` files for database tables
+4. **Check .spec.json files exist** - Each screen spec must have a JSON file in `docs/screens/json/`
+5. **Check .html files exist** - Each spec should have generated HTML in `docs/screens/html/`
+6. **If anything is missing:**
+   - Tell user what is missing (API, DB, or Screen specs)
    - Output: "Please launch the `jsonui-spec` agent again to complete the missing specifications."
-5. **Only proceed to Step 2 when ALL requirements are fully documented**
+7. **Only proceed to Step 2 when ALL specifications (API, DB, Screen) are fully documented**
 
 ### Step 2: Setup Project
 
@@ -180,7 +185,7 @@ After user reports all steps complete, output:
 
 | Current Step | Output | Wait For | Verification |
 |--------------|--------|----------|--------------|
-| Step 1 | "Please launch `jsonui-spec` agent" | User reports completion | All requirements covered, .spec.json and .html files exist |
+| Step 1 | "Please launch `jsonui-spec` agent" | User reports completion | All requirements covered: API (docs/api/*.json), DB (docs/db/*.json), Screen (.spec.json and .html) |
 | Step 2 | "Please launch `jsonui-setup` agent" | User reports completion | - |
 | Step 3 | "Please launch `jsonui-screen-impl` agent" | User reports completion | - |
 | Step 4 | "Please launch `jsonui-test` agent" | User reports completion | - |
