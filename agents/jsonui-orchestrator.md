@@ -25,22 +25,20 @@ Ask the user:
 ```
 Where should I install the JsonUI CLI tools?
 
-Default: Current directory (.)
+Default: ~/.jsonui-cli
 
 Please provide the installation path, or press Enter to use the default.
 ```
 
-Store the user's answer as `{tools_directory}` (default: `.` if no answer).
+Store the user's answer as `{tools_directory}` (default: `~/.jsonui-cli` if no answer).
 
 **Then immediately install CLI tools:**
 
 ```bash
-# If tools_directory is specified:
-cd {tools_directory} && curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
-
-# If tools_directory is "." (default):
-curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-cli/main/installer/bootstrap.sh | bash -s -- -d {tools_directory}
 ```
+
+This installs CLI tools to the specified `{tools_directory}`.
 
 After installation completes, output the flow diagram below.
 
