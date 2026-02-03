@@ -136,12 +136,65 @@ Wait for user to report that specification is complete.
 
 **Prerequisites:** User reports `jsonui-spec` agent has completed and all .spec.json and .html files exist.
 
-**Action:** Ask the user for:
-1. Platform (iOS / Android / Web)
-2. Project path
-3. Mode (swiftui/uikit, compose/xml, react)
+**Action:**
 
-Then output: "Please launch the `jsonui-setup` agent with these parameters."
+1. Ask the user for Platform and Mode:
+   - Platform: iOS / Android / Web
+   - Mode: swiftui/uikit (iOS), compose/xml (Android), react (Web)
+
+2. **After user answers, search for existing project:**
+
+   **For iOS:**
+   ```bash
+   find . -name "*.xcodeproj" -o -name "*.xcworkspace" | head -5
+   ```
+
+   **For Android:**
+   ```bash
+   find . -name "build.gradle" -o -name "build.gradle.kts" | head -5
+   ```
+
+   **For Web (React/Next.js):**
+   ```bash
+   find . -name "package.json" | head -5
+   ```
+
+3. **If project file found:**
+   - Show the found project path
+   - Ask: "Is this the project you want to use? (or provide a different path)"
+
+4. **If NO project file found:**
+   - Output: "No existing project found. Please create a project first."
+   - Provide instructions based on platform:
+
+   **iOS:**
+   ```
+   Please create an Xcode project:
+   1. Open Xcode
+   2. Create a new iOS App project
+   3. Save it to your desired location
+   4. Come back and provide the project path
+   ```
+
+   **Android:**
+   ```
+   Please create an Android project:
+   1. Open Android Studio
+   2. Create a new Android project
+   3. Save it to your desired location
+   4. Come back and provide the project path
+   ```
+
+   **Web:**
+   ```
+   Please create a Next.js project:
+   npx create-next-app@latest your-project-name
+   cd your-project-name
+   Then provide the project path.
+   ```
+
+5. **After project path is confirmed:**
+   Output: "Please launch the `jsonui-setup` agent with these parameters."
 
 ### Step 3 & 4: Implement + Test (ONE SCREEN AT A TIME)
 
