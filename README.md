@@ -22,13 +22,39 @@ curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -
 
 ### After Installation
 
-After installing, prompt Claude Code to start the workflow:
+Choose the appropriate workflow based on your situation:
+
+#### Option A: Requirements Already Defined
+
+If you already have clear requirements documented:
 
 ```
 Read CLAUDE.md
 ```
 
-This will automatically launch the `jsonui-orchestrator` agent which guides you through the entire implementation flow.
+This will launch the `jsonui-orchestrator` agent which guides you through the implementation flow.
+
+#### Option B: Requirements Not Yet Defined (Recommended for New Projects)
+
+If you're starting from scratch or need help defining what to build:
+
+```
+Use the jsonui-requirements agent
+```
+
+This agent helps non-technical users define app requirements through friendly dialogue:
+1. Select target platform(s) (iOS / Android / Web)
+2. Describe your app idea
+3. Define screens through guided questions
+4. Output: `docs/screens/json/*.spec.json` files
+
+After requirements are complete, **start a new Claude Code session** and run:
+
+```
+Read CLAUDE.md
+```
+
+This launches the orchestrator to begin implementation based on your specifications.
 
 ## Directory Structure
 
@@ -45,6 +71,7 @@ Agents orchestrate workflows and coordinate skills.
 
 | Agent | Description |
 |-------|-------------|
+| `jsonui-requirements` | Requirements gathering for non-engineers - creates screen specifications through dialogue |
 | `jsonui-orchestrator` | Main entry point - coordinates full implementation flow |
 | `jsonui-spec` | Creates specification documents (API, DB, Screen) |
 | `jsonui-setup` | Project initialization and configuration |
@@ -70,6 +97,7 @@ Skills execute specific tasks. Agents invoke skills as needed.
 
 | Skill | Description |
 |-------|-------------|
+| `jsonui-requirements-gather` | Gathers screen definitions through dialogue to create spec.json files |
 | `jsonui-screen-spec` | Screen specification document creation |
 | `jsonui-swagger` | API/DB specification (OpenAPI/Swagger) |
 | `jsonui-md-to-html` | Markdown to HTML conversion |
@@ -98,23 +126,43 @@ Skills execute specific tasks. Agents invoke skills as needed.
 
 ## Workflow
 
+### Recommended Workflow (From Scratch)
+
+```
+[Session 1: Requirements]
+jsonui-requirements
+└── /jsonui-requirements-gather
+    ├── Platform selection (iOS/Android/Web)
+    ├── App concept
+    ├── Screen definitions (one by one)
+    └── Output: docs/screens/json/*.spec.json
+
+↓ Start new Claude Code session ↓
+
+[Session 2: Implementation]
+Read CLAUDE.md → jsonui-orchestrator
+├── Step 1: jsonui-spec (review/refine specs)
+├── Step 2: jsonui-setup (project configuration)
+├── Step 3: jsonui-screen-impl (implementation)
+└── Step 4: jsonui-test (testing)
+```
+
 ### Full Implementation Flow
 
 ```
 jsonui-orchestrator
-├── Step 1: jsonui-spec (create specification - markdown)
+├── Step 1: jsonui-spec (create specification - JSON)
 │   ├── /jsonui-swagger (API/DB design)
 │   └── /jsonui-screen-spec (screen design)
-├── Step 2: /jsonui-md-to-html (convert specs to HTML)
-├── Step 3: jsonui-setup (project configuration)
-├── Step 4: jsonui-screen-impl (implementation)
+├── Step 2: jsonui-setup (project configuration)
+├── Step 3: jsonui-screen-impl (implementation)
 │   ├── /jsonui-generator
 │   ├── /jsonui-layout
 │   ├── /jsonui-refactor
 │   ├── /jsonui-data
 │   ├── /jsonui-viewmodel
 │   └── /jsonui-spec-sync
-└── Step 5: jsonui-test (testing)
+└── Step 4: jsonui-test (testing)
     ├── /jsonui-test-cli
     ├── /jsonui-screen-test-implement
     └── /jsonui-test-document
@@ -136,8 +184,11 @@ jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonu
 ## Usage
 
 ```
-# Full project implementation
-"Use the jsonui-orchestrator agent to create a new feature"
+# Starting from scratch (no requirements yet)
+"Use the jsonui-requirements agent"
+
+# After requirements are ready (new session)
+"Read CLAUDE.md"
 
 # Create specification only
 "Use the jsonui-spec agent to design the login screen"
