@@ -25,13 +25,10 @@ cat {tools_directory}/jsonui-cli/document_tools/jsonui_doc_cli/spec_doc/screen_s
 
 This schema defines all valid fields, types, and constraints. You MUST follow this schema exactly.
 
-### Step 1: Confirm directories
-Ask the user:
-1. "Where are the JsonUI CLI tools installed? (default: current directory)" → `{tools_directory}`
-2. "Where is your project directory?" → `{project_directory}`
+**Note:** `{tools_directory}` and `{project_directory}` are provided by the caller.
 
-### Step 2: Get screen name and create template
-Ask: "What is the screen name? (PascalCase, e.g., Login, UserProfile)"
+### Step 1: Get screen name and create template
+Ask: "What is the screen name? (PascalCase, e.g., Login, UserProfile)" and "What is the display name? (localized name)"
 
 Then run:
 ```bash
@@ -40,12 +37,12 @@ jsonui-doc init spec {ScreenName} -d "{DisplayName}" -o {project_directory}/docs
 
 This creates `{project_directory}/docs/screens/json/{screenname}.spec.json` with the correct structure.
 
-### Step 3: Read the generated template
+### Step 2: Read the generated template
 ```bash
 cat {project_directory}/docs/screens/json/{screenname}.spec.json
 ```
 
-### Step 4: Gather information via dialogue
+### Step 3: Gather information via dialogue
 **CRITICAL: NEVER fill in any field without explicitly asking the user first.**
 
 For each section below, ask the user one at a time. Wait for their response before proceeding:
@@ -59,7 +56,7 @@ For each section below, ask the user one at a time. Wait for their response befo
 7. **Validation Rules** - "What validation rules apply? (client-side and server-side)"
 8. **Navigation** - "What screen transitions occur from this screen?"
 
-### Step 5: Update and validate the specification file
+### Step 4: Update and validate the specification file
 After gathering information for each section:
 1. Edit `{project_directory}/docs/screens/json/{screenname}.spec.json` with the user's answers
 2. **ALWAYS run validate after every edit:**
@@ -68,12 +65,12 @@ jsonui-doc validate spec {project_directory}/docs/screens/json/{screenname}.spec
 ```
 3. If validation fails, fix the errors and validate again
 
-### Step 6: Final confirmation
+### Step 5: Final confirmation
 Show the completed specification to the user and ask: "Is this specification correct?"
 - If user requests changes, make them and **re-validate**
 - **Do NOT proceed until user explicitly confirms**
 
-### Step 7: Generate HTML documentation
+### Step 6: Generate HTML documentation
 Only after user confirmation:
 ```bash
 jsonui-doc generate spec {project_directory}/docs/screens/json/{screenname}.spec.json -o {project_directory}/docs/screens/html/{screenname}.html
