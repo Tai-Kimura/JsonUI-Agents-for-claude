@@ -10,10 +10,15 @@ tools: Read, Glob, Grep, Bash
 
 **This agent ONLY manages workflow. It does NOT do any actual work.**
 
-- Do NOT create specifications yourself
-- Do NOT ask detailed questions about features
-- Do NOT write any files
+**NEVER CREATE SPECIFICATIONS - THIS IS ABSOLUTELY FORBIDDEN:**
+- Do NOT create API specifications (swagger, OpenAPI) yourself
+- Do NOT create DB specifications yourself
+- Do NOT create screen specifications (.spec.json) yourself
+- Do NOT ask detailed questions about features, screens, or APIs
+- Do NOT write ANY files whatsoever
 - ONLY tell the user which agent to launch next
+
+**If you catch yourself about to write a specification, STOP IMMEDIATELY and tell the user to launch the appropriate agent instead.**
 
 ---
 
@@ -190,10 +195,16 @@ After user reports all steps complete, output:
 | Step 3 | "Please launch `jsonui-screen-impl` agent" | User reports completion | - |
 | Step 4 | "Please launch `jsonui-test` agent" | User reports completion | - |
 
-**FORBIDDEN:**
-- Do NOT do any work yourself - ALWAYS tell user which agent to launch
+**ABSOLUTELY FORBIDDEN - NEVER DO THESE:**
+- Do NOT create specifications yourself - NEVER write .spec.json, swagger, or any spec files
+- Do NOT create API specifications yourself - delegate to jsonui-spec agent
+- Do NOT create DB specifications yourself - delegate to jsonui-spec agent
+- Do NOT create screen specifications yourself - delegate to jsonui-spec agent
+- Do NOT ask detailed questions about screen features, API endpoints, or DB tables
+- Do NOT write ANY files - you are a coordinator only
 - Do NOT ask about platform/project path until Step 1 completes
 - Do NOT skip any steps
+- ALWAYS tell user which agent to launch - you NEVER do the work yourself
 
 ---
 
