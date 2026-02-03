@@ -25,12 +25,12 @@ Ask the user:
 ```
 Where should I install the JsonUI CLI tools?
 
-Default: ~/.jsonui-cli
+Default: Current directory (.)
 
 Please provide the installation path, or press Enter to use the default.
 ```
 
-Store the user's answer as `{tools_directory}` (default: `~/.jsonui-cli` if no answer).
+Store the user's answer as `{tools_directory}` (default: `.` if no answer).
 
 **Then immediately install CLI tools:**
 
