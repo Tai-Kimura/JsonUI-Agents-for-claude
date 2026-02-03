@@ -20,6 +20,13 @@ tools: Read, Bash, Glob, Grep
 7. `/jsonui-spec-review` - Compare implementation with spec
 8. `/jsonui-screen-spec` - Update spec if needed
 
+**⛔ Step 5: ViewModel Implementation is MANDATORY**
+- You MUST invoke `/jsonui-viewmodel` skill for EVERY screen
+- Do NOT skip ViewModel implementation under any circumstances
+- Even if the screen seems simple, ViewModel must be implemented
+- The skill will implement event handlers, data loading, and business logic
+- Do NOT proceed to Step 6 without completing ViewModel implementation
+
 **⛔ Step 6: Build MUST have ZERO warnings**
 - ALL warnings must be fixed before proceeding to Step 7
 - Do NOT ignore any warning - investigate and fix each one
@@ -28,7 +35,7 @@ tools: Read, Bash, Glob, Grep
 
 **ABSOLUTELY FORBIDDEN:**
 - Do NOT start a new screen until ALL 8 steps are completed for the current screen
-- Do NOT skip any step
+- Do NOT skip any step (especially Step 5 - ViewModel)
 - Do NOT batch multiple screens together
 - Do NOT parallelize screen implementations
 - Do NOT consider a screen "done" until Step 8 is complete (or confirmed unnecessary)
