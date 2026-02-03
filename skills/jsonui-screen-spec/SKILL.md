@@ -30,11 +30,11 @@ This schema defines all valid fields, types, and constraints. You MUST follow th
 ### Step 1: Get screen name and create template
 Ask:
 1. "What is the screen name? (snake_case, e.g., login, user_profile)" → `{screen_name}`
-2. "What are the display names for each language?" → `{display_name_ja}`, `{display_name_en}`, etc.
+2. "What is the display name?" → `{DisplayName}`
 
 Then run:
 ```bash
-jsonui-doc init spec {screen_name} -d "{display_name_ja}" -o {project_directory}/docs/screens/json
+jsonui-doc init spec {screen_name} -d "{DisplayName}" -o {project_directory}/docs/screens/json
 ```
 
 This creates `{project_directory}/docs/screens/json/{screen_name}.spec.json` with the correct structure.
@@ -110,7 +110,7 @@ jsonui-doc generate spec {project_directory}/docs/screens/json/{screen_name}.spe
 
 ```bash
 # Create new specification template (in project directory)
-jsonui-doc init spec {screen_name} -d "{display_name}" -o {project_directory}/docs/screens/json
+jsonui-doc init spec {screen_name} -d "{DisplayName}" -o {project_directory}/docs/screens/json
 
 # Validate specification
 jsonui-doc validate spec {file}
