@@ -15,6 +15,14 @@ Read the following rule files first:
 
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
+- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/Login.spec.json`)
+
+## Reading Specification (REQUIRED)
+
+Before defining data sections, read the specification JSON and extract:
+- `stateManagement.uiVariables` - All data properties with types and default values
+- `stateManagement.eventHandlers` - All event handlers with their callback types
+- `dataFlow.apiEndpoints` - API response structures (for complex types)
 
 ## ⛔ NEVER CREATE FILES MANUALLY
 

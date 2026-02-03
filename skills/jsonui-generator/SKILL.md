@@ -15,6 +15,13 @@ Read the following rule files first:
 
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
+- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/Login.spec.json`)
+
+## Reading Specification (REQUIRED)
+
+Before generating views, read the specification JSON and extract:
+- `structure.components` - List of components to generate
+- `structure.layout` - Layout hierarchy (identify root views, collections, includes)
 
 ## ⛔ NEVER CREATE FILES MANUALLY
 

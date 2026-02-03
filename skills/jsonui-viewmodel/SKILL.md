@@ -16,7 +16,17 @@ Read the following rule files first:
 
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
-- `<specification>`: Screen specification to implement
+- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/Login.spec.json`)
+
+## Reading Specification (REQUIRED)
+
+Before implementing ViewModel, read the specification JSON and extract:
+- `dataFlow.viewModel` - ViewModel name and responsibilities
+- `dataFlow.repositories` - Repository classes to create/use
+- `dataFlow.apiEndpoints` - API calls to implement
+- `stateManagement.uiVariables` - State properties to manage
+- `stateManagement.eventHandlers` - Event handler methods to implement
+- `userActions` - User interaction flows and expected behavior
 
 ## File Creation Rules
 

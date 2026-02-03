@@ -17,7 +17,15 @@ Read the following rule files first:
 
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
-- `<specification>`: Screen specification to implement
+- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/Login.spec.json`)
+
+## Reading Specification (REQUIRED)
+
+Before implementing layouts, read the specification JSON and extract:
+- `structure.components` - Component list with IDs, types, and descriptions
+- `structure.layout` - Layout hierarchy (parent-child relationships)
+- `stateManagement.uiVariables` - Data bindings to use (`@{variableName}`)
+- `stateManagement.eventHandlers` - Event bindings to use (`@{onHandlerName}`)
 
 ## ⛔ File Creation Prohibited
 

@@ -73,6 +73,7 @@ Use `/jsonui-generator` skill to generate the view structure.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools (sjui_tools/kjui_tools/rjui_tools)
+- `<specification>`: `docs/screens/{ScreenName}.spec.json`
 
 ```
 /jsonui-generator view <ScreenName>
@@ -83,26 +84,28 @@ Use `/jsonui-layout` skill to implement the JSON layout according to specificati
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: Read from `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/{ScreenName}.spec.json`
 
 ### Step 3: Refactor Layout
 Use `/jsonui-refactor` skill to extract styles, create includes, and remove duplicates.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
+- `<specification>`: `docs/screens/{ScreenName}.spec.json`
 
 ### Step 4: Define Data
 Use `/jsonui-data` skill to define data properties and callback types.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
+- `<specification>`: `docs/screens/{ScreenName}.spec.json`
 
 ### Step 5: Implement ViewModel
 Use `/jsonui-viewmodel` skill to implement business logic and event handlers.
 
 Pass to skill:
 - `<tools_directory>`: Path to tools
-- `<specification>`: Read from `docs/screens/{ScreenName}.spec.json`
+- `<specification>`: `docs/screens/{ScreenName}.spec.json`
 
 ### Step 6: Build and Verify
 Run `build` command and verify the screen displays correctly.
@@ -156,11 +159,11 @@ Follow the specification's screen order. Typically:
 ## Screen Implementation Checklist
 
 For each screen:
-- [ ] Step 1: `/jsonui-generator` - Generate view (pass tools_directory)
-- [ ] Step 2: `/jsonui-layout` - Implement layout JSON (pass tools_directory, read spec.json)
-- [ ] Step 3: `/jsonui-refactor` - Extract styles and includes (pass tools_directory)
-- [ ] Step 4: `/jsonui-data` - Define data properties (pass tools_directory)
-- [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel (pass tools_directory, read spec.json)
+- [ ] Step 1: `/jsonui-generator` - Generate view (pass tools_directory, specification)
+- [ ] Step 2: `/jsonui-layout` - Implement layout JSON (pass tools_directory, specification)
+- [ ] Step 3: `/jsonui-refactor` - Extract styles and includes (pass tools_directory, specification)
+- [ ] Step 4: `/jsonui-data` - Define data properties (pass tools_directory, specification)
+- [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel (pass tools_directory, specification)
 - [ ] Step 6: Run `build` and verify
 - [ ] Step 7: `/jsonui-spec-review` - Compare implementation with spec
 - [ ] Step 8: `/jsonui-screen-spec` - Update spec if review reported differences

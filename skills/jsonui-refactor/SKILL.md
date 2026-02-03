@@ -17,6 +17,13 @@ Read the following rule files first:
 
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
+- `<specification>`: Path to screen specification JSON (e.g., `docs/screens/Login.spec.json`)
+
+## Reading Specification (OPTIONAL)
+
+The specification JSON can help identify intended component groupings:
+- `structure.layout` - Intended hierarchy (helps identify reusable sections)
+- `structure.components` - Component purposes (helps name styles appropriately)
 
 ## ⛔ NEVER CREATE FILES MANUALLY
 
