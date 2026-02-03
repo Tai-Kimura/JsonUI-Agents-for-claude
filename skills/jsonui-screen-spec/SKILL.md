@@ -38,30 +38,35 @@ cat {project_directory}/docs/screens/json/{screenname}.spec.json
 ```
 
 ### Step 4: Gather information via dialogue
-Ask about each section one at a time:
-1. **Overview** - Screen purpose
-2. **UI Components** - List with IDs (snake_case), types, descriptions
-3. **Layout Hierarchy** - Parent-child relationships
-4. **UI Variables** - List EVERY individual field (never use object types)
-5. **Event Handlers** - Button clicks, form submissions
-6. **API Endpoints** - If applicable
-7. **Validation Rules** - Client and server-side
-8. **Navigation** - Screen transitions
+**CRITICAL: NEVER fill in any field without explicitly asking the user first.**
 
-### Step 5: Update the specification file
-Edit `{project_directory}/docs/screens/json/{screenname}.spec.json` with gathered information.
+For each section below, ask the user one at a time. Wait for their response before proceeding:
 
-### Step 6: Validate
+1. **Overview** - "What is the purpose of this screen?"
+2. **UI Components** - "What UI components does this screen have? (e.g., labels, buttons, text fields)"
+3. **Layout Hierarchy** - "How are these components arranged? (parent-child relationships)"
+4. **UI Variables** - "What data/state does this screen manage? (list each field individually)"
+5. **Event Handlers** - "What user actions should be handled? (button clicks, form submissions)"
+6. **API Endpoints** - "Does this screen call any APIs? If so, which ones?"
+7. **Validation Rules** - "What validation rules apply? (client-side and server-side)"
+8. **Navigation** - "What screen transitions occur from this screen?"
+
+### Step 5: Update and validate the specification file
+After gathering information for each section:
+1. Edit `{project_directory}/docs/screens/json/{screenname}.spec.json` with the user's answers
+2. **ALWAYS run validate after every edit:**
 ```bash
 jsonui-doc validate spec {project_directory}/docs/screens/json/{screenname}.spec.json
 ```
+3. If validation fails, fix the errors and validate again
 
-### Step 7: Confirm with user
-Ask: "Is this specification correct?"
-- If user requests changes, make them and re-validate
-- **Do NOT proceed until user confirms**
+### Step 6: Final confirmation
+Show the completed specification to the user and ask: "Is this specification correct?"
+- If user requests changes, make them and **re-validate**
+- **Do NOT proceed until user explicitly confirms**
 
-### Step 8: Generate HTML documentation
+### Step 7: Generate HTML documentation
+Only after user confirmation:
 ```bash
 jsonui-doc generate spec {project_directory}/docs/screens/json/{screenname}.spec.json -o {project_directory}/docs/screens/html/{screenname}.html
 ```
@@ -69,8 +74,10 @@ jsonui-doc generate spec {project_directory}/docs/screens/json/{screenname}.spec
 ## Important Rules
 
 - **Use `jsonui-doc init spec` to create files** - Never create files manually
-- **NEVER assume information** - Always ask the user
-- **Ask one category at a time**
+- **NEVER assume or invent information** - Always ask the user explicitly
+- **NEVER modify the template until you have the user's answer** - Wait for their response
+- **Ask one category at a time** - Do not proceed until the user responds
+- **ALWAYS validate after every edit** - Run `jsonui-doc validate spec` after each change
 - **Use user's language** for descriptions
 - **Use English** for IDs and variable names
 - **uiVariables must list EVERY individual field** - Never use object types like `UserData`
