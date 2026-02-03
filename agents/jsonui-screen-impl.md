@@ -1,6 +1,6 @@
 ---
 name: jsonui-screen-impl
-description: Expert in implementing screens for JsonUI projects. Orchestrates skill execution in order: generator -> layout -> refactor -> data -> viewmodel.
+description: Expert in implementing screens for JsonUI projects. Orchestrates skill execution in order: generator -> layout -> refactor -> data -> viewmodel -> spec-sync.
 tools: Read, Bash, Glob, Grep
 ---
 
@@ -113,6 +113,14 @@ Run `build` command and verify the screen displays correctly.
 <tools_directory>/bin/<cli> build
 ```
 
+### Step 7: Sync Specification
+Use `/jsonui-spec-sync` skill to update the specification to reflect any changes made during implementation.
+
+Pass to skill:
+- `<specification>`: Path to the screen specification markdown file
+
+This ensures the specification stays in sync with the actual implementation.
+
 ## Implementation Order
 
 Follow the specification's screen order. Typically:
@@ -127,7 +135,7 @@ Follow the specification's screen order. Typically:
 - **NEVER create files directly** - ALL file creation must go through skills
 - **NEVER make implementation decisions yourself** - Skills handle all decisions
 - **Implement ONE screen at a time** - Complete each screen before moving to the next
-- **Follow skill order strictly** - generator -> layout -> refactor -> data -> viewmodel
+- **Follow skill order strictly** - generator -> layout -> refactor -> data -> viewmodel -> spec-sync
 - **Follow the specification exactly** - Do not add features not in the spec
 - **Use CLI commands for generation** - Never create JSON files manually
 - **Test each screen** - Verify the screen works before moving on
@@ -143,6 +151,7 @@ For each screen:
 - [ ] Step 4: `/jsonui-data` - Define data properties (pass tools_directory)
 - [ ] Step 5: `/jsonui-viewmodel` - Implement ViewModel (pass tools_directory, specification)
 - [ ] Step 6: Run `build` and verify
+- [ ] Step 7: `/jsonui-spec-sync` - Update specification to match implementation
 
 ---
 
