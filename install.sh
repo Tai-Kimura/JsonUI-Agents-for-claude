@@ -74,7 +74,7 @@ get_skill_examples() {
             echo "collection-swiftui.json collection-uikit.json include-header.json include-usage.json include-wrong.json padding-correct.json padding-wrong.json style-apply.json style-card.json style-primary-button.json tabview.json"
             ;;
         jsonui-screen-spec)
-            echo ""
+            echo "component.json data-flow.json layout.json state-management.json transitions.json user-actions.json validation.json"
             ;;
         jsonui-viewmodel)
             echo "collection-kotlin.kt collection-swift.swift colormanager-kotlin.kt colormanager-swift.swift event-handler-kotlin.kt event-handler-swift.swift hardcode-correct.kt hardcode-correct.swift hardcode-wrong.kt hardcode-wrong.swift logger-correct.swift logger-wrong.swift repository-pattern.swift stringmanager-swift.swift strings-kotlin.kt viewmodel-kotlin.kt viewmodel-swift.swift"
