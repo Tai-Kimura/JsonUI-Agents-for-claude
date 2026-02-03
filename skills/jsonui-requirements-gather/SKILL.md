@@ -1,6 +1,6 @@
 ---
 name: jsonui-requirements-gather
-description: Gathers screen definitions through dialogue to create spec.json files. Reads template from examples to ask structured questions.
+description: Gathers screen definitions through dialogue one screen at a time. Saves each screen's requirements immediately after confirmation.
 tools: Read, Write, Glob, Grep
 ---
 
@@ -8,45 +8,43 @@ tools: Read, Write, Glob, Grep
 
 ## Purpose
 
-Gather screen definitions from users through friendly dialogue to create structured spec.json files. This skill reads the spec template and asks questions to fill each section.
+Gather screen definitions from users through friendly dialogue. **Process ONE screen at a time** and save requirements immediately after each screen is confirmed.
 
-## CRITICAL: First Action
+## CRITICAL: One Screen at a Time
 
-**Before asking any questions, you MUST:**
+**You MUST complete and save each screen before moving to the next:**
 
-1. Read the template file: `{skill_directory}/examples/screen-spec-template.json`
-2. Understand the structure you need to fill
-3. Use the template to guide your questions
+1. Gather requirements for ONE screen
+2. Confirm with user
+3. **IMMEDIATELY save to `docs/requirements/{screen_name}.md`**
+4. Ask if there are more screens
+5. Repeat
+
+**NEVER gather requirements for multiple screens before saving.**
 
 ## Input Variables
 
 - `platforms` - Target platforms (iOS, Android, Web)
 - `app_concept` - Basic app idea from user
-- `project_directory` - Where to save spec documents
-- `skill_directory` - Path to this skill (for reading template)
+- `project_directory` - Where to save documents
 
 ## Workflow
 
-### Phase 1: Load Template and Understand Context
+### Phase 1: Introduction
 
-First, read the template:
-
-```
-Reading spec template to understand what information I need to gather...
-```
-
-Then confirm what you're building:
+Confirm what you're building:
 
 ```
 I'll help you define the screens for "{app_concept}".
 Target platform(s): {platforms}
 
-Let's start designing your screens one by one.
+Let's design your screens one by one.
+I'll save each screen's requirements as we complete them.
 ```
 
-### Phase 2: Screen Overview
+### Phase 2: Screen Name
 
-Ask about the first screen:
+Ask about the screen:
 
 ```
 What is the first (or main) screen of your app?
@@ -59,9 +57,7 @@ For example:
 What screen would you like to define?
 ```
 
-### Phase 3: Screen Metadata
-
-For each screen, gather metadata:
+### Phase 3: Screen Purpose
 
 ```
 Let's define the "{screen_name}" screen.
@@ -71,8 +67,6 @@ What does the user accomplish here?
 ```
 
 ### Phase 4: Components (UI Elements)
-
-Ask about UI elements on the screen:
 
 ```
 What elements appear on the "{screen_name}" screen?
@@ -87,83 +81,7 @@ For example:
 Please list what the user sees on this screen.
 ```
 
-For each component, ask:
-
-```
-For the "{component}" element:
-- What data does it display or collect?
-- Is it required or optional?
-- Are there any constraints (max length, format, etc.)?
-```
-
-### Phase 5: Layout Structure
-
-Ask about how elements are arranged:
-
-```
-How are these elements arranged on the screen?
-
-1. Vertical stack (top to bottom)
-2. Horizontal row
-3. Grid layout
-4. Card-based layout
-
-Which layout feels right for this screen?
-```
-
-Ask about sections:
-
-```
-Should this screen be divided into sections?
-
-For example:
-- Header section (logo, navigation)
-- Main content section
-- Footer section (buttons, links)
-
-What sections does your screen have?
-```
-
-### Phase 6: Data and State
-
-Ask about data requirements:
-
-```
-What data does this screen need?
-
-1. Data from API (fetched from server)
-2. Data from previous screen (passed in)
-3. User input (entered on this screen)
-4. Local storage (saved on device)
-
-Where does the data come from?
-```
-
-For API data:
-
-```
-What API does this screen call?
-
-- Endpoint name or URL
-- What data does it return?
-- What happens if the API fails?
-```
-
-For user input:
-
-```
-What information does the user enter on this screen?
-
-For each input field:
-- Field name
-- Type (text, number, date, email, etc.)
-- Required or optional?
-- Any validation rules?
-```
-
-### Phase 7: User Actions
-
-Ask about what users can do:
+### Phase 5: User Actions
 
 ```
 What actions can users take on this screen?
@@ -171,24 +89,12 @@ What actions can users take on this screen?
 For example:
 - Tap a button (submit, save, delete)
 - Select an item from a list
-- Swipe to refresh
-- Pull down to load more
+- Enter text in a field
 
 What interactions does this screen support?
 ```
 
-For each action:
-
-```
-When the user "{action}":
-- What happens next?
-- Where does the user go?
-- What data is sent or saved?
-```
-
-### Phase 8: Navigation
-
-Ask about screen transitions:
+### Phase 6: Navigation
 
 ```
 Where can users go from this screen?
@@ -199,23 +105,32 @@ List the possible destinations:
 - Back button → goes to {screen}
 ```
 
-### Phase 9: Validation Rules
+### Phase 7: Data Requirements
 
-Ask about validation:
+```
+What data does this screen need?
+
+1. Data from API (fetched from server)
+2. Data from previous screen (passed in)
+3. User input (entered on this screen)
+
+Where does the data come from?
+```
+
+### Phase 8: Validation (if input exists)
 
 ```
 What validation is needed on this screen?
 
 For example:
 - Email must be valid format
-- Password must be 8+ characters
 - Required fields must be filled
-- Date must be in the future
+- Password must be 8+ characters
 
 What rules should be enforced?
 ```
 
-### Phase 10: Review and Confirm
+### Phase 9: Review and Confirm
 
 Summarize the screen definition:
 
@@ -227,17 +142,14 @@ Here's the "{screen_name}" screen definition:
 **Components:**
 {list of components}
 
-**Layout:** {layout_type}
-- {sections}
-
-**Data Sources:**
-{data sources}
-
 **User Actions:**
-{actions and their effects}
+{actions}
 
 **Navigation:**
 {navigation paths}
+
+**Data:**
+{data sources}
 
 **Validation:**
 {validation rules}
@@ -245,92 +157,96 @@ Here's the "{screen_name}" screen definition:
 Is this correct? Would you like to change anything?
 ```
 
-### Phase 11: Additional Screens
+### Phase 10: SAVE IMMEDIATELY (MANDATORY)
 
-After confirming one screen:
+**After user confirms, you MUST IMMEDIATELY save the requirements file.**
+
+Create: `{project_directory}/docs/requirements/{screen_name}.md`
+
+```markdown
+# {Screen Name} Screen Requirements
+
+## Overview
+- **Screen Name:** {screen_name}
+- **Platform:** {platforms}
+- **App:** {app_concept}
+
+## Purpose
+{description of what user accomplishes}
+
+## Components
+
+| Component | Type | Description |
+|-----------|------|-------------|
+| {name} | {type} | {description} |
+
+## User Actions
+
+| Action | Trigger | Result |
+|--------|---------|--------|
+| {action} | {button/gesture} | {what happens} |
+
+## Navigation
+
+| From | To | Trigger |
+|------|-----|---------|
+| This screen | {destination} | {action} |
+
+## Data Requirements
+
+### Input Data
+{data passed to this screen}
+
+### Output Data
+{data this screen produces}
+
+### API Calls
+{API endpoints called, if any}
+
+## Validation Rules
+
+| Field | Rule | Message |
+|-------|------|---------|
+| {field} | {rule} | {error message} |
+
+## Notes
+{any additional notes}
+```
+
+**After saving, report:**
 
 ```
-Great! "{screen_name}" is defined.
+Saved: docs/requirements/{screen_name}.md
 
 Do you have more screens to define?
 1. Yes, define another screen
 2. No, I'm done
-
-Which one?
 ```
 
-If yes, repeat from Phase 2.
+### Phase 11: Next Screen or Complete
 
-### Phase 12: Generate Spec Files
+If user wants more screens → Go back to Phase 2
 
-After all screens are defined, create the spec.json files:
+If user is done → Go to Phase 12
 
-For each screen, create `{project_directory}/docs/screens/json/{screen_id}.spec.json`
+### Phase 12: Generate Summary
 
----
-
-## Output Documents
-
-### spec.json for each screen
-
-Location: `{project_directory}/docs/screens/json/{screen_id}.spec.json`
-
-Use the template structure and fill with gathered information:
-
-```json
-{
-  "$schema": "screen-spec-schema.json",
-  "metadata": {
-    "screenName": "{from Phase 3}",
-    "screenId": "{auto-generated from name}",
-    "version": "1.0.0",
-    "lastUpdated": "{current date}",
-    "author": "",
-    "description": "{from Phase 3}",
-    "platform": "{from input}",
-    "tags": []
-  },
-  "components": [
-    // {from Phase 4}
-  ],
-  "layout": {
-    // {from Phase 5}
-  },
-  "dataFlow": {
-    // {from Phase 6}
-  },
-  "stateManagement": {
-    // {from Phase 6}
-  },
-  "userActions": [
-    // {from Phase 7}
-  ],
-  "validation": {
-    // {from Phase 9}
-  },
-  "transitions": {
-    // {from Phase 8}
-  }
-}
-```
-
-### screens-summary.md
-
-Location: `{project_directory}/docs/requirements/screens-summary.md`
+Create summary file: `{project_directory}/docs/requirements/screens-summary.md`
 
 ```markdown
 # Screen Summary
 
 ## Overview
-- App: {app_concept}
-- Platforms: {platforms}
-- Total Screens: {count}
+- **App:** {app_concept}
+- **Platforms:** {platforms}
+- **Total Screens:** {count}
 
 ## Screen List
 
-| Screen | Description | Main Components |
-|--------|-------------|-----------------|
-| {screen1} | {desc} | {components} |
+| Screen | Description | Main Actions |
+|--------|-------------|--------------|
+| {screen1} | {purpose} | {main actions} |
+| {screen2} | {purpose} | {main actions} |
 
 ## Screen Flow
 
@@ -341,31 +257,47 @@ Location: `{project_directory}/docs/requirements/screens-summary.md`
 
 ## Files Created
 
-- docs/screens/json/{screen1}.spec.json
-- docs/screens/json/{screen2}.spec.json
+- docs/requirements/{screen1}.md
+- docs/requirements/{screen2}.md
+- docs/requirements/screens-summary.md
+```
+
+**Final report:**
+
+```
+Requirements gathering complete!
+
+Files created:
+- docs/requirements/{screen1}.md
+- docs/requirements/{screen2}.md
+- docs/requirements/screens-summary.md
+
+Total screens defined: {count}
+
+Next steps:
+Start a new Claude Code session and run "Read CLAUDE.md" to begin implementation.
 ```
 
 ---
 
 ## Important Rules
 
-- **Read template first** - Always read the template before asking questions
+- **ONE screen at a time** - Complete and save before moving to next
+- **Save IMMEDIATELY after confirmation** - Do NOT wait until all screens are done
 - **One question at a time** - Never ask multiple questions together
 - **Simple language** - Avoid technical jargon
 - **Use examples** - Always provide concrete examples
-- **Confirm understanding** - Summarize and confirm before creating files
+- **Confirm before saving** - Always ask "Is this correct?" before saving
 - **User's language** - Respond in the language the user uses
-- **Be patient** - Allow users to think and respond at their pace
-- **Map to template** - Every question should map to a template field
 
 ---
 
 ## If User Doesn't Know
 
-When user is unsure, provide suggestions based on common patterns:
+When user is unsure, provide suggestions:
 
 ```
-No problem! Here are some common patterns for {topic}:
+No problem! Here are some common patterns:
 
 1. {option1} - {description}
 2. {option2} - {description}
@@ -386,23 +318,3 @@ When asking about components, reference these common types:
 - **Media**: image, icon, video
 - **Container**: card, section, list, grid, scrollView
 - **Navigation**: tabBar, navbar, drawer, breadcrumb
-
----
-
-## Completion
-
-After creating all spec files:
-
-```
-Screen specifications created!
-
-Files created:
-{list of .spec.json files}
-
-Summary:
-- docs/requirements/screens-summary.md
-
-Next steps:
-You can now proceed to screen implementation.
-Tell the orchestrator "specifications complete" to continue.
-```
