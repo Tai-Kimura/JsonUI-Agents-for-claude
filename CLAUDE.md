@@ -14,10 +14,13 @@
 ## How the Workflow Works
 
 1. **You launch `jsonui-orchestrator`** - It will show the implementation flow
-2. **Orchestrator tells you which agent to launch next** - Follow its instructions
-3. **You launch the specified agent** - Complete that step
-4. **Return to orchestrator** - It will tell you the next step
-5. **Repeat until complete**
+2. **Show the orchestrator's response to the user AS-IS** - Do not summarize or modify
+3. **Orchestrator tells you which agent to launch next** - Follow its instructions
+4. **You launch the specified agent** - Complete that step
+5. **Return to orchestrator** - It will tell you the next step
+6. **Repeat until complete**
+
+**IMPORTANT:** When the orchestrator returns a response, you MUST show it to the user exactly as received. Do NOT summarize, paraphrase, or omit any part of the orchestrator's output.
 
 ---
 
