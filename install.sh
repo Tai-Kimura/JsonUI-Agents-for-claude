@@ -53,10 +53,10 @@ SKILLS_DIR=".claude/skills"
 RULES_DIR=".claude/rules"
 
 # Agent files (in agents/ directory)
-AGENT_FILES="jsonui-orchestrator.md jsonui-screen-impl.md jsonui-setup.md jsonui-spec.md jsonui-test.md"
+AGENT_FILES="jsonui-orchestrator.md jsonui-requirements.md jsonui-screen-impl.md jsonui-setup.md jsonui-spec.md jsonui-test.md"
 
 # Skill directories (each contains SKILL.md and optionally examples/)
-SKILL_DIRS="jsonui-converter jsonui-data jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-refactor jsonui-screen-spec jsonui-screen-test-implement jsonui-spec-review jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
+SKILL_DIRS="jsonui-converter jsonui-data jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-refactor jsonui-requirements-gather jsonui-screen-spec jsonui-screen-test-implement jsonui-spec-review jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
 
 # Rule files (in rules/ directory)
 RULE_FILES="design-philosophy.md file-locations.md skill-workflow.md specification-rules.md"
