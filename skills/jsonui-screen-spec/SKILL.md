@@ -32,8 +32,16 @@ Ask:
 1. "What is the screen name? (snake_case, e.g., login, user_profile)" → `{screen_name}`
 2. "What is the display name?" → `{DisplayName}`
 
+**⚠️ CRITICAL: Directory and Path Rules**
+
+Before running the command:
+1. **ALWAYS `cd` to the project root directory first** - Do NOT run from a subdirectory
+2. **`{screen_name}` must be a simple name only** - e.g., `login`, `user_profile`
+3. **NEVER specify nested paths in `{screen_name}`** - e.g., ❌ `docs/screens/login`, ❌ `screens/login`
+
 Then run:
 ```bash
+cd {project_directory}  # ALWAYS return to project root first!
 jsonui-doc init spec {screen_name} -d "{DisplayName}" -o {project_directory}/docs/screens/json
 ```
 
