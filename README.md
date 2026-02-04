@@ -22,39 +22,30 @@ curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -
 
 ### After Installation
 
-Choose the appropriate workflow based on your situation:
-
-#### Option A: Requirements Already Defined
-
-If you already have clear requirements documented:
+Run this command to start:
 
 ```
 Read CLAUDE.md
 ```
 
-This will launch the `jsonui-orchestrator` agent which guides you through the implementation flow.
+You will be asked to choose a workflow:
 
-#### Option B: Requirements Not Yet Defined (Recommended for New Projects)
+1. **Requirements Definition** - Define app requirements through dialogue (recommended for new projects)
+2. **Implementation** - Start implementation (requirements already defined)
 
-If you're starting from scratch or need help defining what to build:
+#### Option 1: Requirements Definition
 
-```
-Use the jsonui-requirements agent
-```
+For new projects or when requirements are not yet defined:
+- Select target platform(s) (iOS / Android / Web)
+- Describe your app idea
+- Define screens through guided questions
+- Output: `docs/screens/json/*.spec.json` files
 
-This agent helps non-technical users define app requirements through friendly dialogue:
-1. Select target platform(s) (iOS / Android / Web)
-2. Describe your app idea
-3. Define screens through guided questions
-4. Output: `docs/screens/json/*.spec.json` files
+After requirements are complete, **start a new Claude Code session** and run `Read CLAUDE.md` again, then select Option 2.
 
-After requirements are complete, **start a new Claude Code session** and run:
+#### Option 2: Implementation
 
-```
-Read CLAUDE.md
-```
-
-This launches the orchestrator to begin implementation based on your specifications.
+When requirements are already defined, this launches the `jsonui-orchestrator` agent which guides you through the implementation flow.
 
 ## Directory Structure
 
