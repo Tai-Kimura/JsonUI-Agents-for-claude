@@ -152,8 +152,7 @@ jsonui-orchestrator
 │   ├── /jsonui-layout
 │   ├── /jsonui-refactor
 │   ├── /jsonui-data
-│   ├── /jsonui-viewmodel
-│   └── /jsonui-spec-sync
+│   └── /jsonui-viewmodel
 └── Step 4: jsonui-test (testing)
     ├── /jsonui-test-cli
     ├── /jsonui-screen-test-implement
@@ -163,7 +162,7 @@ jsonui-orchestrator
 ### Screen Implementation Flow
 
 ```
-jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonui-viewmodel → jsonui-spec-sync
+jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonui-viewmodel
 ```
 
 1. **jsonui-generator**: Generate scaffolding with `sjui g view` / `kjui g view`
@@ -171,7 +170,6 @@ jsonui-generator → jsonui-layout → jsonui-refactor → jsonui-data → jsonu
 3. **jsonui-refactor**: Review and organize (styles, includes, cleanup)
 4. **jsonui-data**: Define types in the `data` section
 5. **jsonui-viewmodel**: Implement business logic in ViewModel
-6. **jsonui-spec-sync**: Update specification to match implementation
 
 ## Usage
 
