@@ -90,8 +90,9 @@ Skills execute specific tasks. Agents invoke skills as needed.
 |-------|-------------|
 | `jsonui-requirements-gather` | Gathers screen definitions through dialogue to create spec.json files |
 | `jsonui-screen-spec` | Screen specification document creation |
+| `jsonui-component-spec` | Reusable component specification creation |
 | `jsonui-swagger` | API/DB specification (OpenAPI/Swagger) |
-| `jsonui-md-to-html` | Markdown to HTML conversion |
+| `jsonui-spec-review` | Specification review and validation |
 
 ### Test Skills
 
