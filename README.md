@@ -244,7 +244,7 @@ Only "Spec Quality" remains as a variable - everything else is stabilized by arc
 
 ### CLI Tools
 
-- [jsonui-cli](https://github.com/Tai-Kimura/jsonui-cli) - CLI tools for all platforms (sjui_tools, kjui_tools, rjui_tools)
+- [jsonui-cli](https://github.com/Tai-Kimura/jsonui-cli) - CLI tools for all platforms (sjui_tools, kjui_tools, rjui_tools, test_tools, document_tools)
 
 ### Test Runners
 
