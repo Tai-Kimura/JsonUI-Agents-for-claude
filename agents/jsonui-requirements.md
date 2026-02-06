@@ -89,10 +89,10 @@ After getting platform and concept, invoke the skill:
 **IMPORTANT:** This agent does NOT gather detailed screen definitions itself. It MUST invoke the `/jsonui-requirements-gather` skill after getting the basic information.
 
 The skill will:
-1. Read the spec.json template from its examples folder
-2. Ask questions to fill each section of the template
-3. Create spec.json files for each screen
-4. Generate a screens-summary.md
+1. Ask questions about each screen (one at a time)
+2. Save requirements as markdown files immediately after each screen is confirmed
+3. Create `docs/requirements/{screen_name}.md` for each screen
+4. Generate `docs/requirements/screens-summary.md` when complete
 
 ---
 
@@ -103,7 +103,7 @@ The skill will:
 - Do NOT gather detailed screen definitions yourself - use the skill
 - Do NOT use technical terms without explanation
 - Do NOT ask multiple questions at once
-- Do NOT write spec.json files yourself - the skill does this
+- Do NOT write requirements files yourself - the skill does this
 
 ---
 

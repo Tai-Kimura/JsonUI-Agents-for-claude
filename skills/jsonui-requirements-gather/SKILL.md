@@ -10,6 +10,18 @@ tools: Read, Write, Glob, Grep
 
 Gather screen definitions from users through friendly dialogue. **Process ONE screen at a time** and save requirements immediately after each screen is confirmed.
 
+The requirements document structure matches the `screen-spec-template.json` format, making it easy to convert requirements to specifications later.
+
+## CRITICAL: Read Template First
+
+**Before starting, read the spec template to understand the target structure:**
+
+```
+Read: {skill_directory}/examples/screen-spec-template.json
+```
+
+This template defines the structure that requirements will eventually be converted to.
+
 ## CRITICAL: One Screen at a Time
 
 **You MUST complete and save each screen before moving to the next:**
@@ -27,6 +39,7 @@ Gather screen definitions from users through friendly dialogue. **Process ONE sc
 - `platforms` - Target platforms (iOS, Android, Web)
 - `app_concept` - Basic app idea from user
 - `project_directory` - Where to save documents
+- `skill_directory` - Path to this skill's directory
 
 ## Workflow
 
@@ -42,7 +55,7 @@ Let's design your screens one by one.
 I'll save each screen's requirements as we complete them.
 ```
 
-### Phase 2: Screen Name
+### Phase 2: Screen Name & Purpose
 
 Ask about the screen:
 
@@ -54,22 +67,28 @@ For example:
 - "Home dashboard"
 - "Product list"
 
-What screen would you like to define?
+What screen would you like to define, and what is its purpose?
 ```
 
-### Phase 3: Screen Purpose
+### Phase 3: Layout & Sections
 
 ```
-Let's define the "{screen_name}" screen.
+How is the "{screen_name}" screen organized?
 
-What is the purpose of this screen?
-What does the user accomplish here?
+For example:
+- Header at the top with title and back button
+- Main content area in the middle
+- Bottom navigation bar
+
+What sections does this screen have?
 ```
 
 ### Phase 4: Components (UI Elements)
 
+For each section identified, ask:
+
 ```
-What elements appear on the "{screen_name}" screen?
+What elements appear in the {section_name}?
 
 For example:
 - Text labels (title, description, etc.)
@@ -78,7 +97,7 @@ For example:
 - Images or icons
 - Lists or tables
 
-Please list what the user sees on this screen.
+Please list what the user sees in this section.
 ```
 
 ### Phase 5: User Actions
@@ -87,14 +106,14 @@ Please list what the user sees on this screen.
 What actions can users take on this screen?
 
 For example:
-- Tap a button (submit, save, delete)
-- Select an item from a list
-- Enter text in a field
+- Tap a button → submit form
+- Select an item from a list → view details
+- Enter text in a field → update value
 
 What interactions does this screen support?
 ```
 
-### Phase 6: Navigation
+### Phase 6: Navigation (Transitions)
 
 ```
 Where can users go from this screen?
@@ -103,21 +122,38 @@ List the possible destinations:
 - Button tap → goes to {screen}
 - List item tap → goes to {screen}
 - Back button → goes to {screen}
+
+Any special animations when navigating?
 ```
 
-### Phase 7: Data Requirements
+### Phase 7: Data Flow
 
 ```
 What data does this screen need?
 
-1. Data from API (fetched from server)
-2. Data from previous screen (passed in)
-3. User input (entered on this screen)
+1. **Input data** - Data passed from previous screen
+2. **API calls** - Data fetched from server
+3. **User input** - Data entered on this screen
+4. **Output data** - Data passed to next screen
 
-Where does the data come from?
+Where does the data come from and go?
 ```
 
-### Phase 8: Validation (if input exists)
+### Phase 8: State Management
+
+```
+What state does this screen need to track?
+
+For example:
+- Loading state (showing spinner while fetching)
+- Form values (what user has entered)
+- Error state (showing error messages)
+- Selection state (which item is selected)
+
+What local state does this screen manage?
+```
+
+### Phase 9: Validation
 
 ```
 What validation is needed on this screen?
@@ -127,10 +163,11 @@ For example:
 - Required fields must be filled
 - Password must be 8+ characters
 
-What rules should be enforced?
+What rules should be enforced, and when?
+(on submit / on blur / on change)
 ```
 
-### Phase 9: Review and Confirm
+### Phase 10: Review and Confirm
 
 Summarize the screen definition:
 
@@ -139,17 +176,25 @@ Here's the "{screen_name}" screen definition:
 
 **Purpose:** {description}
 
+**Layout:**
+{sections}
+
 **Components:**
-{list of components}
+{list of components by section}
 
 **User Actions:**
-{actions}
+{actions and their effects}
 
 **Navigation:**
 {navigation paths}
 
-**Data:**
-{data sources}
+**Data Flow:**
+- Input: {input data}
+- API: {api calls}
+- Output: {output data}
+
+**State:**
+{local state}
 
 **Validation:**
 {validation rules}
@@ -157,84 +202,129 @@ Here's the "{screen_name}" screen definition:
 Is this correct? Would you like to change anything?
 ```
 
-### Phase 10: SAVE IMMEDIATELY (MANDATORY)
+### Phase 11: SAVE IMMEDIATELY (MANDATORY)
 
 **After user confirms, you MUST IMMEDIATELY save the requirements file.**
 
 Create: `{project_directory}/docs/requirements/{screen_name}.md`
 
+Use this template (matches screen-spec-template.json structure):
+
 ```markdown
-# {Screen Name} Screen Requirements
+# {Screen Name} Requirements
 
-## Overview
+## Metadata
 - **Screen Name:** {screen_name}
-- **Platform:** {platforms}
-- **App:** {app_concept}
-
-## Purpose
-{description of what user accomplishes}
+- **Screen ID:** {screen_id} (snake_case)
+- **Description:** {purpose}
+- **Platforms:** {platforms}
+- **Tags:** {relevant tags}
 
 ## Components
 
-| Component | Type | Description |
-|-----------|------|-------------|
-| {name} | {type} | {description} |
+### {Section Name}
+
+| ID | Type | Description | Data Binding | Events |
+|----|------|-------------|--------------|--------|
+| {id} | {type} | {description} | {binding} | {events} |
+
+## Layout
+
+- **Type:** {vertical/horizontal/grid/absolute}
+- **Sections:**
+  1. {section1} - {components}
+  2. {section2} - {components}
+  3. {section3} - {components}
+
+## Data Flow
+
+### Inputs
+| Name | Type | Source | Required |
+|------|------|--------|----------|
+| {name} | {type} | {previous screen / navigation params} | {yes/no} |
+
+### Outputs
+| Name | Type | Destination | Trigger |
+|------|------|-------------|---------|
+| {name} | {type} | {next screen / API} | {action} |
+
+### API Calls
+| Endpoint | Method | Request Params | Response Mapping | Error Handling |
+|----------|--------|----------------|------------------|----------------|
+| {endpoint} | {GET/POST/PUT/DELETE} | {params} | {mapping} | {error handling} |
+
+## State Management
+
+### Local State
+| Name | Type | Initial Value | Description |
+|------|------|---------------|-------------|
+| {name} | {type} | {initial} | {description} |
+
+### Shared State
+| Name | Scope | Type |
+|------|-------|------|
+| {name} | {app/module} | {type} |
 
 ## User Actions
 
-| Action | Trigger | Result |
+| Action ID | Trigger | Component | Handler | Effects |
+|-----------|---------|-----------|---------|---------|
+| {id} | {tap/longPress/change} | {component} | {handler} | {effects} |
+
+## Validation
+
+### Rules
+| Field | Rules | Error Message |
+|-------|-------|---------------|
+| {field} | {rules} | {message} |
+
+### Form Validation
+- **Validate On:** {submit/blur/change}
+- **Show Errors:** {inline/toast/alert}
+
+## Transitions
+
+### Entry Animation
+{description or "none"}
+
+### Exit Animation
+{description or "none"}
+
+### Navigation
+| Target | Trigger | Params |
 |--------|---------|--------|
-| {action} | {button/gesture} | {what happens} |
+| {screen} | {action} | {params} |
 
-## Navigation
-
-| From | To | Trigger |
-|------|-----|---------|
-| This screen | {destination} | {action} |
-
-## Data Requirements
-
-### Input Data
-{data passed to this screen}
-
-### Output Data
-{data this screen produces}
-
-### API Calls
-{API endpoints called, if any}
-
-## Validation Rules
-
-| Field | Rule | Message |
-|-------|------|---------|
-| {field} | {rule} | {error message} |
+## Accessibility
+- **Screen Reader Text:** {description}
+- **Focus Order:** {order}
 
 ## Notes
-{any additional notes}
+{any additional notes or open questions}
 ```
 
 **After saving, report:**
 
 ```
-Saved: docs/requirements/{screen_name}.md
+✓ Saved: docs/requirements/{screen_name}.md
 
 Do you have more screens to define?
 1. Yes, define another screen
 2. No, I'm done
 ```
 
-### Phase 11: Next Screen or Complete
+### Phase 12: Next Screen or Complete
 
 If user wants more screens → Go back to Phase 2
 
-If user is done → Go to Phase 12
+If user is done → Go to Phase 13
 
-### Phase 12: Generate Summary
+### Phase 13: Generate Summary
 
 Create summary file: `{project_directory}/docs/requirements/screens-summary.md`
 
 ```markdown
-# Screen Summary
+# Screen Requirements Summary
 
 ## Overview
 - **App:** {app_concept}
@@ -243,23 +333,42 @@ Create summary file: `{project_directory}/docs/requirements/screens-summary.md`
 
 ## Screen List
 
-| Screen | Description | Main Actions |
-|--------|-------------|--------------|
-| {screen1} | {purpose} | {main actions} |
-| {screen2} | {purpose} | {main actions} |
+| Screen | ID | Description | Main Actions |
+|--------|-----|-------------|--------------|
+| {screen1} | {id1} | {purpose} | {main actions} |
+| {screen2} | {id2} | {purpose} | {main actions} |
 
 ## Screen Flow
 
 ```
-{screen1} → {screen2} ({action})
-{screen2} → {screen3} ({action})
+{screen1} --({action})--> {screen2}
+{screen2} --({action})--> {screen3}
 ```
+
+## Data Flow Overview
+
+| Screen | Input From | Output To |
+|--------|------------|-----------|
+| {screen1} | - | {screen2} |
+| {screen2} | {screen1} | {screen3}, API |
+
+## Shared State
+
+| State Name | Used By | Type |
+|------------|---------|------|
+| {state} | {screens} | {type} |
 
 ## Files Created
 
 - docs/requirements/{screen1}.md
 - docs/requirements/{screen2}.md
 - docs/requirements/screens-summary.md
+
+## Next Steps
+
+1. Review requirements with stakeholders
+2. Create screen specifications (spec.json) from these requirements
+3. Begin implementation
 ```
 
 **Final report:**
@@ -275,7 +384,9 @@ Files created:
 Total screens defined: {count}
 
 Next steps:
-Start a new Claude Code session and run "Read CLAUDE.md" to begin implementation.
+1. Review the requirements in docs/requirements/
+2. Run specification creation to generate spec.json files
+3. Begin implementation
 ```
 
 ---
@@ -289,6 +400,7 @@ Start a new Claude Code session and run "Read CLAUDE.md" to begin implementation
 - **Use examples** - Always provide concrete examples
 - **Confirm before saving** - Always ask "Is this correct?" before saving
 - **User's language** - Respond in the language the user uses
+- **Match spec template** - Requirements structure should map to screen-spec-template.json
 
 ---
 
@@ -318,3 +430,11 @@ When asking about components, reference these common types:
 - **Media**: image, icon, video
 - **Container**: card, section, list, grid, scrollView
 - **Navigation**: tabBar, navbar, drawer, breadcrumb
+
+## Data Type Reference
+
+Common data types to use:
+
+- **Primitives**: string, number, boolean
+- **Collections**: array, object
+- **Special**: date, email, url, phone
