@@ -9,13 +9,15 @@ Which workflow would you like to use?
 
 1. **Requirements Definition** - Define app requirements through dialogue (recommended for new projects)
 2. **Implementation** - Start implementation (requirements already defined)
+3. **Modify Existing App** - Add features, fix bugs, or change existing screens
 
-Please select 1 or 2.
+Please select 1, 2, or 3.
 ```
 
 **Based on user's choice:**
 - **Option 1** → Launch `jsonui-requirements` agent
 - **Option 2** → Launch `jsonui-orchestrator` agent
+- **Option 3** → Launch `jsonui-modify` agent
 
 ---
 
@@ -37,6 +39,15 @@ When user selects this option:
 When user selects this option:
 1. Launch the `jsonui-orchestrator` agent
 2. Follow the orchestrator's workflow (spec → setup → implement → test)
+
+---
+
+## Workflow Option 3: Modify Existing App
+
+When user selects this option:
+1. Launch the `jsonui-modify` agent
+2. The agent will ask what modification is needed (add screen, modify UI, fix bug, API change, spec change)
+3. Follow the modify agent's workflow for the selected modification type
 
 ---
 
@@ -67,7 +78,9 @@ This includes but is not limited to:
 - Running tests
 - ANY other JsonUI implementation work
 
-**Exception:** Requirements definition uses `jsonui-requirements` agent directly (Option 1).
+**Exceptions:**
+- Requirements definition uses `jsonui-requirements` agent directly (Option 1).
+- Existing app modifications use `jsonui-modify` agent directly (Option 3).
 
 ---
 
@@ -123,7 +136,7 @@ This includes but is not limited to:
 > - `CLAUDE.md` (in project root)
 > - `.claude/agents/jsonui-orchestrator.md`
 >
-> Otherwise, please select a workflow option (1 for requirements, 2 for implementation).
+> Otherwise, please select a workflow option (1 for requirements, 2 for implementation, 3 for modification).
 
 ---
 
@@ -154,7 +167,8 @@ The proper workflow ensures:
 | Ask user for workflow choice first | YES |
 | Launch `jsonui-requirements` agent (Option 1) | YES |
 | Launch `jsonui-orchestrator` agent (Option 2) | YES |
-| Launch agent when orchestrator tells you to | YES |
+| Launch `jsonui-modify` agent (Option 3) | YES |
+| Launch agent when orchestrator/modify agent tells you to | YES |
 | Launch implementation agent without orchestrator direction | NO |
 | Use any skill directly | NO |
 | Do any implementation work yourself | NO |
