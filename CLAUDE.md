@@ -10,14 +10,16 @@ Which workflow would you like to use?
 1. **Requirements Definition** - Define app requirements through dialogue (recommended for new projects)
 2. **Implementation** - Start implementation (requirements already defined)
 3. **Modify Existing App** - Add features, fix bugs, or change existing screens
+4. **Create Specs for Existing App** - Generate specifications from an existing codebase
 
-Please select 1, 2, or 3.
+Please select 1, 2, 3, or 4.
 ```
 
 **Based on user's choice:**
 - **Option 1** → Launch `jsonui-requirements` agent
 - **Option 2** → Launch `jsonui-orchestrator` agent
 - **Option 3** → Launch `jsonui-modify` agent
+- **Option 4** → Launch `jsonui-spec` agent with existing app context
 
 ---
 
@@ -51,6 +53,19 @@ When user selects this option:
 
 ---
 
+## Workflow Option 4: Create Specs for Existing App
+
+When user selects this option:
+1. Launch the `jsonui-spec` agent
+2. Tell the agent: "This is an existing app. Read the existing layout JSONs, ViewModels, and code to create specifications for the current screens."
+3. The agent will:
+   - Scan the project for existing layout JSON files and ViewModels
+   - Create `.spec.json` files based on the existing implementation
+   - Validate and generate HTML documentation for each spec
+4. After completion, the user can use Option 3 (Modify) to make changes with proper specs in place
+
+---
+
 ## How the Orchestrator Workflow Works
 
 1. **You launch `jsonui-orchestrator`** - It will show the implementation flow
@@ -81,6 +96,7 @@ This includes but is not limited to:
 **Exceptions:**
 - Requirements definition uses `jsonui-requirements` agent directly (Option 1).
 - Existing app modifications use `jsonui-modify` agent directly (Option 3).
+- Spec creation for existing apps uses `jsonui-spec` agent directly (Option 4).
 
 ---
 
@@ -136,7 +152,7 @@ This includes but is not limited to:
 > - `CLAUDE.md` (in project root)
 > - `.claude/agents/jsonui-orchestrator.md`
 >
-> Otherwise, please select a workflow option (1 for requirements, 2 for implementation, 3 for modification).
+> Otherwise, please select a workflow option (1 for requirements, 2 for implementation, 3 for modification, 4 for spec creation).
 
 ---
 
@@ -168,6 +184,7 @@ The proper workflow ensures:
 | Launch `jsonui-requirements` agent (Option 1) | YES |
 | Launch `jsonui-orchestrator` agent (Option 2) | YES |
 | Launch `jsonui-modify` agent (Option 3) | YES |
+| Launch `jsonui-spec` agent for existing app (Option 4) | YES |
 | Launch agent when orchestrator/modify agent tells you to | YES |
 | Launch implementation agent without orchestrator direction | NO |
 | Use any skill directly | NO |
