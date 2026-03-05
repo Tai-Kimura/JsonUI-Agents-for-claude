@@ -11,8 +11,9 @@ Which workflow would you like to use?
 2. **Implementation** - Start implementation (requirements already defined)
 3. **Modify Existing App** - Add features, fix bugs, or change existing screens
 4. **Create Specs for Existing App** - Generate specifications from an existing codebase
+5. **Backend Development** - Backend development (all JsonUI restrictions lifted)
 
-Please select 1, 2, 3, or 4.
+Please select 1, 2, 3, 4, or 5.
 ```
 
 **Based on user's choice:**
@@ -20,6 +21,7 @@ Please select 1, 2, 3, or 4.
 - **Option 2** → Launch `jsonui-orchestrator` agent
 - **Option 3** → Launch `jsonui-modify` agent
 - **Option 4** → Launch `jsonui-spec` agent with existing app context
+- **Option 5** → Follow **Workflow Option 5: Backend Development** below
 
 ---
 
@@ -63,6 +65,19 @@ When user selects this option:
    - Create `.spec.json` files based on the existing implementation
    - Validate and generate HTML documentation for each spec
 4. After completion, the user can use Option 3 (Modify) to make changes with proper specs in place
+
+---
+
+## Workflow Option 5: Backend Development
+
+When user selects this option:
+
+1. **All other rules and restrictions in this CLAUDE.md are COMPLETELY LIFTED.** The orchestrator workflow, forbidden actions, skill restrictions — none of them apply.
+2. **Ask the user which `.md` file to use as the rule file** for this backend session:
+   - List `.md` files found in directories such as `~/.claude/agents/`, `~/resource/`, or any path the user specifies
+   - The user may also provide a custom file path directly
+3. **Once the user selects a file**, read it and treat its contents as the **sole active rules** for the remainder of the session.
+4. Follow ONLY the rules from the selected file. All JsonUI-specific rules in this CLAUDE.md do not apply.
 
 ---
 
@@ -185,6 +200,7 @@ The proper workflow ensures:
 | Launch `jsonui-orchestrator` agent (Option 2) | YES |
 | Launch `jsonui-modify` agent (Option 3) | YES |
 | Launch `jsonui-spec` agent for existing app (Option 4) | YES |
+| Backend development with custom rules (Option 5) | YES |
 | Launch agent when orchestrator/modify agent tells you to | YES |
 | Launch implementation agent without orchestrator direction | NO |
 | Use any skill directly | NO |
