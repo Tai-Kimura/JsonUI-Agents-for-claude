@@ -169,6 +169,28 @@ Use `paddings` and `margins` arrays: `[top, right, bottom, left]` or `[vertical,
 3. **Keep bindings intact** - Never modify `@{}` binding expressions
 4. **Maintain IDs** - Never change existing view IDs (bindings depend on them)
 
+## Label partialAttributes
+
+`partialAttributes` styles parts of a Label's text. `range` supports both array `[start, end]` and string pattern.
+
+→ Example: `examples/partial-attributes.json`
+
+String format is preferred when the target text is static and readable.
+
+---
+
+## Border Limitations (SwiftUI / Compose)
+
+`borderWidth` applies a border to **all four sides**. Direction-specific borders (`borderBottomWidth`, `borderTopWidth`, etc.) are supported in **UIKit / Android Views only**.
+
+In SwiftUI / Compose, replace direction-specific borders with a separate View as a divider line.
+
+→ Example: `examples/border-divider.json`
+
+**When refactoring layouts for SwiftUI / Compose, convert `borderBottomWidth` / `borderTopWidth` patterns to divider Views.**
+
+---
+
 ## Cross-Platform Considerations
 
 - Ensure styles work across all platforms
