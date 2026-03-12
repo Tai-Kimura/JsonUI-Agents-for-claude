@@ -18,6 +18,28 @@ Read the following rule files first:
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
 - `<specification>`: Path to screen specification JSON (e.g., `docs/screens/json/login.spec.json`)
+- `<source_project_path>` (optional): Path to existing project on another platform
+- `<source_platform>` (optional): The source platform (iOS / Android / Web)
+
+## Cross-Platform Copy (REQUIRED when source_project_path is provided)
+
+**When `<source_project_path>` is provided, you MUST copy from the existing platform FIRST before making any edits.**
+
+JsonUI layouts are cross-platform — the same JSON works on iOS, Android, and Web.
+
+### Procedure:
+1. Find the corresponding layout JSON in the source project:
+   - Look in `<source_project_path>/Layouts/` for the screen JSON file
+   - Also check for includes in `<source_project_path>/Layouts/includes/`
+   - Also check for styles in `<source_project_path>/Styles/`
+   - Also check for string resources in `<source_project_path>/Resources/`
+2. **Copy the layout JSON as-is** to the target project's `Layouts/` directory
+3. **Copy related includes, styles, and resources** to the target project
+4. After copying, review the layout and adjust only if necessary for platform-specific differences (rare, since JSON is cross-platform)
+
+**Do NOT rewrite layouts from scratch when a source exists. Always copy first.**
+
+---
 
 ## Reading Specification (REQUIRED)
 

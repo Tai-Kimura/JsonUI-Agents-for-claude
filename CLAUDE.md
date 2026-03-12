@@ -9,19 +9,21 @@ Which workflow would you like to use?
 
 1. **Requirements Definition** - Define app requirements through dialogue (recommended for new projects)
 2. **Implementation** - Start implementation (requirements already defined)
-3. **Modify Existing App** - Add features, fix bugs, or change existing screens
-4. **Create Specs for Existing App** - Generate specifications from an existing codebase
-5. **Backend Development** - Backend development (all JsonUI restrictions lifted)
+3. **Cross-Platform Migration** - Migrate existing app to another platform (e.g., iOS → Android)
+4. **Modify Existing App** - Add features, fix bugs, or change existing screens
+5. **Create Specs for Existing App** - Generate specifications from an existing codebase
+6. **Backend Development** - Backend development (all JsonUI restrictions lifted)
 
-Please select 1, 2, 3, 4, or 5.
+Please select 1-6.
 ```
 
 **Based on user's choice:**
 - **Option 1** → Launch `jsonui-requirements` agent
 - **Option 2** → Launch `jsonui-orchestrator` agent
-- **Option 3** → Launch `jsonui-modify` agent
-- **Option 4** → Launch `jsonui-spec` agent with existing app context
-- **Option 5** → Follow **Workflow Option 5: Backend Development** below
+- **Option 3** → Launch `jsonui-orchestrator` agent with cross-platform migration context
+- **Option 4** → Launch `jsonui-modify` agent
+- **Option 5** → Launch `jsonui-spec` agent with existing app context
+- **Option 6** → Follow **Workflow Option 6: Backend Development** below
 
 ---
 
@@ -41,12 +43,39 @@ When user selects this option:
 ## Workflow Option 2: Implementation
 
 When user selects this option:
-1. Launch the `jsonui-orchestrator` agent
-2. Follow the orchestrator's workflow (spec → setup → implement → test)
+1. Check if `docs/app-config/` directory exists with app specification files
+   - **If it exists** → pass `app_config_path: docs/app-config/` to the orchestrator (no need to ask user)
+   - **If it does NOT exist** → ask the user: "Do you have an app platform specification document (app name, theme colors, navigation structure, etc.)? If yes, provide the path. If no, we'll use `docs/app-config/` as the default location."
+2. Launch the `jsonui-orchestrator` agent with `app_config_path`
+3. Follow the orchestrator's workflow (spec → setup → implement → test)
 
 ---
 
-## Workflow Option 3: Modify Existing App
+## Workflow Option 3: Cross-Platform Migration
+
+When user selects this option:
+1. Ask the user:
+   - **Source platform**: Which platform has the existing implementation? (iOS / Android / Web)
+   - **Source project path**: Where is the existing project?
+   - **Target platform**: Which platform to migrate to? (iOS / Android / Web)
+2. Check if `docs/app-config/` directory exists with app specification files
+   - **If it exists** → pass `app_config_path: docs/app-config/` to the orchestrator (no need to ask)
+   - **If it does NOT exist** → check if source project has `docs/app-config/`. If found, copy it. Otherwise ask the user.
+3. Launch the `jsonui-orchestrator` agent with migration context and `app_config_path`:
+   - `migration_mode: true`
+   - `source_platform`: The existing platform
+   - `source_project_path`: Path to the existing project
+   - `target_platform`: The target platform
+3. The orchestrator will:
+   - Find existing specs, layouts, and data definitions from the source project
+   - Skip spec creation if specs already exist (copy them)
+   - Copy layouts from the source project (JSON is cross-platform)
+   - Convert data types to target platform types
+   - Generate ViewModels for the target platform
+
+---
+
+## Workflow Option 4: Modify Existing App
 
 When user selects this option:
 1. Launch the `jsonui-modify` agent
@@ -55,7 +84,7 @@ When user selects this option:
 
 ---
 
-## Workflow Option 4: Create Specs for Existing App
+## Workflow Option 5: Create Specs for Existing App
 
 When user selects this option:
 1. Launch the `jsonui-spec` agent
@@ -64,16 +93,17 @@ When user selects this option:
    - Scan the project for existing layout JSON files and ViewModels
    - Create `.spec.json` files based on the existing implementation
    - Validate and generate HTML documentation for each spec
-4. After completion, the user can use Option 3 (Modify) to make changes with proper specs in place
+4. After completion, the user can use Option 4 (Modify) to make changes with proper specs in place
 
 ---
 
-## Workflow Option 5: Backend Development
+## Workflow Option 6: Backend Development
 
 When user selects this option:
 
 1. **All other rules and restrictions in this CLAUDE.md are COMPLETELY LIFTED.** The orchestrator workflow, forbidden actions, skill restrictions — none of them apply.
 2. **Ask the user which `.md` file to use as the rule file** for this backend session:
+
    - List `.md` files found in directories such as `~/.claude/agents/`, `~/resource/`, or any path the user specifies
    - The user may also provide a custom file path directly
 3. **Once the user selects a file**, read it and treat its contents as the **sole active rules** for the remainder of the session.
@@ -110,8 +140,9 @@ This includes but is not limited to:
 
 **Exceptions:**
 - Requirements definition uses `jsonui-requirements` agent directly (Option 1).
-- Existing app modifications use `jsonui-modify` agent directly (Option 3).
-- Spec creation for existing apps uses `jsonui-spec` agent directly (Option 4).
+- Cross-platform migration uses `jsonui-orchestrator` with migration context (Option 3).
+- Existing app modifications use `jsonui-modify` agent directly (Option 4).
+- Spec creation for existing apps uses `jsonui-spec` agent directly (Option 5).
 
 ---
 
@@ -167,7 +198,7 @@ This includes but is not limited to:
 > - `CLAUDE.md` (in project root)
 > - `.claude/agents/jsonui-orchestrator.md`
 >
-> Otherwise, please select a workflow option (1 for requirements, 2 for implementation, 3 for modification, 4 for spec creation).
+> Otherwise, please select a workflow option (1 for requirements, 2 for implementation, 3 for migration, 4 for modification, 5 for spec creation).
 
 ---
 
@@ -175,6 +206,7 @@ This includes but is not limited to:
 
 This project follows a strict workflow:
 1. **Requirements** → 2. **Specification** → 3. **Setup** → 4. **Implementation** → 5. **Testing**
+(Cross-platform migration follows the same flow but copies existing layouts and specs from the source platform.)
 
 Doing work directly (without the proper workflow) causes:
 - Missing or incomplete specifications
@@ -198,9 +230,10 @@ The proper workflow ensures:
 | Ask user for workflow choice first | YES |
 | Launch `jsonui-requirements` agent (Option 1) | YES |
 | Launch `jsonui-orchestrator` agent (Option 2) | YES |
-| Launch `jsonui-modify` agent (Option 3) | YES |
-| Launch `jsonui-spec` agent for existing app (Option 4) | YES |
-| Backend development with custom rules (Option 5) | YES |
+| Launch `jsonui-orchestrator` with migration context (Option 3) | YES |
+| Launch `jsonui-modify` agent (Option 4) | YES |
+| Launch `jsonui-spec` agent for existing app (Option 5) | YES |
+| Backend development with custom rules (Option 6) | YES |
 | Launch agent when orchestrator/modify agent tells you to | YES |
 | Launch implementation agent without orchestrator direction | NO |
 | Use any skill directly | NO |

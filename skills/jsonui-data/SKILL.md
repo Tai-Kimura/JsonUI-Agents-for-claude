@@ -16,6 +16,45 @@ Read the following rule files first:
 Received from parent agent:
 - `<tools_directory>`: Path to tools directory (e.g., `/path/to/project/sjui_tools`)
 - `<specification>`: Path to screen specification JSON (e.g., `docs/screens/json/login.spec.json`)
+- `<source_project_path>` (optional): Path to existing project on another platform
+- `<source_platform>` (optional): The source platform (iOS / Android / Web)
+
+## Cross-Platform Data Copy (REQUIRED when source_project_path is provided)
+
+**When `<source_project_path>` is provided, copy the `data` section from the source platform's layout JSON FIRST, then convert types to the target platform.**
+
+### Procedure:
+1. Find the corresponding layout JSON in the source project and read its `data` section
+2. Copy the `data` section to the target layout JSON
+3. **Convert types to the target platform** using the type mapping system
+
+### Type Conversion Reference Files (MUST READ)
+
+The type system auto-converts most types between platforms. To understand valid types and conversions, read these files in the **target platform's** tools directory:
+
+1. **`<tools_directory>/lib/core/type_mapping.json`** — Central type mapping configuration
+   - Defines how JSON types map to each platform's native types
+   - Handles mode-specific types (e.g., Color → SwiftUI `Color` vs UIKit `UIColor`)
+   - Includes primitive types, collection types, and special types (Color, Image, Visibility)
+
+2. **`<tools_directory>/lib/core/type_converter.rb`** — Type conversion logic
+   - `to_swift_type()` / `to_kotlin_type()` / `to_typescript_type()` methods
+   - `parse_function_type()` — Converts callback types (e.g., `(() -> Void)?`)
+   - `default_value_for()` — Platform-specific default values
+   - `Array()` / `Dictionary()` syntax handling
+
+3. **`<tools_directory>/lib/core/binding_validator.rb`** — Callback type validation
+
+### Key Points:
+- **Primitive types** (String, Int, Bool, etc.) are auto-converted — use the JSON universal name
+- **Collection types** use `Array(ElementType)` / `Dictionary(KeyType, ValueType)` syntax — auto-converted
+- **Function types** like `(() -> Void)?` are auto-converted (Void↔Unit↔void, Bool↔Boolean↔boolean)
+- **Mode-specific types** (Color, Image, Visibility) are auto-converted based on platform and mode
+- **Custom/domain types** are NOT auto-converted — keep as-is if they exist on both platforms
+
+**Do NOT redefine data sections from scratch when a source exists. Always copy first, then verify types against `type_mapping.json`.**
+
+---
 
 ## Reading Specification (REQUIRED)
 

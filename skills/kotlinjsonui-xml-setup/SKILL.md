@@ -5,6 +5,18 @@ description: Setup and development workflow for KotlinJsonUI with Android Views 
 
 # KotlinJsonUI Setup (XML Mode)
 
+## App Configuration (REQUIRED)
+
+Before starting setup, read the app configuration files in `<app_config_path>` (provided by parent agent):
+
+1. Read all files in `<app_config_path>` to understand project requirements:
+   - **Library dependencies and versions** → Use for Gradle dependencies (e.g., KotlinJsonUI version, third-party libraries)
+   - **Import settings** → Determine which modules to import in Application class and Activities
+   - **Platform requirements** → Minimum SDK version, compile SDK, Kotlin version
+   - Package name → Use for `package_name` in `kjui.config.json`
+   - App name, etc. → Use for Application class and Activity naming
+2. Apply these settings throughout the setup process (especially dependency versions in `build.gradle.kts`)
+
 ## CRITICAL - Package Name
 
 ```

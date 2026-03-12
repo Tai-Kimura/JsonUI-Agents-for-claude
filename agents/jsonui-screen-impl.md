@@ -95,6 +95,8 @@ The orchestrator provides:
 - **Platform**: iOS, Android, or Web
 - **Mode**: uikit/swiftui (iOS), compose/xml (Android), react (Web)
 - **Specification path**: Path to the screen specification directory (`docs/screens/`)
+- **source_project_path** (optional): Path to existing project on another platform (for cross-platform migration)
+- **source_platform** (optional): The source platform (iOS / Android / Web)
 
 ## Specification Format
 
@@ -126,6 +128,8 @@ Use `/jsonui-layout` skill to implement the JSON layout according to specificati
 Pass to skill:
 - `<tools_directory>`: Path to tools
 - `<specification>`: `docs/screens/json/{screenname}.spec.json`
+- `<source_project_path>`: (if provided) Path to existing project on another platform
+- `<source_platform>`: (if provided) The source platform
 
 ### Step 3: Refactor Layout
 Use `/jsonui-refactor` skill to extract styles, create includes, and remove duplicates.
@@ -140,6 +144,8 @@ Use `/jsonui-data` skill to define data properties and callback types.
 Pass to skill:
 - `<tools_directory>`: Path to tools
 - `<specification>`: `docs/screens/json/{screenname}.spec.json`
+- `<source_project_path>`: (if provided) Path to existing project on another platform
+- `<source_platform>`: (if provided) The source platform
 
 ### Step 5: Implement ViewModel
 Use `/jsonui-viewmodel` skill to implement business logic and event handlers.

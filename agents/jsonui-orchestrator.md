@@ -37,6 +37,27 @@ Please provide the installation path, or press Enter to use the default.
 
 Store the user's answer as `{tools_directory}` (default: `.` if no answer).
 
+**Store `{app_config_path}` from the caller** (provided by CLAUDE.md). Default: `docs/app-config/`.
+
+**Then ask about existing platform implementations:**
+
+```
+Does this app already exist on another platform?
+(e.g., you have an iOS app and want to build the Android version)
+
+If yes, please provide:
+1. The existing platform (iOS / Android / Web)
+2. The path to the existing project
+
+If no, just say "no".
+```
+
+Store:
+- `{source_platform}`: The existing platform (or `none`)
+- `{source_project_path}`: Path to the existing project (or empty)
+
+**Note:** If launched from CLAUDE.md Option 3 (Cross-Platform Migration), these values are already provided. Skip this question in that case.
+
 **Then immediately install CLI tools:**
 
 ```bash
@@ -116,7 +137,13 @@ After each step completes, the user returns to this orchestrator, and it tells t
 
 ### Step 1: Create Specification (JSON)
 
+**If source_project_path is provided (migration mode):**
+1. Check if specs already exist in the source project: `{source_project_path}/docs/screens/json/*.spec.json`
+2. If specs exist, copy them to the current project and skip to Step 2
+3. If specs do not exist, proceed with spec creation but tell the `jsonui-spec` agent to reference the source project's layouts and ViewModels
+
 **Output:** "Please launch the `jsonui-spec` agent with tools_directory: `{tools_directory}`"
+(If migration: also pass `source_project_path: {source_project_path}`)
 
 Wait for user to report that specification is complete.
 
@@ -194,7 +221,11 @@ Wait for user to report that specification is complete.
    ```
 
 5. **After project path is confirmed:**
-   Output: "Please launch the `jsonui-setup` agent with these parameters."
+   Output: "Please launch the `jsonui-setup` agent with these parameters:"
+   - project_directory: `{project_path}`
+   - platform: `{platform}`
+   - mode: `{mode}`
+   - app_config_path: `{app_config_path}`
 
 ### Step 3 & 4: Implement + Test (ONE SCREEN AT A TIME)
 
@@ -219,6 +250,8 @@ Step 3a: Please launch the `jsonui-screen-impl` agent with:
 - mode: {mode from Step 2}
 - screen: {screen_name}
 - specification: docs/screens/json/{screen_name}.spec.json
+- source_project_path: {source_project_path} (if existing platform provided)
+- source_platform: {source_platform} (if existing platform provided)
 
 After implementation completes, report back.
 

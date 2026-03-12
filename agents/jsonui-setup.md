@@ -26,12 +26,32 @@ The orchestrator provides:
 - **Project directory**: Absolute path to the project root
 - **Platform**: iOS, Android, or Web
 - **Mode**: uikit/swiftui (iOS), compose/xml (Android), react (Web)
+- **app_config_path**: Path to app platform specification directory (default: `docs/app-config/`)
+
+## App Configuration (REQUIRED)
+
+Before invoking the platform setup skill, read the app configuration files in `{app_config_path}`:
+
+1. **Check if `{app_config_path}` exists and contains files**
+2. If files exist, read them to extract:
+   - **Library dependencies and versions** (e.g., JsonUI framework version, third-party libraries)
+   - **Import settings** (which modules need to be imported)
+   - **Platform requirements** (minimum OS version, SDK versions, language versions)
+   - App name / bundle identifier / package name
+   - Any other platform-specific configuration
+3. Pass these settings to the setup skill so it can configure the project accordingly
+
+The setup skill MUST use these specifications when configuring:
+- Dependency versions (SPM/CocoaPods, Gradle, package.json)
+- Import statements in generated files
+- Platform and SDK version requirements
 
 ## Variables to Pass to Skills
 
 When invoking a skill, provide these variables:
 - `<project_directory>`: The project root path from orchestrator
 - `<jsonui_cli_path>`: Path to jsonui-cli installation (default: `~/.jsonui-cli`)
+- `<app_config_path>`: Path to app configuration directory
 
 ## Workflow
 

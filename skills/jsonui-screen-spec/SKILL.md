@@ -27,6 +27,15 @@ This schema defines all valid fields, types, and constraints. You MUST follow th
 
 **Note:** `{tools_directory}`, `{project_directory}`, and `{skill_directory}` are provided by the caller.
 
+**Optional migration parameters (provided when migrating from another platform):**
+- `{source_project_path}`: Path to existing project on another platform
+- `{source_platform}`: The source platform (iOS / Android / Web)
+
+When these are provided:
+1. Check if a `.spec.json` already exists in the source project (`{source_project_path}/docs/screens/json/`)
+2. If it exists, **copy it** to `{project_directory}/docs/screens/json/` and skip to Step 4 (validation)
+3. If it does not exist, read the source project's layout JSONs and ViewModels to pre-fill information during the dialogue (reducing questions for the user)
+
 ### Step 1: Get screen name and create template
 Ask:
 1. "What is the screen name? (snake_case, e.g., login, user_profile)" → `{screen_name}`
