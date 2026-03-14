@@ -49,12 +49,11 @@ cat {tools_directory}/jsonui-cli/document_tools/jsonui_doc_cli/spec_doc/componen
 
 This schema defines all valid fields, types, and constraints. You MUST follow this schema exactly.
 
-**THEN, read the attribute definitions to understand existing components and their attributes:**
-```bash
-cat {tools_directory}/jsonui-cli/shared/core/attribute_definitions.json
-```
+**THEN, understand existing components and their attributes:**
+- If `lookup_component` / `search_components` MCP tools are available, use them to look up component specs
+- Otherwise, read `{tools_directory}/jsonui-cli/shared/core/attribute_definitions.json`
 
-This file defines ALL standard JsonUI components and their supported attributes. Use this to determine if a feature can be built with standard components or requires a custom component.
+This defines ALL standard JsonUI components and their supported attributes. Use this to determine if a feature can be built with standard components or requires a custom component.
 
 **Note:** `{tools_directory}`, `{project_directory}`, and `{skill_directory}` are provided by the caller.
 

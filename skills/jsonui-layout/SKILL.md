@@ -60,9 +60,10 @@ This skill only handles editing existing JSON layouts.
 ## Required: Attribute Validation
 
 Before creating/editing layouts:
-1. Read `<tools_directory>/lib/core/attribute_definitions.json`
-2. Check constraints in the `description` field
-3. Check required attributes in the `required` field
+1. If `lookup_component` / `lookup_attribute` MCP tools are available, use them to look up component specs
+2. Otherwise, read `<tools_directory>/lib/core/attribute_definitions.json`
+3. Check constraints in the `description` field
+4. Check required attributes in the `required` field
 
 **Never guess attribute names or types. Always verify against definitions.**
 
@@ -311,7 +312,7 @@ In SwiftUI / Compose generated code, create a separate View as a divider line in
 
 When generating Converters:
 1. Identify all required attributes
-2. Verify types in `attribute_definitions.json`
+2. Verify types using `lookup_attribute` MCP tool if available, otherwise in `attribute_definitions.json`
 3. Always specify `--attributes` option
 
 ---

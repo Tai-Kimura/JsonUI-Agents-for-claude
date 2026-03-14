@@ -22,7 +22,7 @@ Received from parent agent:
 
 Converters are for **native components that cannot be achieved with built-in JsonUI components**. Before generating a converter, you MUST:
 
-1. **Check if existing components can solve the problem** - Review `attribute_definitions.json` for built-in components
+1. **Check if existing components can solve the problem** - Use `lookup_component` / `search_components` MCP tools if available, otherwise review `attribute_definitions.json` for built-in components
 2. **If converter is needed, propose to the parent agent** with this format:
    > "This feature requires a custom native component that isn't available in built-in JsonUI components.
    >
@@ -97,7 +97,7 @@ Converters are for **native components that cannot be achieved with built-in Jso
 Before generating a converter, you MUST:
 
 1. **Identify ALL required attributes** - Ask the user what properties the custom component needs
-2. **Verify attribute types** - Check `lib/core/attribute_definitions.json` for valid types
+2. **Verify attribute types** - Use `lookup_attribute` MCP tool if available, otherwise check `lib/core/attribute_definitions.json` for valid types
 3. **Always include attributes** - NEVER generate a converter without the `--attributes` option if the component needs properties
 
 ---

@@ -47,9 +47,10 @@ The specification JSON can help identify intended component groupings:
 ## JSON Attribute Validation (CRITICAL)
 
 **BEFORE reviewing or modifying any JSON layout**, you MUST:
-1. Read `<tools_directory>/lib/core/attribute_definitions.json`
-2. **Read the `description` field of each attribute** - It contains important usage notes, constraints, and exceptions
-3. Check `required` field to know which attributes are mandatory
+1. If `lookup_component` / `lookup_attribute` MCP tools are available, use them to look up component specs
+2. Otherwise, read `<tools_directory>/lib/core/attribute_definitions.json`
+3. **Read the `description` field of each attribute** - It contains important usage notes, constraints, and exceptions
+4. Check `required` field to know which attributes are mandatory
 
 **NEVER guess attribute names or types. Always read the description for context.**
 
