@@ -19,12 +19,12 @@ Based on the choice:
 
 | # | Choice | Launch |
 |---|---|---|
-| 1, 2, 3 | (any of the first three) | `conductor` agent — it reads repo state via MCP and routes to the right sub-agent |
+| 1, 2, 3 | (any of the first three) | `conductor` agent — reads repo state via MCP and routes to the right sub-agent |
 | 4 | Backend | Follow **Workflow 4: Backend** below |
 
-The `conductor` is the entry point for all JsonUI work. It inspects the repo (`jui.config.json`, spec count, layout count), asks a short follow-up, then tells you which agent to launch next.
+The `conductor` is the entry point for all JsonUI work. It inspects the repo (`jui.config.json`, spec count, layout count), asks a short follow-up, then tells you which of the 8 specialized agents to launch next: `define` / `ground` / `implement` / `navigation-{ios,android,web}` / `test` / `debug`.
 
-> **Transitional note (Phase 2):** The 9-agent target layout is (`conductor` / `define` / `ground` / `implement` / `navigation-{ios,android,web}` / `test` / `debug`). `conductor` is live; the other new agents will ship in Phase 3. During the transition, `conductor` routes to existing agents (`jsonui-spec`, `jsonui-setup`, `jsonui-screen-impl`, `jsonui-test`, `jsonui-investigate`, `jsonui-modify`, etc.). The old `jsonui-orchestrator` is deprecated but still works if you need it. See `docs/plans/agent-redesign.md`.
+The full agent and skill inventory lives in `docs/plans/agent-redesign.md` and the `rules/` directory.
 
 ---
 
@@ -59,11 +59,9 @@ Launch `conductor`. It will:
 
 The conductor handles all of:
 
-- **新規に作る／機能追加** — routes to ground (setup) → define (spec) → implement → test, one screen at a time
-- **既存を直す** — バグなら debug (READ-ONLY) 先行で spec 起点の原因調査、その結果から define / implement / navigation-* へ。機能改修なら直接 adapt/implement
-- **調査だけ** — debug (READ-ONLY) で spec 起点の構造調査
-
-During Phase 2, new agents (`define`, `ground`, `implement`, `navigation-*`, `debug`) don't all exist yet. The conductor maps to existing agents (`jsonui-spec`, `jsonui-setup`, `jsonui-screen-impl`, `jsonui-investigate`, `jsonui-modify`, etc.) behind the scenes.
+- **新規に作る／機能追加** — routes to `ground` (setup, if fresh) → `define` (spec) → `implement` → `test`, one screen at a time
+- **既存を直す** — バグなら `debug` (READ-ONLY) 先行で spec 起点の原因調査、その結果から `define` / `implement` / `navigation-*` へ。機能改修なら直接対応エージェント
+- **調査だけ** — `debug` (READ-ONLY) で spec 起点の構造調査
 
 **Spec-first bug tracing** — when investigating a bug, always start from the spec, not the stack trace:
 
@@ -135,7 +133,6 @@ This CLAUDE.md is the entry point. Detailed rules live in `rules/`:
 | Launch `conductor` (Workflow 1, 2, 3) | YES |
 | Backend with custom rules (Workflow 4) | YES |
 | Launch a sub-agent when conductor (or any parent) tells you to | YES |
-| Launch legacy `jsonui-orchestrator` directly | DISCOURAGED — use `conductor` instead |
 | Skip workflow selection | NO |
 | Edit `@generated` files by hand | NO |
 | Accept `jui build` warnings | NO |

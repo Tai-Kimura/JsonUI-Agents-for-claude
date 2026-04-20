@@ -52,31 +52,20 @@ AGENTS_DIR=".claude/agents"
 SKILLS_DIR=".claude/skills"
 RULES_DIR=".claude/rules"
 
-# Agent files (Phase 3: new 9-agent layout + legacy for parallel period)
-AGENT_FILES="conductor.md debug.md define.md ground.md implement.md navigation-android.md navigation-ios.md navigation-web.md test.md jsonui-feature-plan.md jsonui-investigate.md jsonui-modify.md jsonui-orchestrator.md jsonui-requirements.md jsonui-responsive.md jsonui-screen-impl.md jsonui-setup.md jsonui-spec.md jsonui-test.md"
+# Agent files (9-agent layout)
+AGENT_FILES="conductor.md debug.md define.md ground.md implement.md navigation-android.md navigation-ios.md navigation-web.md test.md"
 
-# Skill directories (each contains SKILL.md and optionally examples/)
-# Phase 4: new consolidated skills (jsonui-dataflow, jsonui-platform-setup)
-# plus legacy skills kept during parallel period (removed in Phase 6)
-SKILL_DIRS="jsonui-component-spec jsonui-converter jsonui-data jsonui-dataflow jsonui-doc-rules jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-localize jsonui-platform-setup jsonui-refactor jsonui-requirements-gather jsonui-screen-spec jsonui-screen-test-implement jsonui-spec-review jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
+# Skill directories (11 skills; each contains SKILL.md and optionally examples/)
+SKILL_DIRS="jsonui-component-spec jsonui-dataflow jsonui-flow-test jsonui-layout jsonui-localize jsonui-platform-setup jsonui-screen-spec jsonui-screen-test jsonui-swagger jsonui-test-doc jsonui-viewmodel-impl"
 
-# Rule files (Phase 1 redesign: invariants + mcp-policy added, skill-workflow.md removed)
+# Rule files (5 invariants / policy / philosophy / placement / spec authoring)
 RULE_FILES="invariants.md mcp-policy.md design-philosophy.md file-locations.md specification-rules.md"
 
 # Function to get examples for a skill (Bash 3.2 compatible - no associative arrays)
 get_skill_examples() {
     case "$1" in
-        jsonui-data)
-            echo "binding-missing-data.json binding-with-data.json collection-data-definition.json collection-items.json collection-legacy.json data-section-basic.json data-with-callbacks.json platform-specific-type.json twoway-binding-correct.json twoway-binding-wrong.json"
-            ;;
         jsonui-layout)
             echo "binding-correct.json binding-wrong.json collection-swiftui-basic.json collection-swiftui-full.json collection-uikit.json collection-wrong.json color-correct.json color-wrong.json id-naming-correct.json id-naming-wrong.json include-correct.json include-wrong.json screen-root-structure.json screen-root-wrong.json strings-json.json tabview.json tabview-wrong.json"
-            ;;
-        jsonui-refactor)
-            echo "collection-swiftui.json collection-uikit.json include-header.json include-usage.json include-wrong.json padding-correct.json padding-wrong.json style-apply.json style-card.json style-primary-button.json tabview.json"
-            ;;
-        jsonui-requirements-gather)
-            echo "screen-spec-template.json"
             ;;
         jsonui-screen-spec)
             echo "component.json data-flow.json layout.json state-management.json transitions.json user-actions.json validation.json"
@@ -84,7 +73,7 @@ get_skill_examples() {
         jsonui-swagger)
             echo "db-extensions.json db-model-template.json property-types.json"
             ;;
-        jsonui-viewmodel)
+        jsonui-viewmodel-impl)
             echo "collection-kotlin.kt collection-swift.swift colormanager-kotlin.kt colormanager-swift.swift event-handler-kotlin.kt event-handler-swift.swift hardcode-correct.kt hardcode-correct.swift hardcode-wrong.kt hardcode-wrong.swift logger-correct.swift logger-wrong.swift repository-pattern.swift stringmanager-swift.swift strings-kotlin.kt viewmodel-kotlin.kt viewmodel-swift.swift"
             ;;
         *)

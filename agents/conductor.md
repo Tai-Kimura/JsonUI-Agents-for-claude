@@ -74,27 +74,31 @@ Adjust the state summary based on classification:
 
 ---
 
-## Transitional agent mapping (Phase 3 in progress)
+## Agent routing table
 
-The target 9-agent layout is being built incrementally. Current state:
+| Logical route | Agent | R/W | Responsibility |
+|---|---|---|---|
+| **debug** | `debug` | R | spec-first bug trace, behavior walks, code archaeology |
+| **define** | `define` | W | spec authoring (screen / component / API/DB / doc-rules), validate, HTML docs |
+| **ground** | `ground` | W | `jui init`, platform scaffolding, test runner setup |
+| **implement** | `implement` | W | Layout/Styles/VM body + localize + `jui build` (0 warnings) + `jui verify` (no drift) |
+| **navigation-ios** | `navigation-ios` | W | SwiftUI NavigationStack / UIKit UINavigationController |
+| **navigation-android** | `navigation-android` | W | Compose Navigation / XML NavGraph |
+| **navigation-web** | `navigation-web` | W | React Router / Next.js App Router |
+| **test** | `test` | W | spec-first screen / flow test authoring + validation + HTML docs |
 
-| Logical route | Agent to launch | Status |
-|---|---|---|
-| **debug** | `debug` | ✅ Phase 3a — READ-ONLY, spec-first bug trace |
-| **define** | `define` | ✅ Phase 3b — spec authoring & validation (screen / component / API/DB / doc-rules) |
-| **implement** | `implement` | ✅ Phase 3c — Layout/Styles/VM body + localize + jui_build 0 warnings + jui_verify no drift |
-| **test** | `test` | ✅ Phase 3d — spec-first screen/flow test authoring + validation + HTML docs |
-| **ground** | `ground` | ✅ Phase 3e — jui_init + platform scaffolding + test runner setup |
-| **navigation-ios** | `navigation-ios` | ✅ Phase 3f — SwiftUI NavigationStack / UIKit UINavigationController |
-| **navigation-android** | `navigation-android` | ✅ Phase 3f — Compose Navigation / XML NavGraph |
-| **navigation-web** | `navigation-web` | ✅ Phase 3f — React Router / Next.js App Router |
-| **adapt / modify** | `jsonui-modify` | transitional (kept for now — addresses "change existing screen" scenarios) |
-| **responsive** | `jsonui-responsive` | transitional (responsive additions handled via `implement` unless this is a dedicated task) |
-| **feature-plan** | `jsonui-feature-plan` | transitional (planning-only, produces plan docs) |
+### Routing heuristics
+
+- **新規 + fresh repo** → `ground` → `define` → `implement` → `test` (one screen at a time)
+- **新規 + scaffolded** → `define` → `implement` → `test`
+- **新規 + specs exist, no layouts** → `implement` (or `define` to add a new spec first)
+- **既存のバグ** → `debug` first (READ-ONLY, returns a routing recommendation)
+- **既存の spec 変更** → `define`
+- **既存の Layout / VM body 変更** → `implement`
+- **既存の画面遷移変更** → `navigation-{ios,android,web}`
+- **調査だけ** → `debug`
 
 Tell the user which agent to launch, and pass along any necessary parameters (spec file, platform, mode, etc.).
-
-When each new agent ships, update this mapping.
 
 ---
 

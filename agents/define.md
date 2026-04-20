@@ -80,7 +80,15 @@ Determine:
 
 ### 1.1 Requirements (if fresh)
 
-If the user hasn't described the screen in detail, invoke `/jsonui-requirements-gather` (existing skill) to have a structured requirements dialogue. Output: a short requirements note that you will translate into a spec.
+If the user hasn't described the screen in detail, conduct a structured requirements dialogue yourself. Ask in this order, one question at a time:
+
+1. 画面の目的・ユースケース (1-2 sentences)
+2. 対象プラットフォーム (iOS / Android / Web)
+3. 主要な UI 要素 (入力欄、ボタン、リスト等)
+4. データの出どころ (API 呼び出し? ローカル? 静的?)
+5. 成功／失敗時の挙動、画面遷移
+
+Output a short requirements note, then translate into the spec template at step 1.2.
 
 ### 1.2 Create the spec template
 
@@ -200,10 +208,24 @@ Always invoke `/jsonui-component-spec` even if you think no custom components ar
 
 Detect by asking: "この project は JsonUI / SwiftJsonUI / KotlinJsonUI / ReactJsonUI を使っていますか?" If the answer is something else (Flutter, native SwiftUI without JsonUI, Compose without JsonUI, etc.):
 
-1. `mcp__jui-tools__doc_rules_init` (with `flutter: true` for Flutter projects)
-2. Edit `.jsonui-doc-rules.json` to add framework-specific component types, event handlers, file types, naming patterns
+1. `mcp__jui-tools__doc_rules_init` (with `flutter: true` for Flutter projects) — creates `.jsonui-doc-rules.json` template
+2. Edit `.jsonui-doc-rules.json` to add framework-specific component types, event handlers, file types, naming patterns:
+
+   ```jsonc
+   {
+     "rules": {
+       "componentTypes": {
+         "screen": ["Scaffold", "AppBar", "NetworkImage", "ChatBubble"]
+       },
+       "fileTypes": ["Component", "Hook", "Service"],
+       "eventHandlers": {
+         "allowedNames": ["initState", "dispose", "onSubmit"]
+       }
+     }
+   }
+   ```
+
 3. `mcp__jui-tools__doc_rules_show` to verify the effective ruleset
-4. Invoke `/jsonui-doc-rules` skill for additional guidance
 
 Do this BEFORE authoring any screen spec in a non-JsonUI project.
 

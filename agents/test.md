@@ -105,7 +105,7 @@ For each eventHandler and each key displayLogic state, draft a test case:
 }
 ```
 
-Invoke `/jsonui-screen-test-implement` for the canonical schema, action/assertion reference, and examples.
+Invoke `/jsonui-screen-test` for the canonical schema, action/assertion reference, and examples.
 
 ### A3. Write the file
 
@@ -131,7 +131,7 @@ jsonui-test --schema
 
 If the user asked for documentation:
 
-1. Invoke `/jsonui-test-document` for description JSON schema
+1. Invoke `/jsonui-test-doc` for description JSON schema
 2. Create `tests/descriptions/{screen}.desc.json` with summary / preconditions / expected results
 3. Link from the test file via `descriptionFile`
 4. `mcp__jui-tools__doc_generate_html` with `input_dir: "tests/"` to generate the HTML site
@@ -162,7 +162,7 @@ If any referenced screen test is missing, either create it first (Flow A) or ask
 }
 ```
 
-Invoke `/jsonui-flow-test-implement` for the flow schema.
+Invoke `/jsonui-flow-test` for the flow schema.
 
 ### B3. Write + validate
 
@@ -176,7 +176,7 @@ jsonui-test validate tests/flows/{flow}.test.json
 
 ## Flow C: Documentation
 
-Invoke `/jsonui-test-document`. Follow its guidance for description JSON structure. After descriptions are written, generate HTML:
+Invoke `/jsonui-test-doc`. Follow its guidance for description JSON structure. After descriptions are written, generate HTML:
 
 ```
 mcp__jui-tools__doc_generate_html with input_dir: "tests/", output_dir: "tests/html/"
@@ -186,7 +186,11 @@ mcp__jui-tools__doc_generate_html with input_dir: "tests/", output_dir: "tests/h
 
 ## Flow D: Validation only
 
-Invoke `/jsonui-test-cli`. Run `jsonui-test validate` on the target directory. Report errors; do not fix them blindly — understand each one.
+Run `jsonui-test validate` on the target directory via Bash. Report errors; do not fix them blindly — understand each one. For the schema reference of available actions / assertions:
+
+```bash
+jsonui-test --schema
+```
 
 ---
 

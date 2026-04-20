@@ -137,7 +137,7 @@ For each method:
 - Repository method: calls API / local storage / SDK; returns result per spec `returnType`
 - UseCase method: orchestrates multiple repositories + validation
 
-Invoke `/jsonui-viewmodel` skill for authoring conventions (per platform). Write the code yourself via `Edit`.
+Invoke `/jsonui-viewmodel-impl` skill for authoring conventions (per platform). Write the code yourself via `Edit`.
 
 #### If you need to add a new public member
 
