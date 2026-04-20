@@ -4,6 +4,35 @@ A curated set of 9 specialized agents and 11 authoring skills for Claude Code, d
 
 ## Installation
 
+### One-shot (recommended): agents + CLI + MCP in one go
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/installer/bootstrap.sh | bash
+```
+
+This installs three things:
+
+| Piece | Where | What |
+|---|---|---|
+| `jsonui-cli` | `~/.jsonui-cli/` | `jui` / `sjui` / `kjui` / `rjui` / `jsonui-test` / `jsonui-doc` |
+| `jsonui-mcp-server` | `~/.jsonui-mcp-server/` + registered in `~/.claude.json` | 29 MCP tools |
+| Agents / skills / rules | `./.claude/` (current project) | this repo's contents + `CLAUDE.md` |
+
+The CLI lives at `~/.jsonui-cli/`, which is exactly where the MCP's 4-layer fallback looks, so the MCP automatically picks up the fresh attribute definitions.
+
+Partial install (e.g. agents only, when CLI + MCP already exist):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/installer/bootstrap.sh | \
+  JSONUI_BOOTSTRAP_STEPS="agents" bash
+```
+
+Supported `JSONUI_BOOTSTRAP_STEPS` values: any comma-separated subset of `cli,mcp,agents`.
+
+### Agents only (legacy)
+
+If you already manage `jsonui-cli` and `jsonui-mcp-server` some other way, use the agents-only installer:
+
 ```bash
 # Install from main branch
 curl -H "Cache-Control: no-cache" -sL "https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh?$(date +%s)" | bash
@@ -14,11 +43,15 @@ curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -
 curl -H "Cache-Control: no-cache" -sL "...install.sh?$(date +%s)" | bash -s -- -v 1.0.0
 ```
 
-After install, run this in Claude Code:
+### Post-install
 
-```
-Read CLAUDE.md
-```
+1. Add the CLI tools to your `PATH` (the bootstrap prints the exact lines).
+2. **Restart Claude Code** so it picks up the new `jui-tools` MCP server.
+3. In Claude Code, say:
+
+   ```
+   Read CLAUDE.md
+   ```
 
 You'll be asked to pick a workflow. Three of the four route through the `conductor` agent, which inspects the repo via MCP and tells you which specialized agent to launch next.
 
