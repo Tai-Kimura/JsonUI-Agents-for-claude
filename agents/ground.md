@@ -101,46 +101,34 @@ These inform the platform setup skill in the next step.
 
 ### 1.3 Platform scaffolding
 
-Invoke the right skill based on `platform` + `mode`:
+Invoke `/jsonui-platform-setup` with:
 
-| Platform | Mode | Skill |
-|---|---|---|
-| iOS | SwiftUI | `/swiftjsonui-swiftui-setup` |
-| iOS | UIKit | `/swiftjsonui-uikit-setup` |
-| Android | Compose | `/kotlinjsonui-compose-setup` |
-| Android | XML | `/kotlinjsonui-xml-setup` |
-| Web | React / Next.js | `/reactjsonui-setup` |
+```
+target: app
+platform: ios | android | web
+mode: swiftui | uikit | compose | xml | react | nextjs
+project_directory: {project_directory}
+jsonui_cli_path: {default ~/.jsonui-cli}
+app_config_path: {app_config_path}
+```
 
-Pass to skill:
+This is the consolidated Phase 4 skill that replaces the 5 legacy setup skills (`swiftjsonui-swiftui-setup`, `swiftjsonui-uikit-setup`, `kotlinjsonui-compose-setup`, `kotlinjsonui-xml-setup`, `reactjsonui-setup`). It installs the platform's tools (`sjui_tools/` / `kjui_tools/` / `rjui_tools/`), bootstraps the app shell, and wires up JsonUI. The skill does the work; you invoke and monitor.
 
-- `project_directory`
-- `jsonui_cli_path` (default `~/.jsonui-cli`)
-- `app_config_path`
-
-The skill installs the platform's tools (`sjui_tools/` / `kjui_tools/` / `rjui_tools/`), bootstraps the app shell, and wires up JsonUI. The skill does the work; you invoke and monitor.
+> Legacy fallback (pre-Phase 4 projects): if `/jsonui-platform-setup` is not yet installed in the user's environment, fall back to the individual legacy skill matching `platform` + `mode`. They remain in the skills/ directory until Phase 6.
 
 ### 1.4 Test runner setup
 
-Ask the user if they want the test runner installed now (recommended — easier to set up before the app has screens). If yes:
+Ask the user if they want the test runner installed now (recommended — easier to set up before the app has screens). If yes, invoke `/jsonui-platform-setup` with:
 
-- Check availability: `which jsonui-test`
-- If missing:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/jsonui-test-runner/main/test_tools/installer/bootstrap.sh | bash
+```
+target: test
+platform: ios | android | web
+project_directory: {project_directory}
 ```
 
-- Requires Python 3.10+
+The skill handles CLI installation (`jsonui-test`, Python 3.10+), directory scaffolding (`tests/screens/`, `tests/flows/`, `tests/descriptions/`), and the platform-specific driver wiring (XCUITest / UIAutomator / Playwright). It replaces the 3 legacy `jsonui-test-setup-*` skills.
 
-Then invoke the platform test setup skill:
-
-| Platform | Skill |
-|---|---|
-| iOS | `/jsonui-test-setup-ios` |
-| Android | `/jsonui-test-setup-android` |
-| Web | `/jsonui-test-setup-web` |
-
-These configure the test target / driver / Playwright within the platform project.
+> Legacy fallback: if `/jsonui-platform-setup` not available, fall back to `/jsonui-test-setup-{ios,android,web}`.
 
 ### 1.5 Verification build
 

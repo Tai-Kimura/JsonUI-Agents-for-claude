@@ -109,7 +109,7 @@ Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the author
 | `stateManagement.uiVariables` | Expected data bindings with types | |
 | `stateManagement.eventHandlers` | View-local handlers (純 UI toggle) | Most handlers belong in `dataFlow.viewModel.methods`, not here |
 | `stateManagement.displayLogic` | Visibility rules | |
-| `dataFlow.viewModel.methods` | Public VM contract (button taps, async fetches) | See `/jsonui-dataflow` (Phase 4 skill) or README `dataFlow.viewModel` section |
+| `dataFlow.viewModel.methods` | Public VM contract (button taps, async fetches) | See `/jsonui-dataflow` skill or README `dataFlow.viewModel` section |
 | `dataFlow.viewModel.vars` | Observable state, callback properties | |
 | `dataFlow.repositories` | Data access layer; link to API with `methods[].endpoint` / `endpoints` | |
 | `dataFlow.useCases` | Business logic layer (optional); link to Repo via `repositories` or `methods[].calls` | |
