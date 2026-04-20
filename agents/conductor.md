@@ -74,25 +74,25 @@ Adjust the state summary based on classification:
 
 ---
 
-## Transitional agent mapping (Phase 2)
+## Transitional agent mapping (Phase 3 in progress)
 
-The target 9-agent layout is not fully built yet. During the transition, map logical routes to existing agents:
+The target 9-agent layout is being built incrementally. Current state:
 
-| Logical route | Existing agent to launch |
-|---|---|
-| **ground** | `jsonui-setup` |
-| **define** | `jsonui-spec` |
-| **implement** | `jsonui-screen-impl` |
-| **test** | `jsonui-test` |
-| **debug** | `jsonui-investigate` (READ-ONLY) |
-| **adapt / modify** | `jsonui-modify` |
-| **responsive** | `jsonui-responsive` |
-| **feature-plan** | `jsonui-feature-plan` |
-| **navigation-ios / android / web** | not yet built — tell user that navigation work is handled inside `jsonui-screen-impl` for now |
+| Logical route | Agent to launch | Status |
+|---|---|---|
+| **debug** | `debug` | ✅ Phase 3a — shipped. READ-ONLY, spec-first bug trace |
+| **ground** | `jsonui-setup` | transitional |
+| **define** | `jsonui-spec` | transitional (until `define` ships) |
+| **implement** | `jsonui-screen-impl` | transitional (until `implement` ships) |
+| **test** | `jsonui-test` | transitional (until `test` rewrite ships) |
+| **adapt / modify** | `jsonui-modify` | transitional |
+| **responsive** | `jsonui-responsive` | transitional |
+| **feature-plan** | `jsonui-feature-plan` | transitional |
+| **navigation-ios / android / web** | not yet built — navigation work happens inside `jsonui-screen-impl` for now | pending |
 
 Tell the user which agent to launch, and pass along any necessary parameters (spec file, platform, mode, etc.).
 
-When the new agents (`define`, `ground`, `implement`, `navigation-{ios,android,web}`, `debug`) ship, update this mapping.
+When each new agent ships, update this mapping.
 
 ---
 
