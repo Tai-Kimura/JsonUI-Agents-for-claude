@@ -52,14 +52,16 @@ AGENTS_DIR=".claude/agents"
 SKILLS_DIR=".claude/skills"
 RULES_DIR=".claude/rules"
 
-# Agent files (in agents/ directory)
-AGENT_FILES="jsonui-orchestrator.md jsonui-modify.md jsonui-requirements.md jsonui-screen-impl.md jsonui-setup.md jsonui-spec.md jsonui-test.md"
+# Agent files (Phase 3: new 9-agent layout + legacy for parallel period)
+AGENT_FILES="conductor.md debug.md define.md ground.md implement.md navigation-android.md navigation-ios.md navigation-web.md test.md jsonui-feature-plan.md jsonui-investigate.md jsonui-modify.md jsonui-orchestrator.md jsonui-requirements.md jsonui-responsive.md jsonui-screen-impl.md jsonui-setup.md jsonui-spec.md jsonui-test.md"
 
 # Skill directories (each contains SKILL.md and optionally examples/)
-SKILL_DIRS="jsonui-component-spec jsonui-converter jsonui-data jsonui-doc-rules jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-refactor jsonui-requirements-gather jsonui-screen-spec jsonui-screen-test-implement jsonui-spec-review jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
+# Phase 4: new consolidated skills (jsonui-dataflow, jsonui-platform-setup)
+# plus legacy skills kept during parallel period (removed in Phase 6)
+SKILL_DIRS="jsonui-component-spec jsonui-converter jsonui-data jsonui-dataflow jsonui-doc-rules jsonui-flow-test-implement jsonui-generator jsonui-layout jsonui-localize jsonui-platform-setup jsonui-refactor jsonui-requirements-gather jsonui-screen-spec jsonui-screen-test-implement jsonui-spec-review jsonui-swagger jsonui-test-cli jsonui-test-document jsonui-test-setup-android jsonui-test-setup-ios jsonui-test-setup-web jsonui-viewmodel kotlinjsonui-compose-setup kotlinjsonui-xml-setup reactjsonui-setup swiftjsonui-swiftui-setup swiftjsonui-uikit-setup"
 
-# Rule files (in rules/ directory)
-RULE_FILES="design-philosophy.md file-locations.md skill-workflow.md specification-rules.md"
+# Rule files (Phase 1 redesign: invariants + mcp-policy added, skill-workflow.md removed)
+RULE_FILES="invariants.md mcp-policy.md design-philosophy.md file-locations.md specification-rules.md"
 
 # Function to get examples for a skill (Bash 3.2 compatible - no associative arrays)
 get_skill_examples() {
@@ -185,29 +187,19 @@ echo "========================================"
 echo "          HOW TO GET STARTED"
 echo "========================================"
 echo ""
-echo "Option A: Requirements Already Defined"
-echo "---------------------------------------"
-echo "If you already have clear requirements documented:"
+echo "Standard flow (all workflows route through conductor):"
+echo "--------------------------------------------------------"
 echo ""
 echo "  > Read CLAUDE.md"
 echo ""
-echo "This launches the orchestrator for implementation."
+echo "CLAUDE.md will ask which workflow you want (1: new work,"
+echo "2: modify existing, 3: investigate, 4: backend). The first"
+echo "three all route to the conductor agent, which inspects the"
+echo "repo via MCP and routes you to the specialized agent (define"
+echo "/ ground / implement / navigation-* / test / debug)."
 echo ""
-echo "Option B: Requirements Not Yet Defined (Recommended)"
-echo "-----------------------------------------------------"
-echo "If starting from scratch or need help defining what to build:"
-echo ""
-echo "  > Use the jsonui-requirements agent"
-echo ""
-echo "This agent helps define app requirements through dialogue:"
-echo "  1. Select platform(s) (iOS / Android / Web)"
-echo "  2. Describe your app idea"
-echo "  3. Define screens through guided questions"
-echo "  4. Output: docs/screens/json/*.spec.json"
-echo ""
-echo "After requirements are complete, START A NEW SESSION and run:"
-echo ""
-echo "  > Read CLAUDE.md"
+echo "Legacy jsonui-orchestrator is still available during the"
+echo "transition period but deprecated. Prefer conductor."
 echo ""
 echo "========================================"
 echo ""
