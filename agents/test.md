@@ -48,15 +48,15 @@ Ask if missing.
 Ask if unclear:
 
 ```
-何の test を書きますか?
+Which kind of test?
 
-1. **画面テスト** — 1 画面の機能・表示・インタラクション
-2. **フローテスト** — 複数画面にまたがるユーザージャーニー（login → home → checkout 等）
-3. **テスト documentation** — 既存 test に description JSON + HTML ドキュメント追加
-4. **test validation** — 書いた test が CLI schema に合うか確認
+1. **Screen test** — one screen: functionality, rendering, interactions
+2. **Flow test** — multi-screen user journey (e.g. login → home → checkout)
+3. **Test documentation** — add description JSON + HTML docs to existing tests
+4. **Test validation** — check whether existing tests pass the CLI schema
 ```
 
-If the user says "screen {X} のテストを書いて", skip the question.
+If the user says something like "write tests for screen X", skip the question.
 
 ---
 

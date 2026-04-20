@@ -37,16 +37,16 @@ If you catch yourself about to write a file, stop and report what you would chan
 Ask one short question if the user's request is unclear:
 
 ```
-何を調べますか?
+What are you investigating?
 
-A. **バグを追う** — 症状から原因を特定したい
-B. **挙動を理解したい** — 機能の仕組み、データフロー、依存関係を知りたい
-C. **コード archaeology** — 変更履歴、意図、blame
+A. **Trace a bug** — find the root cause from a symptom
+B. **Understand behavior** — walk a feature, data flow, or dependencies
+C. **Code archaeology** — change history, intent, blame
 ```
 
-If the user has already described a symptom concretely ("ログインボタンを押しても何も起きない"), skip the question and go straight to **Mode A: Bug trace**.
+If the user has already described a symptom concretely ("the login button does nothing when tapped"), skip the question and go straight to **Mode A: Bug trace**.
 
-If they asked a general question ("bar search はどう動く?"), go to **Mode B: Behavior trace**.
+If they asked a general question ("how does bar search work?"), go to **Mode B: Behavior trace**.
 
 ---
 
@@ -58,7 +58,7 @@ Call `mcp__jui-tools__list_screen_specs` to get the spec inventory. Narrow by th
 
 - Screen name mentioned → match on `metadata.name` / `metadata.displayName`
 - Flow or feature mentioned → search `description` fields for keywords
-- Ambiguous → ask "どの画面ですか?" with a short candidate list
+- Ambiguous → ask "Which screen?" with a short candidate list
 
 ### A2. Classify the symptom
 
@@ -66,14 +66,14 @@ Map the user's description to a spec section:
 
 | Symptom | Start from |
 |---|---|
-| UI が表示されない / 崩れる | `structure.components` → then Layout JSON |
-| ボタン押しても何も起きない | `stateManagement.eventHandlers` + `dataFlow.viewModel.methods` |
-| データが出ない / 古い | `dataFlow.viewModel.vars` + `dataFlow.repositories` / `useCases` + binding |
-| 表示/非表示が切り替わらない | `stateManagement.displayLogic` + Layout `visibility` |
-| API エラー / 不正なレスポンス | `dataFlow.apiEndpoints` + `repositories[].methods[].endpoint` |
-| 画面遷移しない / 戻りがおかしい | `userActions` / `transitions` — spec 外の Navigation コードも見る |
-| クラッシュ | 上記 + `.jsonui-type-map.json` の型整合 |
-| spec に無い症状（infra, runtime race, memory） | **spec-external** — spec ↔ impl の drift が無いことを確認したうえで impl へ |
+| UI not rendering / broken layout | `structure.components` → then Layout JSON |
+| Button tap does nothing | `stateManagement.eventHandlers` + `dataFlow.viewModel.methods` |
+| Data missing / stale | `dataFlow.viewModel.vars` + `dataFlow.repositories` / `useCases` + binding |
+| Visibility not toggling | `stateManagement.displayLogic` + Layout `visibility` |
+| API error / wrong response | `dataFlow.apiEndpoints` + `repositories[].methods[].endpoint` |
+| Navigation stuck / wrong back behavior | `userActions` / `transitions` — also check Navigation code outside the spec |
+| Crash | above + type alignment in `.jsonui-type-map.json` |
+| Symptom not in the spec (infra, runtime race, memory) | **spec-external** — confirm there's no spec ↔ impl drift first, then go to impl |
 
 If the symptom doesn't fit cleanly, pick the closest and note the assumption in the report.
 
@@ -131,12 +131,12 @@ Use this structure exactly:
 | `doc_validate_spec` | pass / fail | (violations) |
 
 ### Spec findings
-- spec 側で該当箇所: `{section.path}`
-- 該当宣言: (抜粋)
+- Spec section: `{section.path}`
+- Declaration (excerpt)
 
 ### Impl findings (only if gates pass)
-- Impl 側の該当箇所: `{file}:{line}`
-- 読み取った内容: (要約)
+- Impl location: `{file}:{line}`
+- Summary of what was read
 
 ### Root cause hypothesis
 {1-3 sentences. Be specific about WHAT is wrong WHERE.}

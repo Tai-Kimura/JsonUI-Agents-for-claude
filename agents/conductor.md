@@ -44,20 +44,20 @@ Keep the classification in mind. Do not dump raw MCP output to the user unless t
 
 What would you like to do?
 
-1. 新規に作る／機能追加 — 新しい画面や機能を追加
-2. 既存を直す — バグ修正 or 機能改修
-3. 調査だけ — 読み取り専用で仕組み・挙動を調べる
-4. その他 — 上記のどれでもない
+1. New work / feature addition — add a new screen or feature
+2. Modify existing — bug fix or feature change
+3. Investigate only — read-only walk of behavior / structure
+4. Other — none of the above
 
 Select 1, 2, 3, or 4.
 ```
 
 Adjust the state summary based on classification:
 
-- fresh: "まだ `jui init` していない状態です"
-- scaffolded: "`jui.config.json` はありますが spec がまだありません"
-- specs-only: "spec が {N} 個ありますが Layout JSON が揃っていません"
-- active: "spec {N} 個、Layout {M} 個、稼働中のプロジェクトです"
+- fresh: "`jui init` has not been run yet"
+- scaffolded: "`jui.config.json` exists but no specs yet"
+- specs-only: "{N} specs exist, Layout JSON is not yet aligned"
+- active: "{N} specs, {M} layouts — active project"
 
 ---
 
@@ -65,12 +65,12 @@ Adjust the state summary based on classification:
 
 | Choice | State | Next step |
 |---|---|---|
-| 1. 新規 | fresh | Route to **ground** first (setup), then **define** for specs, then **implement** |
-| 1. 新規 | scaffolded | Route to **define** (spec authoring) |
-| 1. 新規 | specs-only or active | Ask: "spec を新しく追加? それとも既存 spec の画面を実装?" → define or implement |
-| 2. 既存 | any | Ask: "バグ? 機能改修? spec 修正?" — バグなら **debug** (READ-ONLY) 先行 → 結果を受けて **define** / **implement** / **navigation-{platform}**。機能改修なら直接修正先 |
-| 3. 調査 | any | Route to **debug** (READ-ONLY) |
-| 4. その他 | any | Ask what they need and pick the closest route, or propose backend mode per CLAUDE.md Workflow 4 |
+| 1. New | fresh | Route to **ground** first (setup), then **define** for specs, then **implement** |
+| 1. New | scaffolded | Route to **define** (spec authoring) |
+| 1. New | specs-only or active | Ask: "Add a new spec, or implement an existing one?" → define or implement |
+| 2. Modify | any | Ask: "Bug? Feature change? Spec change?" — for a bug, run **debug** (READ-ONLY) first → route per the report to **define** / **implement** / **navigation-{platform}**. For a feature change, go directly to the target agent. |
+| 3. Investigate | any | Route to **debug** (READ-ONLY) |
+| 4. Other | any | Ask what they need and pick the closest route, or propose backend mode per CLAUDE.md Workflow 4 |
 
 ---
 
@@ -89,14 +89,14 @@ Adjust the state summary based on classification:
 
 ### Routing heuristics
 
-- **新規 + fresh repo** → `ground` → `define` → `implement` → `test` (one screen at a time)
-- **新規 + scaffolded** → `define` → `implement` → `test`
-- **新規 + specs exist, no layouts** → `implement` (or `define` to add a new spec first)
-- **既存のバグ** → `debug` first (READ-ONLY, returns a routing recommendation)
-- **既存の spec 変更** → `define`
-- **既存の Layout / VM body 変更** → `implement`
-- **既存の画面遷移変更** → `navigation-{ios,android,web}`
-- **調査だけ** → `debug`
+- **New + fresh repo** → `ground` → `define` → `implement` → `test` (one screen at a time)
+- **New + scaffolded** → `define` → `implement` → `test`
+- **New + specs exist, no layouts** → `implement` (or `define` to add a new spec first)
+- **Existing bug** → `debug` first (READ-ONLY, returns a routing recommendation)
+- **Existing spec change** → `define`
+- **Existing Layout / VM body change** → `implement`
+- **Existing navigation change** → `navigation-{ios,android,web}`
+- **Investigation only** → `debug`
 
 Tell the user which agent to launch, and pass along any necessary parameters (spec file, platform, mode, etc.).
 

@@ -48,12 +48,12 @@ The spec authoring and editing agent. Responsible for the *intent and contract* 
 Ask one short question if unclear:
 
 ```
-何をしますか?
+What are you doing?
 
-1. **新しい画面 / 機能の spec を起こす** — 要件 → spec 起票
-2. **既存の spec を直す** — 画面追加、項目変更、dataFlow 整備
-3. **API / DB の spec を作る** — OpenAPI
-4. **コンポーネント spec を作る** — 標準コンポーネントにない機能を custom component 化
+1. **Author a new screen / feature spec** — requirements → spec file
+2. **Edit an existing spec** — add a screen, change fields, refine dataFlow
+3. **Author API / DB spec** — OpenAPI
+4. **Author component spec** — custom component for functionality not in standard JsonUI
 ```
 
 If the user already has a clear request, skip the question.
@@ -82,11 +82,11 @@ Determine:
 
 If the user hasn't described the screen in detail, conduct a structured requirements dialogue yourself. Ask in this order, one question at a time:
 
-1. 画面の目的・ユースケース (1-2 sentences)
-2. 対象プラットフォーム (iOS / Android / Web)
-3. 主要な UI 要素 (入力欄、ボタン、リスト等)
-4. データの出どころ (API 呼び出し? ローカル? 静的?)
-5. 成功／失敗時の挙動、画面遷移
+1. Screen purpose / use case (1-2 sentences)
+2. Target platform(s) (iOS / Android / Web)
+3. Main UI elements (text fields, buttons, lists, etc.)
+4. Data source (API call? local? static?)
+5. Success / failure behavior, navigation on completion
 
 Output a short requirements note, then translate into the spec template at step 1.2.
 
@@ -97,7 +97,7 @@ Use `mcp__jui-tools__doc_init_spec` with `name` in PascalCase:
 ```json
 {
   "name": "LoginScreen",
-  "display_name": "ログイン画面"
+  "display_name": "Login screen"
 }
 ```
 
@@ -115,7 +115,7 @@ Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the author
 | `structure.decorativeElements` | Non-functional injected elements | |
 | `structure.wrapperViews` | Wrap existing components (e.g. loading overlay) | |
 | `stateManagement.uiVariables` | Expected data bindings with types | |
-| `stateManagement.eventHandlers` | View-local handlers (純 UI toggle) | Most handlers belong in `dataFlow.viewModel.methods`, not here |
+| `stateManagement.eventHandlers` | View-local handlers (pure UI toggles) | Most handlers belong in `dataFlow.viewModel.methods`, not here |
 | `stateManagement.displayLogic` | Visibility rules | |
 | `dataFlow.viewModel.methods` | Public VM contract (button taps, async fetches) | See `/jsonui-dataflow` skill or README `dataFlow.viewModel` section |
 | `dataFlow.viewModel.vars` | Observable state, callback properties | |
@@ -138,7 +138,7 @@ Fix any violations. Do not proceed with violations still reported.
 
 Print the spec summary (metadata + section counts, a few excerpts). Ask:
 
-> この spec で合っていますか? Layout JSON / VM impl にはまだ手を付けません。
+> Does this spec look right? I haven't touched the Layout JSON or VM impl yet.
 
 Wait for explicit yes.
 
@@ -206,7 +206,7 @@ Always invoke `/jsonui-component-spec` even if you think no custom components ar
 
 ## Task 5: Custom validation rules (non-JsonUI projects)
 
-Detect by asking: "この project は JsonUI / SwiftJsonUI / KotlinJsonUI / ReactJsonUI を使っていますか?" If the answer is something else (Flutter, native SwiftUI without JsonUI, Compose without JsonUI, etc.):
+Detect by asking: "Is this project using JsonUI / SwiftJsonUI / KotlinJsonUI / ReactJsonUI?" If the answer is something else (Flutter, native SwiftUI without JsonUI, Compose without JsonUI, etc.):
 
 1. `mcp__jui-tools__doc_rules_init` (with `flutter: true` for Flutter projects) — creates `.jsonui-doc-rules.json` template
 2. Edit `.jsonui-doc-rules.json` to add framework-specific component types, event handlers, file types, naming patterns:

@@ -49,12 +49,12 @@ Run `mcp__jui-tools__get_project_config` first. The project state determines the
 ```
 (Repo state: {classification})
 
-やりたいのはどれ?
+What do you want to do?
 
-1. **新規プロジェクトの init** — まっさらな状態から
-2. **既存プロジェクトに platform 追加** — 他 platform は既に動いている
-3. **test runner だけ入れる** — 既に動く project にテスト環境を追加
-4. **type map / doc rules のひな形だけ** — custom type / non-JsonUI 用
+1. **Init a new project** — from scratch
+2. **Add a platform to an existing project** — other platform(s) already working
+3. **Install test runner only** — add test environment to a project that already builds
+4. **Type map / doc rules template only** — for custom types or a non-JsonUI project
 ```
 
 - If `jui.config.json` missing → bias toward 1
@@ -222,7 +222,7 @@ Create at project root if the project has custom types not in the jui built-ins:
 }
 ```
 
-See `jui_tools_README.md` "型マッピング" section for syntax (exact match, generic `$T`, imports, etc.).
+See the "Type mapping" section of `jui_tools_README.md` for syntax (exact match, generic `$T`, imports, etc.).
 
 ### Doc rules (`.jsonui-doc-rules.json`)
 

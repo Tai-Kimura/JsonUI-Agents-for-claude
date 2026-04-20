@@ -103,7 +103,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 // Declarative
-<Link href={`/whisky/${id}`}>詳細</Link>
+<Link href={`/whisky/${id}`}>Details</Link>
 
 // Programmatic
 const router = useRouter();
