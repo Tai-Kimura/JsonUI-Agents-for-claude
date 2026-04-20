@@ -83,8 +83,8 @@ The target 9-agent layout is being built incrementally. Current state:
 | **debug** | `debug` | ✅ Phase 3a — READ-ONLY, spec-first bug trace |
 | **define** | `define` | ✅ Phase 3b — spec authoring & validation (screen / component / API/DB / doc-rules) |
 | **implement** | `implement` | ✅ Phase 3c — Layout/Styles/VM body + localize + jui_build 0 warnings + jui_verify no drift |
+| **test** | `test` | ✅ Phase 3d — spec-first screen/flow test authoring + validation + HTML docs |
 | **ground** | `jsonui-setup` | transitional |
-| **test** | `jsonui-test` | transitional (until `test` rewrite ships) |
 | **adapt / modify** | `jsonui-modify` | transitional |
 | **responsive** | `jsonui-responsive` | transitional |
 | **feature-plan** | `jsonui-feature-plan` | transitional |
