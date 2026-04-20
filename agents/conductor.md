@@ -80,9 +80,9 @@ The target 9-agent layout is being built incrementally. Current state:
 
 | Logical route | Agent to launch | Status |
 |---|---|---|
-| **debug** | `debug` | ✅ Phase 3a — shipped. READ-ONLY, spec-first bug trace |
+| **debug** | `debug` | ✅ Phase 3a — READ-ONLY, spec-first bug trace |
+| **define** | `define` | ✅ Phase 3b — spec authoring & validation (screen / component / API/DB / doc-rules) |
 | **ground** | `jsonui-setup` | transitional |
-| **define** | `jsonui-spec` | transitional (until `define` ships) |
 | **implement** | `jsonui-screen-impl` | transitional (until `implement` ships) |
 | **test** | `jsonui-test` | transitional (until `test` rewrite ships) |
 | **adapt / modify** | `jsonui-modify` | transitional |
