@@ -43,7 +43,7 @@ These gates apply to every agent. "Zero warnings" means zero — do not silence,
 
 ## MCP-first
 
-Agents call the `jsonui-mcp-server` for spec reads, layout reads, component lookups, builds, and verification. Bash shell-outs to the `jui` CLI are reserved for the four commands that have no MCP equivalent: `jui g screen`, `jui migrate-layouts`, `jui lint-generated`, `jui g converter`.
+Agents call the `jsonui-mcp-server` for spec reads, layout reads, component lookups, builds, verification, and platform-tool sync. The only `jui` subcommand still requiring a Bash shell-out is `jui lint-generated` (CI-only). Everything else — `init` / `generate project|screen|converter` / `build` / `verify` / `migrate-layouts` / `sync_tool` — has an MCP wrapper in Group C.
 
 See `rules/mcp-policy.md` for the full tool inventory and per-agent declaration pattern.
 
