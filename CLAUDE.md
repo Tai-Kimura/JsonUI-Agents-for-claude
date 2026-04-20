@@ -19,12 +19,12 @@ Based on the choice:
 
 | # | Choice | Launch |
 |---|---|---|
-| 1 | 新規に作る／機能追加 | `jsonui-orchestrator` agent |
-| 2 | 既存を直す | First ask: "バグ? 機能改修?" → バグなら `jsonui-investigate` (READ-ONLY 調査)、その結果から `jsonui-modify` へ。機能改修なら直接 `jsonui-modify` |
-| 3 | 調査だけ | `jsonui-investigate` agent (READ-ONLY) |
+| 1, 2, 3 | (any of the first three) | `conductor` agent — it reads repo state via MCP and routes to the right sub-agent |
 | 4 | Backend | Follow **Workflow 4: Backend** below |
 
-> **Transitional note (Phase 1):** The agent system is being redesigned toward a 9-agent layout (`conductor` / `define` / `ground` / `implement` / `navigation-{ios,android,web}` / `test` / `debug`). Until Phase 3 lands, routing uses the current agents (`jsonui-orchestrator`, `jsonui-modify`, `jsonui-investigate`, etc.). See `docs/plans/agent-redesign.md`.
+The `conductor` is the entry point for all JsonUI work. It inspects the repo (`jui.config.json`, spec count, layout count), asks a short follow-up, then tells you which agent to launch next.
+
+> **Transitional note (Phase 2):** The 9-agent target layout is (`conductor` / `define` / `ground` / `implement` / `navigation-{ios,android,web}` / `test` / `debug`). `conductor` is live; the other new agents will ship in Phase 3. During the transition, `conductor` routes to existing agents (`jsonui-spec`, `jsonui-setup`, `jsonui-screen-impl`, `jsonui-test`, `jsonui-investigate`, `jsonui-modify`, etc.). The old `jsonui-orchestrator` is deprecated but still works if you need it. See `docs/plans/agent-redesign.md`.
 
 ---
 
@@ -49,21 +49,23 @@ See `rules/mcp-policy.md` for the full tool inventory and per-agent declaration 
 
 ---
 
-## Workflow 1: 新規に作る／機能追加
+## Workflow 1-3: Any JsonUI work
 
-1. Launch `jsonui-orchestrator`
-2. If `docs/app-config/` exists, pass `app_config_path: docs/app-config/`; otherwise ask the user or use the default location
-3. Follow the orchestrator's flow (spec → setup → implement → test)
+Launch `conductor`. It will:
 
----
+1. Read repo state via MCP (`jui.config.json`, screen specs, layouts, component specs)
+2. Ask 1-2 follow-up questions
+3. Tell you which agent to launch next
 
-## Workflow 2: 既存を直す
+The conductor handles all of:
 
-Ask what kind of change:
+- **新規に作る／機能追加** — routes to ground (setup) → define (spec) → implement → test, one screen at a time
+- **既存を直す** — バグなら debug (READ-ONLY) 先行で spec 起点の原因調査、その結果から define / implement / navigation-* へ。機能改修なら直接 adapt/implement
+- **調査だけ** — debug (READ-ONLY) で spec 起点の構造調査
 
-- **バグ修正** — first launch `jsonui-investigate` (READ-ONLY) to trace the bug from the spec. Then route the findings to `jsonui-modify` for the fix.
-- **機能改修** — launch `jsonui-modify` directly.
-- **spec 修正だけ** — launch `jsonui-modify`; it will delegate to the spec agent.
+During Phase 2, new agents (`define`, `ground`, `implement`, `navigation-*`, `debug`) don't all exist yet. The conductor maps to existing agents (`jsonui-spec`, `jsonui-setup`, `jsonui-screen-impl`, `jsonui-investigate`, `jsonui-modify`, etc.) behind the scenes.
+
+**Spec-first bug tracing** — when investigating a bug, always start from the spec, not the stack trace:
 
 The investigate agent must start from the spec (not the stack trace). Symptom → spec-section mapping:
 
@@ -80,12 +82,6 @@ Always run the three gate commands as diagnostics: `jui verify --detail`, `jui b
 
 ---
 
-## Workflow 3: 調査だけ
-
-Launch `jsonui-investigate`. This agent is strictly READ-ONLY — it never writes files. It reports findings and suggests which agent to route to for any follow-up fix.
-
----
-
 ## Workflow 4: Backend
 
 1. **All other rules in this CLAUDE.md are completely lifted** — the orchestrator flow, forbidden actions, skill restrictions, the 4 invariants. None of them apply.
@@ -99,7 +95,7 @@ Launch `jsonui-investigate`. This agent is strictly READ-ONLY — it never write
 
 ## Orchestration protocol
 
-When you launch an agent that delegates to other agents (e.g. `jsonui-orchestrator`):
+When you launch an agent that delegates to other agents (e.g. `conductor`):
 
 1. **Show the agent's response to the user AS-IS.** Do not summarize or paraphrase.
 2. When the agent tells you to launch another agent, launch it.
@@ -136,11 +132,10 @@ This CLAUDE.md is the entry point. Detailed rules live in `rules/`:
 | Action | Allowed? |
 |--------|----------|
 | Ask user for workflow choice first | YES |
-| Launch `jsonui-orchestrator` (Workflow 1) | YES |
-| Launch `jsonui-modify` (Workflow 2: 機能改修) | YES |
-| Launch `jsonui-investigate` (Workflow 2: バグ / Workflow 3) | YES |
+| Launch `conductor` (Workflow 1, 2, 3) | YES |
 | Backend with custom rules (Workflow 4) | YES |
-| Launch an agent when the parent agent tells you to | YES |
+| Launch a sub-agent when conductor (or any parent) tells you to | YES |
+| Launch legacy `jsonui-orchestrator` directly | DISCOURAGED — use `conductor` instead |
 | Skip workflow selection | NO |
 | Edit `@generated` files by hand | NO |
 | Accept `jui build` warnings | NO |

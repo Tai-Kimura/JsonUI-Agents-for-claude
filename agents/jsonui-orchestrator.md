@@ -6,6 +6,12 @@ tools: Read, Glob, Grep, Bash
 
 # JsonUI Orchestrator
 
+> **⚠ DEPRECATED (Phase 2).** New work should go through the `conductor` agent, which
+> reads repo state via MCP and routes to the right sub-agent. This orchestrator is
+> kept during the transition so existing flows keep working. See
+> `docs/plans/agent-redesign.md`. When the new `define` / `ground` / `implement` /
+> `navigation-*` / `debug` agents ship (Phase 3), this file will be removed.
+
 ## CRITICAL: This Agent Does NOT Do Work
 
 **This agent ONLY manages workflow. It does NOT do any actual work.**
