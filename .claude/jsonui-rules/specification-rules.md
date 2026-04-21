@@ -520,6 +520,114 @@ Platform details worth knowing when reviewing output:
 - **UIKit** (generated) ignores `lazy: false` silently — `UICollectionView`
   is inherently lazy.
 
+## Custom Components — spec first, then `jui g converter`
+
+Any Layout JSON node whose `type` is **not** a standard JsonUI component (i.e.
+not in the framework's built-in component list, not already registered as a
+converter in this project) is a **custom component**. Examples: `CodeBlock`,
+`NavLink`, `Collapse`, `Details`, `PlatformBadge`, `NetworkImage`.
+
+Custom components MUST be introduced in this exact order. Skipping any step
+produces a converter that doesn't match the layout and silently renders
+wrong (JSX syntax errors at worst, missing attributes at best).
+
+### 1. Write a `component_spec` FIRST
+
+Before any layout or screen spec references the custom type:
+
+```
+mcp__jui-tools__doc_init_component with name: "CodeBlock", category: "display", displayName: "Code block"
+```
+
+This creates `{component_spec_directory}/codeblock.component.json`. Fill in
+at minimum:
+
+```json
+{
+  "type": "component_spec",
+  "version": "1.0",
+  "metadata": {
+    "name": "CodeBlock",
+    "displayName": "Code block",
+    "description": "Fenced code block with copy-to-clipboard button.",
+    "category": "display"
+  },
+  "props": {
+    "items": [
+      { "name": "language", "type": "String", "description": "Syntax highlight language." },
+      { "name": "code",     "type": "String", "description": "Body text." }
+    ]
+  },
+  "slots": { "items": [] }
+}
+```
+
+Naming:
+- `metadata.name` → PascalCase (`^[A-Z][a-zA-Z0-9]*$`).
+- `props.items[].name` → camelCase (`^[a-z][a-zA-Z0-9]*$`).
+- `props.items[].type` → any spec type (`String`, `Int`, `Bool`, `String?`,
+  `[String]`, `(() -> Void)?`, etc.).
+- `slots.items[]` non-empty → the component is a **container** (children
+  get rendered inside it). Empty → `--no-container`.
+
+Validate with `mcp__jui-tools__doc_validate_component`. Fix any violations.
+
+### 2. Generate the converter FROM the spec
+
+The framework has spec-driven scaffolding. Do NOT pass `--attributes` by
+hand; drive it from the spec so the attribute list and types stay in sync
+with the component's contract.
+
+```bash
+jui g converter --from codeblock.component.json   # single spec
+jui g converter --all                             # every component spec
+```
+
+Under the hood (`generate_cmd.py::_cmd_generate_converter`):
+- Reads `props.items[]` → `--attributes name:type,…`
+- Reads `slots.items[]` non-empty → `--container`, empty → `--no-container`
+- Calls `sjui g converter` / `kjui g converter` / `rjui g converter` with
+  the same args per platform listed in `jui.config.json::platforms`
+
+The direct form `jui g converter CodeBlock --attributes …` exists but is
+only for one-off prototyping. **Production code always uses `--from` or
+`--all`.**
+
+### 3. Register in `.jsonui-doc-rules.json` (doc-site projects only)
+
+For projects with a `.jsonui-doc-rules.json`, add the component name to the
+screen whitelist so spec validation accepts it as a known `type`:
+
+```json
+{
+  "rules": {
+    "componentTypes": { "screen": ["CodeBlock", "NavLink", "Collapse", "…"] }
+  }
+}
+```
+
+### 4. THEN write the layout that uses it
+
+Only after steps 1-3 do screen specs / Layout JSONs get to reference
+`{"type": "CodeBlock", "language": "bash", "code": "…"}`.
+
+If you find a layout using a custom type with no matching
+`component_spec`, that's a spec bug. Route back to define the component
+first — do not try to scaffold the converter from the layout alone.
+
+### Why this matters
+
+The scaffolding generator's output is driven by the attribute list. If the
+attributes don't match the component's actual props:
+- Generated converters reference props that don't exist on the component.
+- Actual component props get dropped on the floor (invisible in the UI).
+- Multi-line String attributes produce invalid JSX unless the generator
+  handles them — and it only knows to handle them when `props[].type`
+  declares them String.
+
+Spec-first guarantees the three sides (converter / component / layout)
+agree on the attribute contract.
+
 ---
 
 ## Common mistakes (from actual agent runs)
@@ -539,3 +647,4 @@ Platform details worth knowing when reviewing output:
    Mismatched names fail validation silently (specs get SKIPPED during HTML generation).
 9. **`relatedFiles.type` = unknown string** — only these 10 are accepted: `View`, `ViewModel`, `Layout`, `Repository`, `UseCase`, `Model`, `Test`, `Extension`, `Component`, `Hook`.
 10. **Missing `metadata.layoutFile` + empty `structure`** — if no `layoutFile`, the validator requires `components` + `layout` to be filled. Always set `layoutFile`.
+11. **Using a custom `type` in a layout without a `component_spec`** — any non-standard `type` (`CodeBlock`, `Collapse`, `NavLink`, etc.) must have a `{name}.component.json` defining its `props.items[]` + `slots.items[]` FIRST, then be scaffolded via `jui g converter --from {name}.component.json`. Skipping the spec produces a converter whose attributes don't match the actual component — layouts render wrong or emit invalid JSX. See "Custom Components — spec first" above.
