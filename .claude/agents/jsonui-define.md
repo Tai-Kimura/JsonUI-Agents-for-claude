@@ -105,26 +105,43 @@ This creates `docs/screens/json/login_screen.spec.json` with the canonical skele
 
 ### 1.3 Fill in the sections
 
-Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the authoring guide (examples, patterns), then write the content yourself via `Edit`:
+Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the authoring guide (examples, patterns), then write the content yourself via `Edit`. Read `rules/specification-rules.md` first — it is the canonical reference for field shapes, naming patterns, and the five structure variants.
+
+**🔴 Hard rule from `rules/specification-rules.md`: the spec describes intent. The Layout JSON describes the UI.**
+
+- `metadata.layoutFile` is **required** — every screen references an external `docs/screens/layouts/{layoutFile}.json`.
+- `structure.components` is **always an empty array** (`[]`) for new specs.
+- `structure.layout` is **always an empty object** (`{}`) for new specs.
+- **Never write the UI tree inline in the spec.** If the user gives you UI details, author them into the Layout JSON (→ `jsonui-implement`), not here.
+- `structure.collection.cell.children` — **never**. Use `cell.layoutFile` pointing at an external cell Layout JSON, plus `cell.uiVariables` / `cell.eventHandlers` for typed cell data.
 
 | Section | What to fill | Notes |
 |---|---|---|
-| `metadata` | `name`, `displayName`, `description`, `platforms` | Add `layoutFile: "<name>"` if you prefer UI hierarchy in Layout JSON instead of spec |
-| `structure.components` | UI tree | Leave empty `[]` when using `layoutFile` |
-| `structure.layout` | root, orientation, overlay | |
-| `structure.decorativeElements` | Non-functional injected elements | |
-| `structure.wrapperViews` | Wrap existing components (e.g. loading overlay) | |
-| `stateManagement.uiVariables` | Expected data bindings with types | |
-| `stateManagement.eventHandlers` | View-local handlers (pure UI toggles) | Most handlers belong in `dataFlow.viewModel.methods`, not here |
-| `stateManagement.displayLogic` | Visibility rules | |
-| `dataFlow.viewModel.methods` | Public VM contract (button taps, async fetches) | See `/jsonui-dataflow` skill or README `dataFlow.viewModel` section |
-| `dataFlow.viewModel.vars` | Observable state, callback properties | |
-| `dataFlow.repositories` | Data access layer; link to API with `methods[].endpoint` / `endpoints` | |
+| `metadata` | `name` (PascalCase), `displayName`, `description`, `platforms`, **`layoutFile` (required)** | `layoutFile` is snake_case, no extension (e.g. `"login"`, `"bar_list"`) |
+| `structure.components` | `[]` | Always empty. UI lives in the Layout JSON. |
+| `structure.layout` | `{}` | Always empty for the same reason. |
+| `structure.collection` | `null`, or a Collection with `cellClasses: [...]` / `cell.layoutFile` / `sections[]` | See `rules/specification-rules.md` section "(2) Collection screen" for the three accepted shapes. `cellClasses` is an **array of strings** (Layout JSON refs). |
+| `structure.tabView` | `null`, or `{id, tabs: [{title, layoutFile}]}` | Each tab is its own Layout JSON. |
+| `stateManagement.uiVariables` | Typed screen data (visibility flags, toast messages, callbacks) | Callback variables use `"type": "(() -> Void)?"` (or the `"callback"` alias) |
+| `stateManagement.eventHandlers` | View-local handlers — name + description only | Anything that needs to be callable from the ViewModel belongs in `dataFlow.viewModel.methods` |
+| `stateManagement.displayLogic` | `condition` + `effects[{element, state}]` for visibility rules | Auto-generated `{element_id}Visibility` var names unless `variableName` is explicit |
+| `stateManagement.states` | Named state enums the UI responds to | Optional |
+| `dataFlow.viewModel.methods` | Public VM contract (button taps, async fetches) | Defaults to `isAsync: false`. See `/jsonui-dataflow` skill. |
+| `dataFlow.viewModel.vars` | Observable state | `{name, type, optional, observable, readOnly, platforms}` |
+| `dataFlow.repositories` | Data access layer; link to API with `methods[].endpoint` | Defaults to `isAsync: true` |
 | `dataFlow.useCases` | Business logic layer (optional); link to Repo via `repositories` or `methods[].calls` | |
-| `dataFlow.apiEndpoints` | API endpoints this screen uses | path matches Repo `endpoint` references |
+| `dataFlow.apiEndpoints` | `{path, method (GET/POST/PUT/PATCH/DELETE), request, response, notes}` | Path matches Repo `endpoint` references |
+| `relatedFiles` | Cross-references to generated/hand-written files | Only these `type` values: `View`, `ViewModel`, `Layout`, `Repository`, `UseCase`, `Model`, `Test`, `Extension`, `Component`, `Hook` |
 | `userActions` / `transitions` | Navigation targets | Spec-external code (Navigation) lives in `jsonui-implement` / `navigation-*` |
 
-When in doubt about a **Layout component or attribute**, call MCP: `lookup_component`, `lookup_attribute`, `search_components`, or `get_platform_mapping`. Don't guess.
+When in doubt about a **Layout component or attribute**, call MCP: `lookup_component`, `lookup_attribute`, `search_components`, or `get_platform_mapping`. Don't guess — and if the question is about the Layout JSON itself (not the spec), route to `jsonui-implement`.
+
+Naming regexes the schema enforces silently — violations make the spec get SKIPPED during HTML generation:
+
+- `metadata.name` → `^[A-Z][a-zA-Z0-9]*$` (PascalCase)
+- Any `component.id` → `^[a-z][a-z0-9_]*$` (snake_case)
+- `uiVariable.name` → `^[a-z][a-zA-Z0-9]*$` (camelCase)
+- `eventHandler.name` → `^on[A-Z][a-zA-Z0-9]*$`
 
 ### 1.4 Validate
 

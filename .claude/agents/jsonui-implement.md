@@ -65,11 +65,12 @@ Parallel MCP calls:
 
 From the spec, note:
 
-- `metadata.layoutFile` — if set, UI structure lives in Layout JSON (expected; spec `structure.components` can be `[]`)
+- `metadata.layoutFile` — **required on every screen spec**. UI structure lives in `docs/screens/layouts/{layoutFile}.json`. Spec `structure.components` / `structure.layout` should be empty (`[]` / `{}`). If they're not, treat that as a spec bug — route back to `jsonui-define` before touching the Layout JSON. See `rules/specification-rules.md` "HARD RULE".
 - `dataFlow.viewModel.methods` / `vars` — these become Protocol members (you do NOT declare them yourself; `jui build` generates the Protocol)
 - `dataFlow.repositories[]` / `useCases[]` — stub methods will be generated; you fill in the bodies
 - `stateManagement.uiVariables` — drive the `data` section in Layout JSON
 - `stateManagement.displayLogic` — drive `visibility` bindings
+- `structure.collection.cell.uiVariables` / `cell.eventHandlers` (when present) — drive the cell Layout JSON's own `data` section. See `rules/specification-rules.md` "Collection Cell: declaring typed data".
 - `userActions` / `transitions` — navigation targets for the navigation agents
 
 ### 2. Scaffold

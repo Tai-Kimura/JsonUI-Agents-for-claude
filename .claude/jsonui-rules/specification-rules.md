@@ -37,27 +37,373 @@ Agent: "I'll add a login button. A few questions:
 3. Any specific styling requirements?"
 ```
 
-**Wrong:**
-```
-User: "The form should validate email"
-Agent: [Implements email validation with specific regex, error messages, and styling]
-```
-
-**Correct:**
-```
-User: "The form should validate email"
-Agent: "For email validation, I need to confirm:
-1. What error message should be displayed for invalid emails?
-2. When should validation occur? (on blur, on submit, real-time)
-3. Are there any specific email format requirements beyond standard validation?"
-```
-
 ## Why This Matters
 
 - Specifications are the **single source of truth**
 - Incorrect assumptions propagate to all downstream agents
 - Fixing misinterpretations later is expensive
 - The user knows their requirements better than we do
+
+---
+
+## 🔴 HARD RULE: The spec describes intent. The Layout JSON describes the UI.
+
+**EVERY screen spec MUST reference an external Layout JSON via `metadata.layoutFile`.**
+**NEVER write the UI tree inline in `structure.components` / `structure.layout` / `structure.collection.cell.children`.**
+
+Why:
+- `docs/screens/layouts/*.json` is the **single source of truth** for rendering. `jui build` reads from there, distributes to every platform, and auto-extracts strings/colors/styles.
+- Duplicating the UI inline in the spec creates drift — `jui verify` will flag it, and platform-side copies silently fall out of date.
+- All generators (sjui/kjui/rjui) + both runtimes (SwiftJsonUI, KotlinJsonUI Dynamic) are built around the Layout JSON path. The inline shape is a legacy escape hatch kept only for backwards compatibility.
+
+What this means in practice:
+
+| Field | Value |
+|---|---|
+| `metadata.layoutFile` | **required**. Snake_case, no extension (e.g. `"login"`, `"bar_list/bar_cell"`). |
+| `structure.components` | **empty array `[]`**. |
+| `structure.layout` | **empty object `{}`**. |
+| `structure.collection` | `null` unless the screen IS a collection. If it is, `cell.layoutFile` references an external cell Layout JSON — not `cell.children`. |
+| `structure.tabView` | `null` unless it's a TabView screen. Each tab uses `layoutFile`. |
+
+The one legitimate exception: `screen_parent_spec` index files, where `structure` can hold a brief `rootComponents` summary for human readers, but the real UI still lives in the referenced Layout JSON.
+
+The rest of this document is the reference for the spec fields that remain (metadata, dataFlow, stateManagement, relatedFiles, etc.). Layout itself is documented in `rules/file-locations.md` + the Layout JSON files themselves.
+
+---
+
+## Spec types
+
+Three `type` values, checked at `validator.py:226-234`:
+
+| `type` | Purpose | Required top-level |
+|---|---|---|
+| `screen_spec` | Standalone screen | `type`, `version`, `metadata`, `structure` |
+| `screen_parent_spec` | Index for a screen split across multiple sub-specs | `type`, `version`, `metadata`, `subSpecs` |
+| `screen_sub_spec` | Piece of a parent spec | `type`, `version`, `metadata` |
+
+`structure` is required on `screen_spec` but the **validator treats `components` + `layout` as optional when `metadata.layoutFile` is set** (`validator.py:393-405`). That's the path every new spec should take.
+
+---
+
+## Top-level skeleton (`screen_spec`)
+
+```json
+{
+  "type": "screen_spec",
+  "version": "1.0",
+  "metadata": {
+    "name": "Login",
+    "displayName": "ログイン画面",
+    "description": "ユーザー認証画面",
+    "platforms": ["ios", "android", "web"],
+    "layoutFile": "login"
+  },
+  "structure": {
+    "components": [],
+    "layout": {},
+    "collection": null,
+    "tabView": null
+  },
+  "dataFlow": { ... },
+  "stateManagement": { ... },
+  "userActions": [ ... ],
+  "transitions": [ ... ],
+  "relatedFiles": [ ... ],
+  "notes": [ ... ]
+}
+```
+
+Everything after `structure` is optional, but most real specs fill in `dataFlow`, `stateManagement`, `relatedFiles`.
+
+## `metadata`
+
+Required (`validator.py` via `screen_spec_schema.py:50`): `name`, `displayName`, `description`.
+You should also always include: `platforms`, `layoutFile`.
+
+```json
+"metadata": {
+  "name": "Login",                       // ^[A-Z][a-zA-Z0-9]*$  PascalCase
+  "displayName": "ログイン画面",
+  "description": "…",
+  "platforms": ["ios", "android", "web"],
+  "layoutFile": "login",                 // REQUIRED for any screen that renders UI
+  "createdAt": "2026-04-21",             // YYYY-MM-DD, optional
+  "updatedAt": "2026-04-21"
+}
+```
+
+For `screen_sub_spec`, use `parentSpec` instead of duplicating the parent's `layoutFile`:
+
+```json
+"metadata": {
+  "name": "Chat - Core",
+  "parentSpec": "chat.spec.json",
+  "description": "…"
+}
+```
+
+## `structure`
+
+The five shapes. Every time you author a spec, pick one of (1) / (2) / (3) / (4):
+
+### (1) Plain screen — just `layoutFile`
+
+```json
+"structure": {
+  "components": [],
+  "layout": {},
+  "collection": null,
+  "tabView": null
+}
+```
+
+Everything else lives in `docs/screens/layouts/{layoutFile}.json`. **Most screens are this.**
+
+### (2) Collection screen
+
+The spec identifies the Collection; each cell references an external Layout JSON.
+
+Single-cell Collection:
+
+```json
+"structure": {
+  "components": [],
+  "layout": {},
+  "collection": {
+    "id": "bars_collection",
+    "cell": {
+      "viewName": "BarCellView",
+      "root": "bar_cell_root",
+      "layoutFile": "bar_list/bar_cell",   // external Layout JSON
+      "generateCellLayout": true,          // true → jui writes the cell Layout JSON on generate
+      "uiVariables": [
+        { "name": "barName", "type": "String", "description": "バー名", "defaultValue": "" },
+        { "name": "shotPrice", "type": "String?", "description": "ショット価格" }
+      ],
+      "eventHandlers": [
+        { "name": "onMapTap", "description": "Mapボタンタップ" }
+      ]
+    },
+    "header": null,
+    "footer": null
+  }
+}
+```
+
+Multi-cell Collection (`cellClasses` is an **array of strings** — Layout JSON refs):
+
+```json
+"collection": {
+  "id": "message_list",
+  "cellClasses": [
+    "chat/message_cell",
+    "chat/location_prompt_bubble",
+    "chat/streaming_cell"
+  ]
+}
+```
+
+Section-based Collection (each section routes to a cell ref):
+
+```json
+"collection": {
+  "id": "message_list",
+  "cellClasses": ["chat/message_cell", "chat/streaming_cell"],
+  "sections": [
+    { "cell": "chat/message_cell", "header": "chat/section_header" },
+    { "cell": "chat/streaming_cell" }
+  ]
+}
+```
+
+**Do not write `cell.children` inline.** The Collection validator enforces one of `cell` / `cellClasses` / `sections[].cell` (`validator.py:657-684`); when `cell.layoutFile` is set, `children` is NOT required — the tree comes from the external file.
+
+### (3) TabView screen
+
+```json
+"structure": {
+  "components": [],
+  "layout": {},
+  "tabView": {
+    "id": "main_tabs",
+    "tabs": [
+      { "title": "Candidates", "layoutFile": "chat/candidates_tab" },
+      { "title": "Purchases",  "layoutFile": "chat/purchases_tab" }
+    ]
+  }
+}
+```
+
+Each tab is a separate Layout JSON. Per-tab `dataFlow` / `stateManagement` lives in that tab's own sub-spec if the screen is large enough to split.
+
+### (4) Parent + sub-specs (large screens)
+
+Parent spec (`screen_parent_spec`):
+
+```json
+{
+  "type": "screen_parent_spec",
+  "version": "1.0",
+  "metadata": {
+    "name": "Chat",
+    "displayName": "チャット画面",
+    "description": "...",
+    "layoutFile": "chat"
+  },
+  "subSpecs": [
+    { "file": "chat/chat-core.spec.json",      "name": "Chat - Core",      "description": "Core structure" },
+    { "file": "chat/chat-streaming.spec.json", "name": "Chat - Streaming", "description": "Streaming cell" }
+  ]
+}
+```
+
+Sub-spec (`screen_sub_spec`) — references the parent and covers one slice:
+
+```json
+{
+  "type": "screen_sub_spec",
+  "version": "1.0",
+  "metadata": {
+    "name": "Chat - Core",
+    "parentSpec": "chat.spec.json",
+    "description": "Core screen structure (root view, message list, input area)"
+  },
+  "structure": { ... },          // optional — only fill fields this sub-spec is responsible for
+  "dataFlow": { ... },
+  "stateManagement": { ... }
+}
+```
+
+Sub-specs never duplicate the parent's `layoutFile`. Parent authors the Layout; sub-specs inherit via `parentSpec` (`validator.py:353-405`).
+
+## `dataFlow`
+
+```json
+"dataFlow": {
+  "repositories": [
+    {
+      "name": "AuthRepository",
+      "description": "認証関連API",
+      "methods": [
+        {
+          "name": "emailLogin",
+          "params": [
+            { "name": "email", "type": "String" },
+            { "name": "password", "type": "String" }
+          ],
+          "returnType": "TwoFaRequiredResponse",
+          "isAsync": true,                       // default: true for repository methods
+          "endpoint": "POST /api/auth/login",
+          "platforms": ["ios"]                   // optional
+        }
+      ]
+    }
+  ],
+  "useCases": [
+    { "name": "LoginUseCase", "methods": [ ... ], "repositories": ["AuthRepository"] }
+  ],
+  "viewModel": {
+    "description": "Login ViewModel",
+    "methods": [
+      {
+        "name": "onEmailChanged",
+        "params": [{ "name": "email", "type": "String" }],
+        "returnType": "Void",
+        "isAsync": false                         // default: false for viewModel methods (UI events)
+      }
+    ],
+    "vars": [
+      { "name": "isLoading", "type": "Bool",
+        "optional": false, "observable": true, "readOnly": false,
+        "platforms": ["ios", "android"] }
+    ]
+  },
+  "apiEndpoints": [
+    { "path": "/api/auth/login", "method": "POST",
+      "request": {}, "response": {}, "notes": "..." }
+  ]
+}
+```
+
+- `method` (in `apiEndpoints`) must be one of `GET|POST|PUT|PATCH|DELETE` (`validator.py:81`).
+- Repository methods default to `isAsync: true`; ViewModel methods default to `isAsync: false`.
+- `dataFlow.viewModel.methods` is the **public ViewModel contract**. `jui build` generates the Protocol / Base from this — hand-editing the generated file is a build failure.
+
+## `stateManagement`
+
+```json
+"stateManagement": {
+  "uiVariables": [
+    { "name": "email",                           // ^[a-z][a-zA-Z0-9]*$  camelCase
+      "type": "String",
+      "description": "メール入力値",              // REQUIRED
+      "defaultValue": "" },
+    { "name": "onLoginTap",                      // callbacks ARE uiVariables
+      "type": "(() -> Void)?",                   // or the "callback" alias
+      "description": "ログインタップ" }
+  ],
+  "eventHandlers": [
+    { "name": "onAppleSignInTap",                // ^on[A-Z][a-zA-Z0-9]*$
+      "description": "Apple Sign In タップ" }
+  ],
+  "displayLogic": [
+    {
+      "condition": "loadingVisibility == 'visible'",
+      "effects": [
+        { "element": "loading_indicator", "state": "visible",
+          "variableName": "loadingIndicatorVisibility" }   // optional; auto-derived from element_id
+      ]
+    }
+  ],
+  "cellDisplayLogic": [ ... ],                    // same shape — for visibility rules inside a cell
+  "states": [
+    { "name": "LoginFormState",
+      "values": [
+        { "value": "loginForm", "description": "…", "visibleElements": ["login_form_container"] }
+      ] }
+  ]
+}
+```
+
+**The distinction that trips agents up:**
+- `uiVariables` = typed data bound into the Layout JSON. Callbacks go here with `type: "(() -> Void)?"` or `"callback"`.
+- `eventHandlers` = View-local handlers only (name + description, no type). Anything that needs to be called from the ViewModel or bound via `@{...}` must be a `uiVariables` entry, not an `eventHandler`.
+
+## `userActions` / `transitions` / `validation`
+
+All optional. See `screen_spec_schema.py` for the exact shape. These are for human documentation of navigation intent / form validation — they don't generate code.
+
+## `relatedFiles`
+
+Cross-references to generated and hand-written files. Accepted `type` values (`validator.py:76-82`):
+
+`View`, `ViewModel`, `Layout`, `Repository`, `UseCase`, `Model`, `Test`, `Extension`, `Component`, `Hook`
+
+```json
+"relatedFiles": [
+  { "type": "Layout",    "path": "docs/screens/layouts/login.json" },
+  { "type": "View",      "path": "…/LoginView.swift",           "platform": "ios" },
+  { "type": "ViewModel", "path": "…/LoginViewModel.swift",      "platform": "ios" },
+  { "type": "Extension", "path": "…/BarListing+Status.swift",   "platform": "ios" },
+  { "type": "Component", "path": "…/LoginButton.tsx",           "platform": "web" },
+  { "type": "Hook",      "path": "…/useLoginViewModel.ts",      "platform": "web" }
+]
+```
+
+## Naming regex summary
+
+Enforced by the schema. Violations are validation errors, not warnings:
+
+| Field | Pattern | Example |
+|---|---|---|
+| `version` | `^\d+\.\d+$` | `"1.0"` |
+| `metadata.name` | `^[A-Z][a-zA-Z0-9]*$` | `Login`, `BarList` |
+| Any `component.id` | `^[a-z][a-z0-9_]*$` | `bar_cell_root` |
+| `uiVariable.name` | `^[a-z][a-zA-Z0-9]*$` | `loadingVisibility` |
+| `eventHandler.name` | `^on[A-Z][a-zA-Z0-9]*$` | `onLoginTap` |
+
+---
 
 ## Text and String References
 
@@ -112,7 +458,7 @@ on `structure.collection.cell` using the same shape as the screen's
     "viewName": "BarCellView",
     "layoutFile": "bar_list/bar_cell",
     "generateCellLayout": true,
-    "root": { "type": "View", "id": "bar_cell_root", ... },
+    "root": "bar_cell_root",
     "uiVariables": [
       { "name": "barName", "type": "String", "description": "バー名", "defaultValue": "" },
       { "name": "shotPrice", "type": "String?", "description": "ショット価格" },
@@ -173,3 +519,23 @@ Platform details worth knowing when reviewing output:
   are dropped.
 - **UIKit** (generated) ignores `lazy: false` silently — `UICollectionView`
   is inherently lazy.
+
+---
+
+## Common mistakes (from actual agent runs)
+
+1. **Inline UI in the spec** — writing `structure.components` / `structure.layout` / `cell.children`. The UI MUST live in the Layout JSON; the spec only references it via `layoutFile`.
+2. **`cellClasses` entries as objects** — they are plain string paths (`"chat/message_cell"`), not `{id, layoutFile}` dicts. The schema type is `array of strings`.
+3. **`cell.children` required when `layoutFile` is set** — it isn't. The validator's `_has_external_layout_ref` skips the inline-layout check when `layoutFile` (or legacy `layout`) is present.
+4. **`@string/<key>` in text attributes** — Android XML only. Use literal / snake_case key / `@{binding}`.
+5. **Hex color literals in new code** — build will auto-extract them, but the generated names are not as readable as a semantic key you pick yourself.
+6. **Placing `Styles/` under `layouts/Styles/`** — legacy. The current convention is `styles_directory` (sibling to `layouts/`, default `docs/screens/styles/`). See `rules/file-locations.md`.
+7. **Callbacks declared in `eventHandlers`** — `eventHandlers` is name + description only. Typed callbacks (`"(() -> Void)?"`) go into `stateManagement.uiVariables`.
+8. **Naming convention violations** — the schema enforces:
+   - `metadata.name`: PascalCase
+   - Any `component.id`: snake_case
+   - `uiVariable.name`: camelCase
+   - `eventHandler.name`: must start with `on[A-Z]`
+   Mismatched names fail validation silently (specs get SKIPPED during HTML generation).
+9. **`relatedFiles.type` = unknown string** — only these 10 are accepted: `View`, `ViewModel`, `Layout`, `Repository`, `UseCase`, `Model`, `Test`, `Extension`, `Component`, `Hook`.
+10. **Missing `metadata.layoutFile` + empty `structure`** — if no `layoutFile`, the validator requires `components` + `layout` to be filled. Always set `layoutFile`.
