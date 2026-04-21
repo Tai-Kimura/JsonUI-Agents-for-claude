@@ -96,7 +96,7 @@ Open `docs/screens/layouts/{name}.json` and refine:
 - Platform overrides (`platform: { ios: {...}, android: {...}, web: {...} }`) for attributes that differ per platform
 - Responsive overrides (`responsive: { compact: {...} }`) for screen-size variants
 - Includes (`"include": "path/to/partial"`) for repeated sections
-- Collection `cellClasses` / `sections` for lists
+- Collection `cellClasses` / `sections` for lists (use `lazy: false` only when the Collection is nested inside an already-scrollable parent — see `rules/specification-rules.md`)
 - TabView `view` references for tab screens
 
 Use MCP for authoritative references instead of guessing:

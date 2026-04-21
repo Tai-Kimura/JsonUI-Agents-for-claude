@@ -58,3 +58,38 @@ Agent: "For email validation, I need to confirm:
 - Incorrect assumptions propagate to all downstream agents
 - Fixing misinterpretations later is expensive
 - The user knows their requirements better than we do
+
+## Collection: `lazy: true` (default) vs `lazy: false`
+
+`Collection` components default to lazy/virtualized containers
+(`LazyVStack` / `LazyColumn` / `LazyVerticalGrid`) with their own internal
+scroll. Set `lazy: false` only when you know the Collection is already nested
+inside a scrollable parent — the generated code then uses plain
+`VStack` / `HStack` / `Column` / `Row` + `ForEach` with **no enclosing
+ScrollView / verticalScroll**, so the outer scroll handles the viewport.
+
+Use `lazy: false` when:
+- The Collection sits inside an outer `ScrollView` / `verticalScroll` /
+  Compose `Column { Modifier.verticalScroll() }` and nesting a Lazy container
+  would break layout (Compose infinite-height constraint crash; SwiftUI
+  double-scroll behavior).
+- You know the item count is small and fixed (e.g. a few cards in a section
+  on a screen that already scrolls as a whole).
+
+Do NOT use `lazy: false` when:
+- The list can grow to hundreds of items — eager rendering has no
+  virtualization and will load everything at once.
+- You need sticky headers, programmatic `scrollTo`, `defaultScrollAnchor`,
+  or `paging` — those all require the lazy path to stay active. The
+  generator/runtime silently ignores those attributes under `lazy: false`.
+
+Platform details worth knowing when reviewing output:
+- **SwiftUI** `lazy: false` → `VStack` / `HStack` (or `LazyVGrid` without
+  an outer `ScrollView` for multi-column), no `ScrollView`.
+- **Compose** `lazy: false` → `Column` / `Row` + `forEachIndexed`, no
+  `LazyColumn` / `LazyVerticalGrid`, no `verticalScroll`.
+- **React** `lazy: false` → the same `div` + `.map()`, but
+  `overflow-y-auto` / `overflow-x-auto` / `flex-nowrap` Tailwind classes
+  are dropped.
+- **UIKit** (generated) ignores `lazy: false` silently — `UICollectionView`
+  is inherently lazy.
