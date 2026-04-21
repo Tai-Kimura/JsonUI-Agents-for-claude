@@ -97,6 +97,48 @@ Color-valued attributes (`background`, `fontColor`, `borderColor`, `tintColor`,
 > fallback when no name applies yet — build will still clean up afterwards,
 > but the generated names are not as readable as ones you'd pick yourself.
 
+## Collection Cell: declaring typed data
+
+To give a Collection cell its own typed `data` section in the generated
+Layout JSON (instead of inheriting untyped values via the parent
+Collection's `items` binding), declare the cell's variables and handlers
+on `structure.collection.cell` using the same shape as the screen's
+`stateManagement`:
+
+```json
+"collection": {
+  "id": "bars_collection",
+  "cell": {
+    "viewName": "BarCellView",
+    "layoutFile": "bar_list/bar_cell",
+    "generateCellLayout": true,
+    "root": { "type": "View", "id": "bar_cell_root", ... },
+    "uiVariables": [
+      { "name": "barName", "type": "String", "description": "バー名", "defaultValue": "" },
+      { "name": "shotPrice", "type": "String?", "description": "ショット価格" },
+      { "name": "openStatusVisibility", "type": "String", "description": "営業中バッジ表示", "defaultValue": "gone" }
+    ],
+    "eventHandlers": [
+      { "name": "onMapTap", "description": "Mapボタンタップ" }
+    ]
+  }
+}
+```
+
+Rules:
+- `cellNode.uiVariables` — same shape as `stateManagement.uiVariables`
+  (name / type / description / defaultValue). Each entry becomes a typed
+  entry in the cell's Layout JSON `data` section.
+- `cellNode.eventHandlers` — same shape as `stateManagement.eventHandlers`.
+  Each handler becomes a callback property (`(() -> Void)?`) on the cell's
+  `data` so Layout JSON bindings like `"onClick": "@{onMapTap}"` resolve.
+- `dataKeys` (legacy) is a plain list of names — prefer `uiVariables` for
+  new specs so types and default values round-trip into the generated
+  Layout.
+- Screen-level `stateManagement.uiVariables` is for the screen's own data
+  (collection data source, visibility flags, toast messages…). Cell data
+  belongs on the cell node, not on the screen.
+
 ## Collection: `lazy: true` (default) vs `lazy: false`
 
 `Collection` components default to lazy/virtualized containers
