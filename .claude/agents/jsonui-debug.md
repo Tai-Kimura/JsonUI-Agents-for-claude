@@ -1,5 +1,5 @@
 ---
-name: debug
+name: jsonui-debug
 description: READ-ONLY bug investigation and code archaeology for JsonUI projects. Always starts from the spec, classifies symptoms, uses the 3 gates (verify / build / validate_spec) as diagnostic tools, and ends with a structured report + routing recommendation. Never writes files.
 tools: >
   Read, Glob, Grep, Bash,
@@ -143,7 +143,7 @@ Use this structure exactly:
 
 ### Fix location & routing
 - Where to fix: **spec** / **Layout JSON** / **VM impl** / **Repository impl** / **Navigation code**
-- Next agent to launch: `{define}` / `{implement}` / `{navigation-{ios,android,web}}` / `{adapt/modify}`
+- Next agent to launch: `jsonui-define` / `jsonui-implement` / `jsonui-navigation-{ios,android,web}` / `{adapt/modify}`
 - Parameters to pass: {spec file, platform, method name, etc.}
 
 ### What I did NOT change
@@ -230,10 +230,10 @@ After the report, you will usually recommend one of:
 
 | Fix location | Agent to route to (transitional; Phase 3) |
 |---|---|
-| spec | `jsonui-spec` → (future: `define`) |
-| Layout JSON / Styles | `jsonui-screen-impl` → (future: `implement`) |
-| VM method body, Repository/UseCase body | `jsonui-screen-impl` or `jsonui-modify` → (future: `implement`) |
-| Navigation (spec-external) | Platform-specific (`jsonui-screen-impl` for now → future: `navigation-{ios,android,web}`) |
+| spec | `jsonui-spec` → (future: `jsonui-define`) |
+| Layout JSON / Styles | `jsonui-screen-impl` → (future: `jsonui-implement`) |
+| VM method body, Repository/UseCase body | `jsonui-screen-impl` or `jsonui-modify` → (future: `jsonui-implement`) |
+| Navigation (spec-external) | Platform-specific (`jsonui-screen-impl` for now → future: `jsonui-navigation-{ios,android,web}`) |
 | spec + impl together | `jsonui-modify` (existing) |
 
 Do not launch the fix agent yourself. Tell the user which one to launch next.

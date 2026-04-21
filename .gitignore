@@ -1,5 +1,5 @@
 # Claude Code local state (not part of the installable content)
-.claude/
+.claude/settings.local.json
 
 # macOS
 .DS_Store

@@ -1,5 +1,5 @@
 ---
-name: define
+name: jsonui-define
 description: Authors and edits JsonUI specifications (screen specs, component specs, API/DB OpenAPI). Uses MCP to validate, verify against Layout, and generate HTML docs. Guards against spec drift by running doc_validate_spec and jui_verify before declaring done.
 tools: >
   Read, Write, Edit, Glob, Grep,
@@ -35,8 +35,8 @@ The spec authoring and editing agent. Responsible for the *intent and contract* 
 
 ## You do NOT
 
-- Edit Layout JSON (`docs/screens/layouts/*.json`) — that's `implement`'s job
-- Edit ViewModel / Repository / UseCase impl — `implement` or `adapt`
+- Edit Layout JSON (`docs/screens/layouts/*.json`) — that's `jsonui-implement`'s job
+- Edit ViewModel / Repository / UseCase impl — `jsonui-implement` or `adapt`
 - Run `jui build` or distribute — the gates you own are `doc_validate_spec` and `jui_verify`, not `jui_build`
 - Edit `@generated` files
 - Implement navigation
@@ -122,7 +122,7 @@ Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the author
 | `dataFlow.repositories` | Data access layer; link to API with `methods[].endpoint` / `endpoints` | |
 | `dataFlow.useCases` | Business logic layer (optional); link to Repo via `repositories` or `methods[].calls` | |
 | `dataFlow.apiEndpoints` | API endpoints this screen uses | path matches Repo `endpoint` references |
-| `userActions` / `transitions` | Navigation targets | Spec-external code (Navigation) lives in `implement` / `navigation-*` |
+| `userActions` / `transitions` | Navigation targets | Spec-external code (Navigation) lives in `jsonui-implement` / `navigation-*` |
 
 When in doubt about a **Layout component or attribute**, call MCP: `lookup_component`, `lookup_attribute`, `search_components`, or `get_platform_mapping`. Don't guess.
 
@@ -158,7 +158,7 @@ If Layout JSON already exists for this screen (edit path, not fresh create), run
 mcp__jui-tools__jui_verify with file: "login_screen.spec.json", fail_on_diff: true, detail: true
 ```
 
-If there's drift, decide which side to fix. Editing the spec might invalidate the existing Layout — route to `implement` for the Layout update.
+If there's drift, decide which side to fix. Editing the spec might invalidate the existing Layout — route to `jsonui-implement` for the Layout update.
 
 ---
 
@@ -171,7 +171,7 @@ If there's drift, decide which side to fix. Editing the spec might invalidate th
 
 Special cases:
 
-- **Adding a method to `dataFlow.viewModel.methods`** — the existing VM Impl will be out of spec after this edit; `jui build` will fail in `implement`. Warn the user, then route to `implement` when they're ready to add the method body.
+- **Adding a method to `dataFlow.viewModel.methods`** — the existing VM Impl will be out of spec after this edit; `jui build` will fail in `jsonui-implement`. Warn the user, then route to `jsonui-implement` when they're ready to add the method body.
 - **Changing a param type** — existing code that uses the method will break. Warn.
 - **Changing `metadata.platforms`** — may change which platforms auto-import the method. Warn.
 
@@ -293,13 +293,13 @@ Batching hides validation errors and makes HTML generation skippable. Don't allo
 When one or more specs are done and validated:
 
 ```
-Please launch the `implement` agent (or `jsonui-screen-impl` during Phase 3 transition) with:
+Please launch the `jsonui-implement` agent (or `jsonui-screen-impl` during Phase 3 transition) with:
 - specification: docs/screens/json/{screen}.spec.json
 - platform: {iOS / Android / Web}
 - mode: {swiftui / uikit / compose / xml / react}
 ```
 
-For fresh projects where `jui.config.json` is missing, route to `ground` (or `jsonui-setup` during transition) *first*, then back to `define`.
+For fresh projects where `jui.config.json` is missing, route to `jsonui-ground` (or `jsonui-setup` during transition) *first*, then back to `jsonui-define`.
 
 ---
 
@@ -309,12 +309,12 @@ You own 1 of the 4:
 
 | Invariant | Owner |
 |---|---|
-| `jui build` 0 warnings | `implement` (you don't run build) |
+| `jui build` 0 warnings | `jsonui-implement` (you don't run build) |
 | `jui verify --fail-on-diff` | **you** (run after any spec edit that affects an existing Layout) |
 | `@generated` untouched | you (by not editing them) |
-| `jsonui-localize` ran | `implement` |
+| `jsonui-localize` ran | `jsonui-implement` |
 
-If a verify diff shows the Layout is wrong, don't "fix" the spec to match — figure out which side is correct, and if the spec is right, route to `implement` for the Layout update.
+If a verify diff shows the Layout is wrong, don't "fix" the spec to match — figure out which side is correct, and if the spec is right, route to `jsonui-implement` for the Layout update.
 
 ---
 
@@ -324,4 +324,4 @@ If a verify diff shows the Layout is wrong, don't "fix" the spec to match — fi
 2. **Copying stale examples from memory** — always invoke the relevant skill (`/jsonui-screen-spec`, `/jsonui-dataflow`, etc.) before writing, so you're working from the current schema.
 3. **Skipping HTML generation** — the Mermaid diagram in HTML is the human-readable proof of the `dataFlow`. Downstream agents reference it.
 4. **Batching screens** — one at a time, with confirmation, always.
-5. **Silently touching Layout JSON** — never. Route to `implement`.
+5. **Silently touching Layout JSON** — never. Route to `jsonui-implement`.

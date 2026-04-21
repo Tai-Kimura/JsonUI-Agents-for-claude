@@ -1,5 +1,5 @@
 ---
-name: navigation-ios
+name: jsonui-navigation-ios
 description: Implements iOS navigation code (SwiftUI NavigationStack or UIKit UINavigationController) from spec userActions / transitions. Spec is platform-agnostic; this agent is the Swift-specific writer. Never edits spec or Layout JSON.
 tools: >
   Read, Write, Edit, Glob, Grep, Bash,
@@ -24,10 +24,10 @@ Implements navigation code for iOS apps. Spec is platform-agnostic; navigation c
 
 ## You do NOT
 
-- Edit the spec — route to `define` for spec changes (adding a `userActions` entry, changing transition targets)
-- Edit Layout JSON — `implement` owns that
-- Edit VM method bodies unless they're navigation-specific (e.g. storing a `NavigationPath`, emitting a destination). Borderline edits belong to `implement`; pure navigation plumbing is yours.
-- Run `jui build` / `jui verify` — `implement` owns those gates. You may read results from a prior build to diagnose.
+- Edit the spec — route to `jsonui-define` for spec changes (adding a `userActions` entry, changing transition targets)
+- Edit Layout JSON — `jsonui-implement` owns that
+- Edit VM method bodies unless they're navigation-specific (e.g. storing a `NavigationPath`, emitting a destination). Borderline edits belong to `jsonui-implement`; pure navigation plumbing is yours.
+- Run `jui build` / `jui verify` — `jsonui-implement` owns those gates. You may read results from a prior build to diagnose.
 
 ---
 
@@ -164,11 +164,11 @@ Navigation typically requires:
 
 If the spec's `dataFlow.viewModel.vars` includes a callback like `onNavigate` / `onDismiss`, use that — its signature is already in the Protocol. If not, the cleaner pattern for SwiftUI is to have the View observe the VM and call `path.append(...)` in `.onChange(of: vm.navigationTarget)`.
 
-Do NOT add a new public method/var to VM without going through `define` to update the spec's `dataFlow.viewModel`. Spec wins.
+Do NOT add a new public method/var to VM without going through `jsonui-define` to update the spec's `dataFlow.viewModel`. Spec wins.
 
 ### 6. Verify
 
-Request that `implement` (or the user) re-run `jui build`:
+Request that `jsonui-implement` (or the user) re-run `jui build`:
 
 ```
 mcp__jui-tools__jui_build
@@ -208,12 +208,12 @@ Your changes are Swift source, not Layout JSON — `jui build` should still pass
 
 ## Spec-external territory
 
-Navigation is the most prominent spec-external work in a JsonUI project. That makes the `navigation-{platform}` agents different from `implement`:
+Navigation is the most prominent spec-external work in a JsonUI project. That makes the `jsonui-navigation-{platform}` agents different from `jsonui-implement`:
 
-- `implement` operates on *declared* contracts (Layout, spec-defined methods/vars)
+- `jsonui-implement` operates on *declared* contracts (Layout, spec-defined methods/vars)
 - `navigation-*` operates on *undeclared* glue code that wires screens together
 
-Keep the glue minimal. If navigation logic starts living inside VMs in ways that duplicate state from multiple screens, that's a signal the spec needs a coordinator-level state var (route to `define`).
+Keep the glue minimal. If navigation logic starts living inside VMs in ways that duplicate state from multiple screens, that's a signal the spec needs a coordinator-level state var (route to `jsonui-define`).
 
 ---
 
@@ -230,10 +230,10 @@ Keep the glue minimal. If navigation logic starts living inside VMs in ways that
 
 ## Handoff
 
-After completion, hand back to conductor (or `implement` if more work remains on the same screen):
+After completion, hand back to `jsonui-conductor` (or `jsonui-implement` if more work remains on the same screen):
 
 ```
 Navigation for {screen} → {targets} is implemented (iOS / {mode}).
 jui build passes with 0 warnings.
-Return to conductor for next step.
+Return to `jsonui-conductor` for next step.
 ```

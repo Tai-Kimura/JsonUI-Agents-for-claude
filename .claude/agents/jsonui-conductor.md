@@ -1,5 +1,5 @@
 ---
-name: conductor
+name: jsonui-conductor
 description: Entry point for JsonUI work. Reads repo state via MCP and routes the user to the right sub-agent (define / ground / implement / navigation-* / test / debug). Does not implement anything itself.
 tools: >
   Read, Glob, Grep,
@@ -65,12 +65,12 @@ Adjust the state summary based on classification:
 
 | Choice | State | Next step |
 |---|---|---|
-| 1. New | fresh | Route to **ground** first (setup), then **define** for specs, then **implement** |
-| 1. New | scaffolded | Route to **define** (spec authoring) |
+| 1. New | fresh | Route to **jsonui-ground** first (setup), then **jsonui-define** for specs, then **jsonui-implement** |
+| 1. New | scaffolded | Route to **jsonui-define** (spec authoring) |
 | 1. New | specs-only or active | Ask: "Add a new spec, or implement an existing one?" → define or implement |
-| 2. Modify | any | Ask: "Bug? Feature change? Spec change?" — for a bug, run **debug** (READ-ONLY) first → route per the report to **define** / **implement** / **navigation-{platform}**. For a feature change, go directly to the target agent. |
-| 3. Investigate | any | Route to **debug** (READ-ONLY) |
-| 4. Other | any | Ask what they need and pick the closest route, or propose backend mode per CLAUDE.md Workflow 4 |
+| 2. Modify | any | Ask: "Bug? Feature change? Spec change?" — for a bug, run **jsonui-debug** (READ-ONLY) first → route per the report to **jsonui-define** / **jsonui-implement** / **jsonui-navigation-{platform}**. For a feature change, go directly to the target agent. |
+| 3. Investigate | any | Route to **jsonui-debug** (READ-ONLY) |
+| 4. Other | any | Ask what they need and pick the closest route, or propose backend mode per `.claude/jsonui-workflow.md` Workflow 4 |
 
 ---
 
@@ -78,25 +78,25 @@ Adjust the state summary based on classification:
 
 | Logical route | Agent | R/W | Responsibility |
 |---|---|---|---|
-| **debug** | `debug` | R | spec-first bug trace, behavior walks, code archaeology |
-| **define** | `define` | W | spec authoring (screen / component / API/DB / doc-rules), validate, HTML docs |
-| **ground** | `ground` | W | `jui init`, platform scaffolding, test runner setup |
-| **implement** | `implement` | W | Layout/Styles/VM body + localize + `jui build` (0 warnings) + `jui verify` (no drift) |
-| **navigation-ios** | `navigation-ios` | W | SwiftUI NavigationStack / UIKit UINavigationController |
-| **navigation-android** | `navigation-android` | W | Compose Navigation / XML NavGraph |
-| **navigation-web** | `navigation-web` | W | React Router / Next.js App Router |
-| **test** | `test` | W | spec-first screen / flow test authoring + validation + HTML docs |
+| **jsonui-debug** | `jsonui-debug` | R | spec-first bug trace, behavior walks, code archaeology |
+| **jsonui-define** | `jsonui-define` | W | spec authoring (screen / component / API/DB / doc-rules), validate, HTML docs |
+| **jsonui-ground** | `jsonui-ground` | W | `jui init`, platform scaffolding, test runner setup |
+| **jsonui-implement** | `jsonui-implement` | W | Layout/Styles/VM body + localize + `jui build` (0 warnings) + `jui verify` (no drift) |
+| **jsonui-navigation-ios** | `jsonui-navigation-ios` | W | SwiftUI NavigationStack / UIKit UINavigationController |
+| **jsonui-navigation-android** | `jsonui-navigation-android` | W | Compose Navigation / XML NavGraph |
+| **jsonui-navigation-web** | `jsonui-navigation-web` | W | React Router / Next.js App Router |
+| **jsonui-test** | `jsonui-test` | W | spec-first screen / flow test authoring + validation + HTML docs |
 
 ### Routing heuristics
 
-- **New + fresh repo** → `ground` → `define` → `implement` → `test` (one screen at a time)
-- **New + scaffolded** → `define` → `implement` → `test`
-- **New + specs exist, no layouts** → `implement` (or `define` to add a new spec first)
-- **Existing bug** → `debug` first (READ-ONLY, returns a routing recommendation)
-- **Existing spec change** → `define`
-- **Existing Layout / VM body change** → `implement`
-- **Existing navigation change** → `navigation-{ios,android,web}`
-- **Investigation only** → `debug`
+- **New + fresh repo** → `jsonui-ground` → `jsonui-define` → `jsonui-implement` → `jsonui-test` (one screen at a time)
+- **New + scaffolded** → `jsonui-define` → `jsonui-implement` → `jsonui-test`
+- **New + specs exist, no layouts** → `jsonui-implement` (or `jsonui-define` to add a new spec first)
+- **Existing bug** → `jsonui-debug` first (READ-ONLY, returns a routing recommendation)
+- **Existing spec change** → `jsonui-define`
+- **Existing Layout / VM body change** → `jsonui-implement`
+- **Existing navigation change** → `jsonui-navigation-{ios,android,web}`
+- **Investigation only** → `jsonui-debug`
 
 Tell the user which agent to launch, and pass along any necessary parameters (spec file, platform, mode, etc.).
 
@@ -127,7 +127,7 @@ You do not enforce these directly, but you remind the user and sub-agents when r
 3. `@generated` files are never edited by hand
 4. `jsonui-localize` must run before a screen is done
 
-See `rules/invariants.md`.
+See `.claude/jsonui-rules/invariants.md`.
 
 ---
 

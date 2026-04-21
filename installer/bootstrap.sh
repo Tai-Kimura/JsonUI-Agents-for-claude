@@ -6,7 +6,7 @@
 #
 #   1. jsonui-cli        -> $HOME/.jsonui-cli/           (sjui / kjui / rjui / jui / jsonui-test / jsonui-doc)
 #   2. jsonui-mcp-server -> $HOME/.jsonui-mcp-server/    (29 MCP tools, registered in ~/.claude.json)
-#   3. Agents + skills   -> ./.claude/                   (project-local: agents / skills / rules + CLAUDE.md)
+#   3. Agents + skills   -> ./.claude/                   (project-local: agents / skills / rules / SessionStart hook / /jsonui command — your CLAUDE.md is NOT touched)
 #
 # The CLI location matches jsonui-mcp-server's 3rd fallback layer, so the MCP
 # auto-picks up the fresh attribute_definitions.json / component_metadata.json
@@ -155,6 +155,9 @@ echo -e "  ${BOLD}1. Add the CLI tools to your PATH${NC} (once):"
 echo ""
 echo -e "     ${YELLOW}cat >> $SHELL_RC <<'EOF'"
 echo -e "# JsonUI CLI Tools"
+echo -e "export PATH=\"\$HOME/.jsonui-cli/jui_tools/bin:\$PATH\""
+echo -e "export PATH=\"\$HOME/.jsonui-cli/document_tools:\$PATH\""
+echo -e "export PATH=\"\$HOME/.jsonui-cli/test_tools:\$PATH\""
 echo -e "export PATH=\"\$HOME/.jsonui-cli/sjui_tools/bin:\$PATH\""
 echo -e "export PATH=\"\$HOME/.jsonui-cli/kjui_tools/bin:\$PATH\""
 echo -e "export PATH=\"\$HOME/.jsonui-cli/rjui_tools/bin:\$PATH\""
@@ -165,9 +168,9 @@ echo ""
 echo -e "  ${BOLD}2. Restart Claude Code${NC} so it picks up the new MCP server"
 echo -e "     (\`jui-tools\` was registered in ~/.claude.json)."
 echo ""
-echo -e "  ${BOLD}3. In Claude Code${NC}, say:"
+echo -e "  ${BOLD}3. Start a new Claude Code session${NC} — the workflow menu appears"
+echo -e "     automatically via the SessionStart hook. Or invoke ${BLUE}/jsonui${NC}"
+echo -e "     manually at any time."
 echo ""
-echo -e "     ${BLUE}Read CLAUDE.md${NC}"
-echo ""
-echo "   CLAUDE.md will ask which workflow you want and route to the right agent."
+echo -e "     Your CLAUDE.md is never touched — everything lives under ${BLUE}.claude/${NC}."
 echo ""

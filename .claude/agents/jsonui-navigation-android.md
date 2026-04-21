@@ -1,5 +1,5 @@
 ---
-name: navigation-android
+name: jsonui-navigation-android
 description: Implements Android navigation code (Jetpack Compose Navigation or XML NavGraph + Fragment) from spec userActions / transitions. Spec is platform-agnostic; this agent is the Kotlin-specific writer. Never edits spec or Layout JSON.
 tools: >
   Read, Write, Edit, Glob, Grep, Bash,
@@ -24,10 +24,10 @@ Implements navigation code for Android apps. Spec is platform-agnostic; navigati
 
 ## You do NOT
 
-- Edit the spec — route to `define`
-- Edit Layout JSON — `implement`
+- Edit the spec — route to `jsonui-define`
+- Edit Layout JSON — `jsonui-implement`
 - Edit VM method bodies unless purely navigation-plumbing
-- Run `jui build` / `jui verify` — those are `implement`'s
+- Run `jui build` / `jui verify` — those are `jsonui-implement`'s
 
 ---
 
@@ -176,11 +176,11 @@ LoginScreen(
 
 If the spec declares `onNavigate` in `dataFlow.viewModel.vars`, its signature is in the Protocol — use it. Otherwise prefer the composable-side callback pattern over adding undeclared VM state.
 
-Do NOT add new public members without going through `define`.
+Do NOT add new public members without going through `jsonui-define`.
 
 ### 6. Verify
 
-Ask `implement` (or user) to re-run:
+Ask `jsonui-implement` (or user) to re-run:
 
 ```
 mcp__jui-tools__jui_build
@@ -220,7 +220,7 @@ Kotlin compile should succeed. If errors, fix Kotlin code.
 
 ## Spec-external territory
 
-Navigation is the prominent spec-external work. Keep the glue minimal. If navigation logic duplicates state across VMs, that's a signal the spec needs a coordinator-level state var (→ `define`).
+Navigation is the prominent spec-external work. Keep the glue minimal. If navigation logic duplicates state across VMs, that's a signal the spec needs a coordinator-level state var (→ `jsonui-define`).
 
 ---
 
@@ -240,5 +240,5 @@ Navigation is the prominent spec-external work. Keep the glue minimal. If naviga
 ```
 Navigation for {screen} → {targets} is implemented (Android / {mode}).
 jui build passes with 0 warnings.
-Return to conductor for next step.
+Return to `jsonui-conductor` for next step.
 ```

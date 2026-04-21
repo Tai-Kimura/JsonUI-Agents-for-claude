@@ -1,5 +1,5 @@
 ---
-name: navigation-web
+name: jsonui-navigation-web
 description: Implements Web navigation code (React Router or Next.js App Router) from spec userActions / transitions. Spec is platform-agnostic; this agent is the TypeScript-specific writer. Never edits spec or Layout JSON.
 tools: >
   Read, Write, Edit, Glob, Grep, Bash,
@@ -24,10 +24,10 @@ Implements navigation code for Web apps (React or Next.js). Spec is platform-agn
 
 ## You do NOT
 
-- Edit the spec — route to `define`
-- Edit Layout JSON — `implement`
+- Edit the spec — route to `jsonui-define`
+- Edit Layout JSON — `jsonui-implement`
 - Edit VM method bodies unless purely navigation-plumbing
-- Run `jui build` / `jui verify` — `implement`'s
+- Run `jui build` / `jui verify` — `jsonui-implement`'s
 
 ---
 
@@ -190,11 +190,11 @@ Or expose a callback:
 
 If the spec's `dataFlow.viewModel.vars` declares `onNavigate`, its signature is in `ViewModelBase` — use it. Otherwise prefer component-side navigation over adding undeclared VM state.
 
-Do NOT add new public members without `define`.
+Do NOT add new public members without `jsonui-define`.
 
 ### 6. Verify
 
-Ask `implement` (or user) to re-run:
+Ask `jsonui-implement` (or user) to re-run:
 
 ```
 mcp__jui-tools__jui_build
@@ -232,7 +232,7 @@ For Next.js, if a new route was created, the dev server (`npm run dev`) should p
 
 ## Spec-external territory
 
-Same as iOS/Android: keep navigation glue minimal. If nav logic starts duplicating state across VMs, that's a signal for coordinator-level state in the spec (→ `define`).
+Same as iOS/Android: keep navigation glue minimal. If nav logic starts duplicating state across VMs, that's a signal for coordinator-level state in the spec (→ `jsonui-define`).
 
 ---
 
@@ -253,5 +253,5 @@ Same as iOS/Android: keep navigation glue minimal. If nav logic starts duplicati
 ```
 Navigation for {screen} → {targets} is implemented (Web / {mode}).
 jui build passes with 0 warnings.
-Return to conductor for next step.
+Return to `jsonui-conductor` for next step.
 ```
