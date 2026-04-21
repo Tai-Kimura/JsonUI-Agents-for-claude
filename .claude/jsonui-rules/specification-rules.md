@@ -59,6 +59,44 @@ Agent: "For email validation, I need to confirm:
 - Fixing misinterpretations later is expensive
 - The user knows their requirements better than we do
 
+## Text and String References
+
+In Layout JSON, a text-bearing attribute (`text`, `hint`, `summary`, `copyLabel`,
+etc.) takes one of:
+
+- **Literal text** — e.g. `"text": "Hello World"`. `jui build` auto-extracts
+  the literal into `strings.json` and (on Swift/Kotlin/Web) rewrites the call
+  site to `StringManager.*` lookups.
+- **snake_case key** — e.g. `"text": "learn_installation_headline"`. Resolved
+  by `StringManagerHelper` against the loaded `strings.json`. The key can be
+  bare (matches any file in `strings.json`) or prefixed with the file name
+  (`"<file>_<key>"`).
+- **Data binding** — e.g. `"text": "@{currentLanguage}"`. Bound to a
+  ViewModel property with the `@{...}` syntax.
+
+> **⛔ Never use `"@string/<key>"`.** That is Android XML resource syntax and
+> is only handled by the legacy `kjui_tools/lib/xml/` path — not by SwiftUI,
+> Compose, React, or the Dynamic runtimes. It will render as the literal
+> string `@string/<key>` on every other platform.
+
+## Color References
+
+Color-valued attributes (`background`, `fontColor`, `borderColor`, `tintColor`,
+…) take one of:
+
+- **Semantic key** — e.g. `"background": "primary_surface"`. Resolved against
+  `{layouts_directory}/Resources/colors.json`. **Preferred for new code** —
+  gives the value a name, keeps the hex out of the layout, and makes later
+  theming changes one-file edits.
+- **Hex literal** — e.g. `"background": "#F9FAFB"`. `jui build` auto-extracts
+  it into `colors.json` with a generated name (e.g. `gray_light_1`) and
+  rewrites the layout. Functional but produces machine-named colors.
+- **Binding** — e.g. `"background": "@{themeAccent}"` (runtime-resolved).
+
+> When writing a new layout, reach for a semantic key first. Hex is the
+> fallback when no name applies yet — build will still clean up afterwards,
+> but the generated names are not as readable as ones you'd pick yourself.
+
 ## Collection: `lazy: true` (default) vs `lazy: false`
 
 `Collection` components default to lazy/virtualized containers

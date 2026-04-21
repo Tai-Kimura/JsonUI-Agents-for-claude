@@ -109,7 +109,7 @@ Use MCP for authoritative references instead of guessing:
 
 #### Extracting styles
 
-If you use the same style block 3+ times, extract it to `docs/screens/layouts/Styles/{name}_style.json` and reference by name. `jui build` distributes `Styles/` alongside Layouts.
+If you use the same style block 3+ times, extract it to `{styles_directory}/{name}_style.json` (default: `docs/screens/styles/{name}_style.json` — **sibling to `layouts/`**, NOT under it) and reference by name. `jui build` distributes `Styles/` alongside Layouts on every platform. See `rules/file-locations.md`.
 
 Invoke `/jsonui-layout` skill for authoring examples when needed; write the JSON yourself with `Edit`.
 
