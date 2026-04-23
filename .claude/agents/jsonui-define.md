@@ -265,19 +265,21 @@ mcp__jui-tools__doc_generate_component with file: "codeblock.component.json"
 
 ### 4.5 Handoff: generate the converter
 
-Converter scaffolding is owned by `jsonui-implement` (it runs the jui / sjui / kjui / rjui toolchain), not by you. Hand off with the exact command:
+Converter scaffolding is owned by `jsonui-implement` (it runs the jui / sjui / kjui / rjui toolchain), not by you.
+
+**In normal flow you don't need to invoke anything.** `jui build` auto-runs `jui g converter --all --skip-existing` before the per-platform build, so a fresh `.component.json` picks up scaffold on the next `jui build`. Existing converter files are left untouched (the generator honors `JUI_SKIP_EXISTING=1`).
+
+Explicit invocations are still available if `jsonui-implement` wants to force a single spec or scaffold without a build:
 
 ```
-jui g converter --from codeblock.component.json
-```
-
-or, for a batch:
-
-```
-jui g converter --all
+jui g converter --from codeblock.component.json   # single spec (prompts on overwrite)
+jui g converter --all                             # every spec (prompts on overwrite)
+jui g converter --all --skip-existing             # what `jui build` invokes internally
 ```
 
 **Do not scaffold with `--attributes` by hand.** The whole point of the spec-driven path is that the attribute list stays in lockstep with the component contract; passing attrs by hand defeats that. `generate_cmd.py::_cmd_generate_converter` reads `props.items[]` → `--attributes` and `slots.items[]` non-empty → `--container`.
+
+**When the spec CHANGES** (props added / renamed / retyped): the build-time auto-run will **not** regenerate an existing converter file. Route back to `jsonui-implement` to either delete the stale converter (then let the next build regenerate) or invoke `jui g converter --from <spec>` explicitly and answer `y` to the overwrite prompt. Do not edit the converter by hand.
 
 ### 4.6 Register in `.jsonui-doc-rules.json` (doc-site / non-JsonUI projects)
 

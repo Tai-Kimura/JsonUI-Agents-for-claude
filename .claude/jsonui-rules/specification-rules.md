@@ -578,9 +578,25 @@ The framework has spec-driven scaffolding. Do NOT pass `--attributes` by
 hand; drive it from the spec so the attribute list and types stay in sync
 with the component's contract.
 
+**In most cases you don't need to run this by hand — `jui build` does it
+automatically.** Every build walks `docs/components/json/*.component.json`
+and runs `jui g converter --from` per spec with `--skip-existing` set, so:
+
+- Missing converters get scaffolded on first build after you add a spec.
+- Already-present converter files are **left untouched** (no overwrite
+  prompt, no regeneration). That's the skip-existing contract.
+- Props/slots changes are NOT picked up by this auto-run — the
+  auto-generator treats "file exists" as "done", period. If the component
+  contract changed, delete the platform converter file by hand OR run
+  `jui g converter --from <spec>` manually (which still prompts interactively
+  when a file exists) and answer `y`.
+
+For explicit / manual runs:
+
 ```bash
 jui g converter --from codeblock.component.json   # single spec
 jui g converter --all                             # every component spec
+jui g converter --all --skip-existing             # same as what `jui build` does
 ```
 
 Under the hood (`generate_cmd.py::_cmd_generate_converter`):
@@ -588,6 +604,11 @@ Under the hood (`generate_cmd.py::_cmd_generate_converter`):
 - Reads `slots.items[]` non-empty → `--container`, empty → `--no-container`
 - Calls `sjui g converter` / `kjui g converter` / `rjui g converter` with
   the same args per platform listed in `jui.config.json::platforms`
+- When `--skip-existing` is set (or `jui build` invokes it): exports
+  `JUI_SKIP_EXISTING=1` to each platform subprocess. The per-platform
+  generators read that env var and return silently if the converter /
+  binding-handler / attribute-definition file already exists — no stdin
+  prompt, no overwrite.
 
 The direct form `jui g converter CodeBlock --attributes …` exists but is
 only for one-off prototyping. **Production code always uses `--from` or

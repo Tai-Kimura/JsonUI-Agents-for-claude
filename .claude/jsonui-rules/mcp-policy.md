@@ -15,8 +15,8 @@ JsonUI agents call the `jsonui-mcp-server` (the `jui-tools` MCP) to interact wit
 | Create spec / component template | `mcp__jui-tools__doc_init_spec`, `doc_init_component` | — |
 | Generate screen scaffold from spec | `mcp__jui-tools__jui_generate_screen` | `jui g screen` |
 | Generate Layout JSON + VM stubs | `mcp__jui-tools__jui_generate_project` | — |
-| Generate custom converter | `mcp__jui-tools__jui_generate_converter` | `jui g converter` |
-| Build + distribute | `mcp__jui-tools__jui_build` | — |
+| Generate custom converter | `mcp__jui-tools__jui_generate_converter` | `jui g converter` (incl. `--skip-existing`) |
+| Build + distribute | `mcp__jui-tools__jui_build` (auto-runs converter scaffolding with skip-existing) | — |
 | Verify spec ↔ layout | `mcp__jui-tools__jui_verify` | — |
 | Migrate platform layouts | `mcp__jui-tools__jui_migrate_layouts` | `jui migrate-layouts` |
 | Sync project-local platform tools with ~/.jsonui-cli/ | `mcp__jui-tools__jui_sync_tool` | `jui sync_tool` |

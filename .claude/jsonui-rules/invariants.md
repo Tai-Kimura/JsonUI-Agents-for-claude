@@ -17,6 +17,14 @@ jui build
 # Warnings: 0 ← required
 ```
 
+**What `jui build` does in order** (relevant for diagnosing failures):
+1. Distributes shared `layouts/` / `styles/` / `resources/` / `images/` to each platform.
+2. Runs `jui g converter --all --skip-existing` — scaffolds a converter for every `docs/components/json/*.component.json` on every active platform. **Existing converter files are left untouched**; only missing ones get created.
+3. Syncs ViewModel Protocol/Base files from spec + Impl markers (hard-errors on drift).
+4. Runs `sjui build` / `kjui build` / `rjui build` per active platform.
+
+If a custom component's `type` appears in a Layout JSON but the matching converter never got scaffolded, step 2 is the one that should have handled it — check that `docs/components/json/<name>.component.json` exists and passes `doc_validate_component`.
+
 ---
 
 ## 2. `jui verify --fail-on-diff` must pass with **no drift**
