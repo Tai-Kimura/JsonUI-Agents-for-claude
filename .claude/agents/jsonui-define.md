@@ -155,6 +155,21 @@ mcp__jui-tools__doc_validate_spec with file: "login_screen.spec.json"
 
 Fix any violations. Do not proceed with violations still reported.
 
+### 1.4.1 🔴 `dataFlow` completeness gate (mandatory)
+
+`doc_validate_spec` does NOT catch empty `dataFlow` — it's structurally optional. You catch it. Before moving to user confirmation, verify all of the following:
+
+- [ ] If the screen has **any** user action (tap, submit, fetch, toggle that the VM owns, async work), `dataFlow.viewModel.methods` is non-empty.
+- [ ] Every `stateManagement.eventHandlers` entry that reaches the VM (not a pure-UI toggle) has a corresponding `dataFlow.viewModel.methods` entry.
+- [ ] If the screen has any observable state (loading flag, fetched data, derived display strings the VM computes), `dataFlow.viewModel.vars` is non-empty.
+- [ ] If the screen reads/writes **anything outside the VM** (API, disk, keychain, cache, platform SDK), `dataFlow.repositories[]` has at least one entry with `methods[]` and `endpoint` (or SDK description in `description`).
+- [ ] Every `repositories[*].methods[*].endpoint` has a matching entry in `dataFlow.apiEndpoints[]`.
+- [ ] If a single user action orchestrates multiple repos or involves multi-step validation, a `dataFlow.useCases[]` entry exists.
+
+If any of the above is incomplete because the user hasn't told you, **STOP and ask** — do not guess method names, repo names, or endpoint shapes. Use the question template in `rules/specification-rules.md` → "How to ask the user when they didn't volunteer this info".
+
+If the screen is genuinely pure-static display (no interaction, no dynamic data), write `dataFlow: { viewModel: { methods: [], vars: [] } }` **explicitly**. Do not omit the `dataFlow` key entirely.
+
 ### 1.5 Show to user + explicit confirmation
 
 Print the spec summary (metadata + section counts, a few excerpts). Ask:
@@ -425,3 +440,6 @@ If a verify diff shows the Layout is wrong, don't "fix" the spec to match — fi
 3. **Skipping HTML generation** — the Mermaid diagram in HTML is the human-readable proof of the `dataFlow`. Downstream agents reference it.
 4. **Batching screens** — one at a time, with confirmation, always.
 5. **Silently touching Layout JSON** — never. Route to `jsonui-implement`.
+6. **Empty / missing `dataFlow` on an interactive screen** — agents have shipped specs without `dataFlow.viewModel`, `dataFlow.repositories`, or `dataFlow.useCases` even when the screen clearly needs them. `doc_validate_spec` will NOT catch this; the `jui build` Protocol ends up empty and humans hand-patch the VM. Always run the completeness gate in step 1.4.1 and invoke `/jsonui-dataflow` for the authoring guide — do NOT author `dataFlow` from memory.
+7. **Writing an eventHandler without its matching viewModel method** — if an eventHandler reaches the VM (not a pure-UI toggle), the spec needs BOTH the eventHandler entry AND a `dataFlow.viewModel.methods[]` entry. Missing the VM method means the VM Protocol won't expose it, and hand-written VM code has to add the method out of band.
+8. **Declaring API calls in `viewModel.methods` without a Repository** — ViewModels don't call APIs directly. Any VM method that fetches / loads / saves / deletes needs a corresponding `dataFlow.repositories[]` entry that actually owns the call.
