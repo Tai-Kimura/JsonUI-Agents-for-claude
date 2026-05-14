@@ -72,6 +72,10 @@ Adjust the state summary based on classification:
 | 3. Investigate | any | Route to **jsonui-debug** (READ-ONLY) |
 | 4. Other | any | Ask what they need and pick the closest route, or propose backend mode per `.claude/jsonui-workflow.md` Workflow 4 |
 
+### Note on `Embed` (cross-screen embedding)
+
+If the user is adding an `Embed`-based screen (tablet master/detail, dashboard with embedded panes), there is **no special routing**. The parent screen is authored by `jsonui-define` (declaring `structure.embeds[]`) and implemented by `jsonui-implement` like any other screen. The embedded screen requires no changes and may already exist. See `rules/specification-rules.md` (5) Section.
+
 ---
 
 ## Agent routing table
