@@ -15,7 +15,10 @@ tools: >
   mcp__jui-tools__lookup_component,
   mcp__jui-tools__lookup_attribute,
   mcp__jui-tools__search_components,
-  mcp__jui-tools__get_platform_mapping
+  mcp__jui-tools__get_platform_mapping,
+  mcp__jui-tools__list_api_specs,
+  mcp__jui-tools__list_api_models,
+  mcp__jui-tools__preview_api_model_sync
 ---
 
 # Debug Agent
@@ -70,7 +73,7 @@ Map the user's description to a spec section:
 | Button tap does nothing | `stateManagement.eventHandlers` + `dataFlow.viewModel.methods` |
 | Data missing / stale | `dataFlow.viewModel.vars` + `dataFlow.repositories` / `useCases` + binding |
 | Visibility not toggling | `stateManagement.displayLogic` + Layout `visibility` |
-| API error / wrong response | `dataFlow.apiEndpoints` + `repositories[].methods[].endpoint` |
+| API error / wrong response | swagger → DTO → Domain → Repository → VM trace (§A3.1) |
 | Navigation stuck / wrong back behavior | `userActions` / `transitions` — also check Navigation code outside the spec |
 | Crash | above + type alignment in `.jsonui-type-map.json` |
 | Embedded screen does not see parent VM data | `structure.embeds[].params` — embeds receive only what is explicitly passed. Expected per design (`rules/design-philosophy.md` "VM isolation across embedded screens"); not a bug. |
@@ -80,6 +83,18 @@ Map the user's description to a spec section:
 | Symptom not in the spec (infra, runtime race, memory) | **spec-external** — confirm there's no spec ↔ impl drift first, then go to impl |
 
 If the symptom doesn't fit cleanly, pick the closest and note the assumption in the report.
+
+### A3.1 API trace path — swagger → DTO → Domain → Repository → VM
+
+When the symptom is API-related (wrong field, decode failure, missing data, stale value), walk the pipeline in order:
+
+1. **Swagger schema** — `mcp__jui-tools__list_api_specs` to find the file, then `Read` the schema definition. Confirm the wire format matches what the backend actually sends. Check `has_one_of` / `has_multi_file_ref` flags — both would have halted `jui build`, so symptom may be a stale DTO from before they appeared.
+2. **DTO emission** — `Model/Generated/{Name}Dto.swift` (or Android/Web equivalents under `generated/`). Verify the `CodingKeys` / `@Json(name=...)` / wire field names line up with the swagger. If they don't, `jui build` hasn't been re-run after a swagger change.
+3. **Domain proxy** — `Model/{Name}.swift` (or `.kt`/`.ts`). This is user-authored. Check the `var x: Y { dto.field }` style accessors for type conversion bugs (e.g. `ISO8601DateFormatter().date(from: dto.createdAt)` returning nil for an unexpected format).
+4. **Repository body** — confirm it decodes the DTO and wraps into the Domain (`return User(dto: ...)`). A common bug is returning the raw DTO when the spec declared `returnType: "User"`.
+5. **ViewModel state** — does the VM correctly call the Repository and propagate the Domain through `@Published` / `StateFlow` / `useState`?
+
+`mcp__jui-tools__list_api_models` shows which schemas have DTOs / Domain scaffolds on disk and flags orphans (DTO exists but swagger entry is gone). `mcp__jui-tools__preview_api_model_sync` shows what the next `jui build` would emit — useful for confirming a fix without writing.
 
 ### A3. Read the spec
 

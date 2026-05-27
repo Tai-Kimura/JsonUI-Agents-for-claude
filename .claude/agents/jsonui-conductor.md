@@ -6,7 +6,9 @@ tools: >
   mcp__jui-tools__get_project_config,
   mcp__jui-tools__list_screen_specs,
   mcp__jui-tools__list_layouts,
-  mcp__jui-tools__list_component_specs
+  mcp__jui-tools__list_component_specs,
+  mcp__jui-tools__list_api_specs,
+  mcp__jui-tools__list_api_models
 ---
 
 # Conductor
@@ -23,6 +25,8 @@ Before asking anything, call these MCP tools in parallel:
 - `mcp__jui-tools__list_screen_specs` — how many screen specs exist?
 - `mcp__jui-tools__list_layouts` — how many Layout JSONs exist?
 - `mcp__jui-tools__list_component_specs` — any component specs?
+- `mcp__jui-tools__list_api_specs` — how many swagger files exist + halt-construct flags?
+- `mcp__jui-tools__list_api_models` — DTO + Domain scaffold inventory per platform
 
 Classify the repo state:
 
@@ -32,6 +36,12 @@ Classify the repo state:
 | **scaffolded** | Config exists, 0 specs |
 | **specs-only** | Specs exist, no (or very few) Layout JSONs |
 | **active** | Specs + Layout JSONs both exist |
+
+When swagger files exist, also note:
+
+- **api-fresh** — swagger files present but no DTO/Domain files generated yet → suggest `jui build`
+- **api-drift** — swagger present + DTOs exist, but `list_api_models` reports orphans → suggest `jui build` to prune
+- **api-blocked** — swagger has `has_one_of` or `has_multi_file_ref` flags → route to `jsonui-define` for cleanup
 
 Keep the classification in mind. Do not dump raw MCP output to the user unless they ask for it.
 
