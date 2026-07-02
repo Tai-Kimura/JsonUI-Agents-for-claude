@@ -121,7 +121,7 @@ Path resolution per platform:
       },
       "android": {
         "model_package": "model",        // bare → prepended with kjui's package_name
-        // (or "com.tanosys.whisky_find_agent.model" — full FQN if dot is present)
+        // (or "com.example.app.model" — full FQN if dot is present)
         "dto_subpackage": "generated",   // under model_package
         "serializer": "moshi"            // "moshi" | "kotlinx" | "none"
       },
