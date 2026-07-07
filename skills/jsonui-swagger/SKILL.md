@@ -70,9 +70,26 @@ cat {skill_directory}/examples/property-types.json
 ## File Types
 
 ### DB Model Files (Schema-Only)
-- Location: `docs/db/{table_name}.json`
+- Location: `docs/db/{table_name}.json` (single-database projects)
 - One file per table
 - `paths` must be empty `{}`
+
+**Multi-database projects** — when the project uses more than one database
+(e.g. an RDB plus Firestore), use one directory per database:
+
+- Location: `docs/db/{db_name}/{table_name}.json`
+- Declare each database in `jui.config.json`:
+  `"databases": { "main": { "dialect": "mysql", "version": "8.0" }, "firestore": { "dialect": "firestore" } }`
+- Each database gets its own HTML section and its own ER diagram
+  (`docs/html/db/{db_name}/erd.html`); ERD groups never mix databases
+- Cross-database references are NOT foreign keys — annotate them with
+  `x-external-ref: "{db}.{table}.{column}"` (see db-extensions.json)
+- Flat `docs/db/*.json` continues to work as a single default database
+
+**Composite indexes** — never describe multi-column indexes or UNIQUE
+constraints as free text in `x-custom-validations`; declare them as
+first-class `x-indexes` at the schema level (see db-extensions.json) so
+`jsonui-doc check` can machine-verify them against the real database.
 
 ### API Specification Files
 - Location: `docs/api/{api_name}_swagger.json`
@@ -107,3 +124,26 @@ API specification files (`docs/api/*.json`) are not just documentation — `jui 
 - **`deprecated: true`** — emits `@available(*, deprecated)` / `@Deprecated` / JSDoc `@deprecated` so IDE strikethroughs surface in app code automatically.
 
 After authoring or editing a swagger file, the user can verify the codegen impact with `mcp__jui-tools__preview_api_model_sync` (dry-run, no writes) before running `jui build`.
+
+## Contract checks (`jsonui-doc check`)
+
+Projects can declare contract checks in `jui.config.json` (top-level
+`"checks"` array) that verify the docs against the real implementation:
+
+- `builtin:openapi-diff` — diffs `docs/api/*.json` against the OpenAPI the
+  backend itself exports (e.g. FastAPI). Catches endpoint / field / enum /
+  nullability drift between the docs (= DTO generation source) and the
+  server. This compares the implementation's *declared* schema, not live
+  responses.
+- `builtin:db-schema` — compares `docs/db/` against the real database
+  schema (connection via `JSONUI_CHECK_DB_URL_{NAME}` env var, never in
+  config). Type comparison is family-lenient by default; add `x-db-type`
+  to a column for exact-match.
+
+`check` is an explicit command that may execute project-declared code —
+it never runs as part of `generate html`. Results are saved as
+`docs/**/.check-report.json` (do NOT commit; add to .gitignore) and
+`generate html` renders them as a "Contract Check" page when present.
+What openapi-diff cannot catch (live response shapes, auth flows) belongs
+to a full-checker plugin (`"type": "checker"` — a project command that
+emits the result JSON contract).
