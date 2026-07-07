@@ -47,7 +47,7 @@
   },
 
   "x-foreign-key": {
-    "_description": "Foreign key reference (object or string format)",
+    "_description": "Foreign key reference (object or string format). Optional 'enforced': false declares a LOGICAL reference — the relation is documented (ERD edge, reference info) but the database is NOT expected to hold a FOREIGN KEY constraint, and `jsonui-doc check` skips the constraint comparison for that column. Omitted = true (a real DB constraint is expected). Composite FKs in the DB are matched positionally against per-column declarations.",
     "example_object": {
       "user_id": {
         "type": "integer",
@@ -63,6 +63,17 @@
         "type": "integer",
         "description": "User ID",
         "x-foreign-key": "users.id"
+      }
+    },
+    "example_logical_reference": {
+      "order_id": {
+        "type": "integer",
+        "description": "Audit-log subject; rows must survive hard-deletes of the referenced order",
+        "x-foreign-key": {
+          "table": "orders",
+          "column": "id",
+          "enforced": false
+        }
       }
     }
   },
