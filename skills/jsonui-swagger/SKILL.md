@@ -91,6 +91,16 @@ constraints as free text in `x-custom-validations`; declare them as
 first-class `x-indexes` at the schema level (see db-extensions.json) so
 `jsonui-doc check` can machine-verify them against the real database.
 
+**Logical (unenforced) foreign keys** — when a project intentionally does
+NOT create a DB constraint for a reference (audit logs that must survive
+hard-deletes, dangling-tolerated read paths, re-computable aggregates),
+keep the relation documented but declare
+`x-foreign-key: { "table": ..., "column": ..., "enforced": false }`.
+The ERD edge and reference info are preserved; `jsonui-doc check` skips
+the constraint comparison. Never delete the `x-foreign-key` just to
+silence the checker — that loses the ERD. Omitted `enforced` means a real
+FOREIGN KEY constraint is expected in the database.
+
 ### API Specification Files
 - Location: `docs/api/{api_name}_swagger.json`
 - Use `tags` to organize endpoints within a single file
