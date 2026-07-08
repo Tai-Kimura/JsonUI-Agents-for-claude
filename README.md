@@ -163,7 +163,8 @@ See [`docs/plans/agent-redesign.md`](docs/plans/agent-redesign.md) for the full 
 - [jsonui-helper](https://github.com/Tai-Kimura/jsonui-helper) — VSCode editing support (Layout JSON, Screen Spec, Component Spec)
 
 ### Test runners
-- [jsonui-test-runner](https://github.com/Tai-Kimura/jsonui-test-runner) — CLI + HTML doc generator
+- [jsonui-test-runner](https://github.com/Tai-Kimura/jsonui-test-runner) — test schemas + platform drivers + examples (execution engine)
+- [jsonui-cli](https://github.com/Tai-Kimura/jsonui-cli) — the `jsonui-test` CLI (validate / generate / report / mock) lives in `test_tools/`
 - [jsonui-test-runner-ios](https://github.com/Tai-Kimura/jsonui-test-runner-ios) — XCUITest driver
 - [jsonui-test-runner-android](https://github.com/Tai-Kimura/jsonui-test-runner-android) — UIAutomator driver
 - [jsonui-test-runner-web](https://github.com/Tai-Kimura/jsonui-test-runner-web) — Playwright driver
