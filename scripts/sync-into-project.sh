@@ -12,7 +12,8 @@
 #   ]}]}
 #
 # Scope: ONLY what this repo owns — agents/, jsonui-rules/, commands/,
-# jsonui-workflow.md. Never touches the consumer's settings*.json, skills/,
+# jsonui-workflow.md, plus ALREADY-INSTALLED skills. Never touches the
+# consumer's settings*.json,
 # or anything else under .claude/.
 #
 # Fail-soft by design: a sync problem must never break a session, so all
@@ -20,7 +21,8 @@
 
 set -u
 
-SRC="$(cd "$(dirname "$0")/.." 2>/dev/null && pwd)/.claude"
+REPO_ROOT="$(cd "$(dirname "$0")/.." 2>/dev/null && pwd)"
+SRC="$REPO_ROOT/.claude"
 TARGET="${1:-}"
 
 warn() { echo "[jsonui-agents sync] $*" >&2; }
@@ -55,9 +57,34 @@ sync_dir() {
   [[ -n "$out" ]] && CHANGED=1
 }
 
+# Skills are updated but never ADDED or REMOVED.
+#
+# They live outside .claude/ in this repo and each consumer chooses which ones
+# to install (install.sh downloads a subset), so a plain `rsync --delete` would
+# both force skills onto projects that never wanted them and delete any the
+# consumer authored. Updating in place is the only safe automatic behaviour —
+# and it has to be automatic, because skills were previously excluded outright
+# and so silently went stale on every consumer until someone re-ran install.sh.
+sync_existing_skills() {
+  local src_skills="$REPO_ROOT/skills"
+  local dst_skills="$DST/skills"
+  [[ -d "$src_skills" && -d "$dst_skills" ]] || return 0
+  local skill name out
+  for skill in "$src_skills"/*/; do
+    name="$(basename "$skill")"
+    [[ -d "$dst_skills/$name" ]] || continue   # not installed here — leave alone
+    out=$(rsync -a --itemize-changes "$skill" "$dst_skills/$name/" 2>&1) || {
+      warn "rsync skills/$name failed: $out"
+      continue
+    }
+    [[ -n "$out" ]] && CHANGED=1
+  done
+}
+
 sync_dir agents
 sync_dir jsonui-rules
 sync_dir commands
+sync_existing_skills
 if [[ -f "$SRC/jsonui-workflow.md" ]] && ! cmp -s "$SRC/jsonui-workflow.md" "$DST/jsonui-workflow.md" 2>/dev/null; then
   cp "$SRC/jsonui-workflow.md" "$DST/jsonui-workflow.md" 2>/dev/null || warn "copy jsonui-workflow.md failed"
   CHANGED=1
