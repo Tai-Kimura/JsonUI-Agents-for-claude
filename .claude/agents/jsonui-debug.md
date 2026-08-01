@@ -76,7 +76,7 @@ Map the user's description to a spec section:
 | API error / wrong response | swagger → DTO → Domain → Repository → VM trace (§A3.1) |
 | Navigation stuck / wrong back behavior | `userActions` / `transitions` — also check Navigation code outside the spec |
 | Crash | above + type alignment in `.jsonui-type-map.json` |
-| Embedded screen does not see parent VM data | `structure.embeds[].params` — embeds receive only what is explicitly passed. Expected per design (`rules/design-philosophy.md` "VM isolation across embedded screens"); not a bug. |
+| Embedded screen does not see parent VM data | `structure.embeds[].params` — embeds receive only what is explicitly passed. Expected per design (`.claude/jsonui-rules/design-philosophy.md` "VM isolation across embedded screens"); not a bug. |
 | Same screen embedded twice shares state | Layout JSON `Embed.id` uniqueness + Android `EmbedContainer.remember(id)` — id collision causes shared VM. Confirm IDs are unique within the parent layout. |
 | Embed child navigate() does the wrong thing | `Embed.navigationMode` in v1 is `delegate` only — child `navigate` drives parent NavController/Router. `pop` / `dismiss` / `navigateBack` are bounded at the embed (do not close it). |
 | Embed event handler not firing on parent | `structure.embeds[].events` mapping → confirm parent VM has the named method or eventHandler. Validator catches this at spec time; runtime miss usually means lib `emit(name, payload)` was called with a name not in the map. |
@@ -247,12 +247,12 @@ Quote the relevant parts in the report.
 
 After the report, you will usually recommend one of:
 
-| Fix location | Agent to route to (transitional; Phase 3) |
+| Fix location | Agent to route to |
 |---|---|
-| spec | `jsonui-spec` → (future: `jsonui-define`) |
-| Layout JSON / Styles | `jsonui-screen-impl` → (future: `jsonui-implement`) |
-| VM method body, Repository/UseCase body | `jsonui-screen-impl` or `jsonui-modify` → (future: `jsonui-implement`) |
-| Navigation (spec-external) | Platform-specific (`jsonui-screen-impl` for now → future: `jsonui-navigation-{ios,android,web}`) |
-| spec + impl together | `jsonui-modify` (existing) |
+| spec | `jsonui-define` |
+| Layout JSON / Styles | `jsonui-implement` |
+| VM method body, Repository/UseCase body | `jsonui-implement` |
+| Navigation (spec-external) | `jsonui-navigation-{ios,android,web}` |
+| spec + impl together | `jsonui-define` (spec first), then `jsonui-implement` |
 
 Do not launch the fix agent yourself. Tell the user which one to launch next.

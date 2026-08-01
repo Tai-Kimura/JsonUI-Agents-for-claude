@@ -84,7 +84,7 @@ Adjust the state summary based on classification:
 
 ### Note on `Embed` (cross-screen embedding)
 
-If the user is adding an `Embed`-based screen (tablet master/detail, dashboard with embedded panes), there is **no special routing**. The parent screen is authored by `jsonui-define` (declaring `structure.embeds[]`) and implemented by `jsonui-implement` like any other screen. The embedded screen requires no changes and may already exist. See `rules/specification-rules.md` (5) Section.
+If the user is adding an `Embed`-based screen (tablet master/detail, dashboard with embedded panes), there is **no special routing**. The parent screen is authored by `jsonui-define` (declaring `structure.embeds[]`) and implemented by `jsonui-implement` like any other screen. The embedded screen requires no changes and may already exist. See `.claude/jsonui-rules/specification-rules.md` (5) Section.
 
 ---
 
