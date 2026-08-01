@@ -45,6 +45,21 @@ if [[ "$(cd "$DST" 2>/dev/null && pwd)" == "$SRC" ]]; then
   exit 0
 fi
 
+# Machine-local freeze list: projects whose tooling must stay at its pinned
+# state (one absolute project path per line, comments with #). Kept outside
+# this repo on purpose — consumer paths never belong in the public pack.
+BLOCKLIST="$HOME/.jsonui-agents-sync/blocklist"
+if [[ -f "$BLOCKLIST" ]]; then
+  TARGET_REAL="$(cd "$TARGET" 2>/dev/null && pwd)"
+  while IFS= read -r line; do
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    if [[ "$TARGET_REAL" == "$line" ]]; then
+      warn "target is on the sync freeze list — skipping"
+      exit 0
+    fi
+  done < "$BLOCKLIST"
+fi
+
 CHANGED=0
 sync_dir() {
   local name="$1"
