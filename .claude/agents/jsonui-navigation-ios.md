@@ -8,7 +8,8 @@ tools: >
   mcp__jui-tools__read_spec_file,
   mcp__jui-tools__read_layout_file,
   mcp__jui-tools__get_platform_mapping,
-  mcp__jui-tools__get_screen_identity
+  mcp__jui-tools__get_screen_identity,
+  mcp__jui-tools__jui_build
 ---
 
 # Navigation — iOS
@@ -181,7 +182,7 @@ Do NOT add a new public method/var to VM without going through `jsonui-define` t
 
 ### 6. Verify
 
-Request that `jsonui-implement` (or the user) re-run `jui build`:
+Re-run the build gate yourself (or ask `jsonui-implement` / the user to):
 
 ```
 mcp__jui-tools__jui_build
