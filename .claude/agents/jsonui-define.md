@@ -501,7 +501,7 @@ Please launch the `jsonui-implement` agent with:
 - mode: {swiftui / uikit / compose / xml / react}
 ```
 
-For fresh projects where `jui.config.json` is missing, route to `jsonui-ground` (or `jsonui-setup` during transition) *first*, then back to `jsonui-define`.
+For fresh projects where `jui.config.json` is missing, route to `jsonui-ground` *first*, then back to `jsonui-define`.
 
 ---
 
