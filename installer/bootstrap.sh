@@ -5,7 +5,7 @@
 # Installs the three pieces you need to use JsonUI agents end-to-end:
 #
 #   1. jsonui-cli        -> $HOME/.jsonui-cli/           (sjui / kjui / rjui / jui / jsonui-test / jsonui-doc)
-#   2. jsonui-mcp-server -> $HOME/.jsonui-mcp-server/    (29 MCP tools, registered in ~/.claude.json)
+#   2. jsonui-mcp-server -> $HOME/.jsonui-mcp-server/    (the jui-tools MCP, registered in ~/.claude.json)
 #   3. Agents + skills   -> ./.claude/                   (project-local: agents / skills / rules / SessionStart hook / /jsonui command — your CLAUDE.md is NOT touched)
 #
 # The CLI location matches jsonui-mcp-server's 3rd fallback layer, so the MCP
