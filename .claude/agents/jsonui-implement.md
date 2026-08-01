@@ -67,12 +67,12 @@ Parallel MCP calls:
 
 From the spec, note:
 
-- `metadata.layoutFile` — **required on every screen spec**. UI structure lives in `docs/screens/layouts/{layoutFile}.json`. Spec `structure.components` / `structure.layout` should be empty (`[]` / `{}`). If they're not, treat that as a spec bug — route back to `jsonui-define` before touching the Layout JSON. See `rules/specification-rules.md` "HARD RULE".
+- `metadata.layoutFile` — **required on every screen spec**. UI structure lives in `docs/screens/layouts/{layoutFile}.json`. Spec `structure.components` / `structure.layout` should be empty (`[]` / `{}`). If they're not, treat that as a spec bug — route back to `jsonui-define` before touching the Layout JSON. See `.claude/jsonui-rules/specification-rules.md` "HARD RULE".
 - `dataFlow.viewModel.methods` / `vars` — these become Protocol members (you do NOT declare them yourself; `jui build` generates the Protocol)
 - `dataFlow.repositories[]` / `useCases[]` — stub methods will be generated; you fill in the bodies
 - `stateManagement.uiVariables` — drive the `data` section in Layout JSON
 - `stateManagement.displayLogic` — drive `visibility` bindings
-- `structure.collection.cell.uiVariables` / `cell.eventHandlers` (when present) — drive the cell Layout JSON's own `data` section. See `rules/specification-rules.md` "Collection Cell: declaring typed data".
+- `structure.collection.cell.uiVariables` / `cell.eventHandlers` (when present) — drive the cell Layout JSON's own `data` section. See `.claude/jsonui-rules/specification-rules.md` "Collection Cell: declaring typed data".
 - `userActions` / `transitions` — navigation targets for the navigation agents
 
 ### 2. Scaffold
@@ -99,7 +99,7 @@ Open `docs/screens/layouts/{name}.json` and refine:
 - Platform overrides (`platform: { ios: {...}, android: {...}, web: {...} }`) for attributes that differ per platform
 - Responsive overrides (`responsive: { compact: {...} }`) for screen-size variants
 - Includes (`"include": "path/to/partial"`) for repeated sections
-- Collection `cellClasses` / `sections` for lists (use `lazy: false` only when the Collection is nested inside an already-scrollable parent — see `rules/specification-rules.md`)
+- Collection `cellClasses` / `sections` for lists (use `lazy: false` only when the Collection is nested inside an already-scrollable parent — see `.claude/jsonui-rules/specification-rules.md`)
 - TabView `view` references for tab screens
 
 Use MCP for authoritative references instead of guessing:
@@ -112,7 +112,7 @@ Use MCP for authoritative references instead of guessing:
 
 #### Extracting styles
 
-If you use the same style block 3+ times, extract it to `{styles_directory}/{name}_style.json` (default: `docs/screens/styles/{name}_style.json` — **sibling to `layouts/`**, NOT under it) and reference by name. `jui build` distributes `Styles/` alongside Layouts on every platform. See `rules/file-locations.md`.
+If you use the same style block 3+ times, extract it to `{styles_directory}/{name}_style.json` (default: `docs/screens/styles/{name}_style.json` — **sibling to `layouts/`**, NOT under it) and reference by name. `jui build` distributes `Styles/` alongside Layouts on every platform. See `.claude/jsonui-rules/file-locations.md`.
 
 Invoke `/jsonui-layout` skill for authoring examples when needed; write the JSON yourself with `Edit`.
 
@@ -245,7 +245,7 @@ Common warning sources:
 - Unknown attribute on a component → check `lookup_component` for the valid attribute list
 - Binding path not in `data` section → update Layout JSON `data` or spec `uiVariables`
 - Missing file referenced via `include` / `cellClasses` → generate it (`jui g partial` / `jui g collection`)
-- Platform override structure wrong → see `rules/design-philosophy.md` for `platform` vs `platforms` vs `responsive`
+- Platform override structure wrong → see `.claude/jsonui-rules/design-philosophy.md` for `platform` vs `platforms` vs `responsive`
 - Spec ↔ Impl drift on a method/var signature → spec wins; route to `jsonui-define` to fix spec, then regenerate. Or add `@jui:protocol` marker if the signature should override.
 - `@generated` file was hand-edited → revert it and edit the spec or Impl body instead
 
@@ -312,7 +312,7 @@ Step 7 and step 8 are both mandatory. Do not report the screen done without both
 
 - Edit Layout JSON in `docs/screens/layouts/` (the shared directory), never in platform directories (`my-app-ios/my-app/Layouts/` etc.) — `jui build` overwrites those.
 - When you edit a Layout JSON that references another file (include / cellClasses / sections / TabView.view), verify the target exists. If not, generate it (`jui g partial` / `jui g collection`) before committing to the reference.
-- When you add a new platform override, use `platform` (singular, dict) for attribute overrides or `platforms` (plural, array) at the root for file-level whitelisting. They are different mechanisms — see `rules/design-philosophy.md`.
+- When you add a new platform override, use `platform` (singular, dict) for attribute overrides or `platforms` (plural, array) at the root for file-level whitelisting. They are different mechanisms — see `.claude/jsonui-rules/design-philosophy.md`.
 - When you edit VM method bodies, don't introduce new public methods without going through `jsonui-define` first.
 
 ---

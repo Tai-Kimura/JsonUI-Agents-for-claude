@@ -107,9 +107,9 @@ This creates `docs/screens/json/login_screen.spec.json` with the canonical skele
 
 ### 1.3 Fill in the sections
 
-Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the authoring guide (examples, patterns), then write the content yourself via `Edit`. Read `rules/specification-rules.md` first — it is the canonical reference for field shapes, naming patterns, and the five structure variants.
+Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the authoring guide (examples, patterns), then write the content yourself via `Edit`. Read `.claude/jsonui-rules/specification-rules.md` first — it is the canonical reference for field shapes, naming patterns, and the five structure variants.
 
-**🔴 Hard rule from `rules/specification-rules.md`: the spec describes intent. The Layout JSON describes the UI.**
+**🔴 Hard rule from `.claude/jsonui-rules/specification-rules.md`: the spec describes intent. The Layout JSON describes the UI.**
 
 - `metadata.layoutFile` is **required** — every screen references an external `docs/screens/layouts/{layoutFile}.json`.
 - `structure.components` is **always an empty array** (`[]`) for new specs.
@@ -119,16 +119,16 @@ Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the author
 
 **🔴 Hard rule: any non-standard Layout `type` needs a `component_spec` FIRST.**
 
-Before a screen spec references a custom component (`CodeBlock`, `NavLink`, `Collapse`, `Details`, `PlatformBadge`, anything not in the standard JsonUI component list), that component MUST have a `{name}.component.json` defining its `props.items[]` and `slots.items[]`. If the spec you're about to author uses a custom type that has no component spec yet, **stop and author the component spec first via Task 4**, then come back. See `rules/specification-rules.md` → "Custom Components — spec first".
+Before a screen spec references a custom component (`CodeBlock`, `NavLink`, `Collapse`, `Details`, `PlatformBadge`, anything not in the standard JsonUI component list), that component MUST have a `{name}.component.json` defining its `props.items[]` and `slots.items[]`. If the spec you're about to author uses a custom type that has no component spec yet, **stop and author the component spec first via Task 4**, then come back. See `.claude/jsonui-rules/specification-rules.md` → "Custom Components — spec first".
 
 | Section | What to fill | Notes |
 |---|---|---|
 | `metadata` | `name` (PascalCase), `displayName`, `description`, `platforms`, **`layoutFile` (required)** | `layoutFile` is snake_case, no extension (e.g. `"login"`, `"bar_list"`) |
 | `structure.components` | `[]` | Always empty. UI lives in the Layout JSON. |
 | `structure.layout` | `{}` | Always empty for the same reason. |
-| `structure.collection` | `null`, or a Collection with `cellClasses: [...]` / `cell.layoutFile` / `sections[]` | See `rules/specification-rules.md` section "(2) Collection screen" for the three accepted shapes. `cellClasses` is an **array of strings** (Layout JSON refs). |
+| `structure.collection` | `null`, or a Collection with `cellClasses: [...]` / `cell.layoutFile` / `sections[]` | See `.claude/jsonui-rules/specification-rules.md` section "(2) Collection screen" for the three accepted shapes. `cellClasses` is an **array of strings** (Layout JSON refs). |
 | `structure.tabView` | `null`, or `{id, tabs: [{title, layoutFile}]}` | Each tab is its own Layout JSON. |
-| `structure.embeds` | `[]`, or `[{regionId, screen, params?, events?, navigationMode?}]` | Use when a parent screen hosts another screen as a region (tablet master/detail, dashboard panels). See `rules/specification-rules.md` (5) and the dedicated dialogue block below. |
+| `structure.embeds` | `[]`, or `[{regionId, screen, params?, events?, navigationMode?}]` | Use when a parent screen hosts another screen as a region (tablet master/detail, dashboard panels). See `.claude/jsonui-rules/specification-rules.md` (5) and the dedicated dialogue block below. |
 | `stateManagement.uiVariables` | Typed screen data (visibility flags, toast messages, callbacks) | Callback variables use `"type": "(() -> Void)?"` (or the `"callback"` alias) |
 | `stateManagement.eventHandlers` | View-local handlers — name + description only | Anything that needs to be callable from the ViewModel belongs in `dataFlow.viewModel.methods` |
 | `stateManagement.displayLogic` | `condition` + `effects[{element, state}]` for visibility rules | Auto-generated `{element_id}Visibility` var names unless `variableName` is explicit |
@@ -208,7 +208,7 @@ Fix any violations. Do not proceed with violations still reported.
 - [ ] Every `repositories[*].methods[*].endpoint` has a matching entry in `dataFlow.apiEndpoints[]`.
 - [ ] If a single user action orchestrates multiple repos or involves multi-step validation, a `dataFlow.useCases[]` entry exists.
 
-If any of the above is incomplete because the user hasn't told you, **STOP and ask** — do not guess method names, repo names, or endpoint shapes. Use the question template in `rules/specification-rules.md` → "How to ask the user when they didn't volunteer this info".
+If any of the above is incomplete because the user hasn't told you, **STOP and ask** — do not guess method names, repo names, or endpoint shapes. Use the question template in `.claude/jsonui-rules/specification-rules.md` → "How to ask the user when they didn't volunteer this info".
 
 If the screen is genuinely pure-static display (no interaction, no dynamic data), write `dataFlow: { viewModel: { methods: [], vars: [] } }` **explicitly**. Do not omit the `dataFlow` key entirely.
 
@@ -495,7 +495,7 @@ Batching hides validation errors and makes HTML generation skippable. Don't allo
 When one or more specs are done and validated:
 
 ```
-Please launch the `jsonui-implement` agent (or `jsonui-screen-impl` during Phase 3 transition) with:
+Please launch the `jsonui-implement` agent with:
 - specification: docs/screens/json/{screen}.spec.json
 - platform: {iOS / Android / Web}
 - mode: {swiftui / uikit / compose / xml / react}
@@ -522,7 +522,7 @@ If a verify diff shows the Layout is wrong, don't "fix" the spec to match — fi
 
 ## Spec authoring anti-patterns to avoid
 
-1. **Inventing behavior** — if the user didn't say it, ask. See `rules/specification-rules.md`.
+1. **Inventing behavior** — if the user didn't say it, ask. See `.claude/jsonui-rules/specification-rules.md`.
 2. **Copying stale examples from memory** — always invoke the relevant skill (`/jsonui-screen-spec`, `/jsonui-dataflow`, etc.) before writing, so you're working from the current schema.
 3. **Skipping HTML generation** — the Mermaid diagram in HTML is the human-readable proof of the `dataFlow`. Downstream agents reference it.
 4. **Batching screens** — one at a time, with confirmation, always.
