@@ -25,13 +25,13 @@ Every task must satisfy all four invariants:
 1. `jui build` must pass with **zero warnings**.
 2. `jui verify --fail-on-diff` must pass with no drift.
 3. `@generated` files are never hand-edited — edit the spec instead.
-4. `jsonui-localize` must run before a screen is considered done.
+4. `jui lint-strings` must be clean (and `jsonui-localize` run for VM-side strings) before a screen is considered done.
 
 Full details in `.claude/jsonui-rules/invariants.md`.
 
 ### MCP-first
 
-Agents call the `jsonui-mcp-server` for spec reads, layout reads, component lookups, `jui build` / `jui verify` / `jui generate project|screen|converter`, and platform-tool sync. The only `jui` subcommand still requiring Bash is `jui lint-generated` (CI-only). See `.claude/jsonui-rules/mcp-policy.md`.
+Agents call the `jsonui-mcp-server` for spec reads, layout reads, component lookups, `jui build` / `jui verify` / `jui generate project|screen|converter`, and platform-tool sync. Two `jui` subcommands still require Bash: `jui lint-generated` (CI-only) and `jui lint-strings` (the localize gate). See `.claude/jsonui-rules/mcp-policy.md`.
 
 ### What you MUST NOT do
 
