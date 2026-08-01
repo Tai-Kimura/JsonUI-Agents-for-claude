@@ -71,17 +71,21 @@ tools: >
 
 ## Per-agent MCP tool inventory
 
+Generated from the `tools:` frontmatter of `.claude/agents/*.md` — the frontmatter is canonical. After changing an agent's tools, run `scripts/contract_check.sh --fix` to refresh this table (CI fails on drift). Tool names are sorted; non-MCP tools (Read, Bash, ...) are governed by the sections below, and `debug` is READ-ONLY by contract regardless of this table.
+
+<!-- inventory:begin — generated from agent frontmatter; edit frontmatter, then run scripts/contract_check.sh --fix -->
 | Agent | MCP tools |
 |---|---|
-| `conductor` | `get_project_config`, `list_screen_specs`, `list_layouts`, `list_component_specs`, `list_api_specs`, `list_api_models` |
-| `define` | `get_project_config`, `list_screen_specs`, `list_component_specs`, `read_spec_file`, `doc_init_spec`, `doc_init_component`, `doc_validate_spec`, `doc_validate_component`, `doc_generate_spec`, `doc_generate_component`, `doc_rules_init`, `doc_rules_show`, `jui_verify`, `lookup_component`, `lookup_attribute`, `search_components`, `list_api_specs`, `preview_api_model_sync` |
-| `ground` | `get_project_config`, `jui_init`, `jui_build` |
-| `implement` | `get_project_config`, `list_screen_specs`, `list_layouts`, `read_spec_file`, `read_layout_file`, `jui_generate_project`, `jui_build`, `jui_verify`, `lookup_component`, `lookup_attribute`, `search_components`, `get_binding_rules`, `get_modifier_order`, `get_platform_mapping`, `list_api_specs`, `list_api_models` |
-| `navigation-ios` / `navigation-android` / `navigation-web` | `get_project_config`, `list_screen_specs`, `read_spec_file`, `read_layout_file`, `get_platform_mapping`, `get_screen_identity`, `jui_build` |
-| `test` | `get_project_config`, `list_screen_specs`, `list_layouts`, `read_spec_file`, `read_layout_file`, `doc_generate_html`, `get_screen_identity`, `test_artifacts_pull`, `test_artifacts_status`, `test_mock_generate` |
-| `debug` (READ-ONLY) | `get_project_config`, `list_screen_specs`, `list_layouts`, `list_component_specs`, `read_spec_file`, `read_layout_file`, `jui_verify`, `jui_build`, `doc_validate_spec`, `lookup_component`, `lookup_attribute`, `search_components`, `get_platform_mapping`, `list_api_specs`, `list_api_models`, `preview_api_model_sync` (+ `Read, Bash, Glob, Grep` for impl grep) |
-
-Agents that do not appear in this table should still follow the "explicit enumeration" pattern.
+| `conductor` | `get_project_config`, `list_api_models`, `list_api_specs`, `list_component_specs`, `list_layouts`, `list_screen_specs` |
+| `debug` | `doc_validate_spec`, `get_platform_mapping`, `get_project_config`, `jui_build`, `jui_verify`, `list_api_models`, `list_api_specs`, `list_component_specs`, `list_layouts`, `list_screen_specs`, `lookup_attribute`, `lookup_component`, `preview_api_model_sync`, `read_layout_file`, `read_spec_file`, `search_components` |
+| `define` | `doc_generate_component`, `doc_generate_spec`, `doc_init_component`, `doc_init_spec`, `doc_rules_init`, `doc_rules_show`, `doc_validate_component`, `doc_validate_spec`, `get_project_config`, `jui_verify`, `list_api_specs`, `list_component_specs`, `list_screen_specs`, `lookup_attribute`, `lookup_component`, `preview_api_model_sync`, `read_spec_file`, `search_components` |
+| `ground` | `get_project_config`, `jui_build`, `jui_init` |
+| `implement` | `get_binding_rules`, `get_modifier_order`, `get_platform_mapping`, `get_project_config`, `jui_build`, `jui_generate_project`, `jui_verify`, `list_api_models`, `list_api_specs`, `list_layouts`, `list_screen_specs`, `lookup_attribute`, `lookup_component`, `read_layout_file`, `read_spec_file`, `search_components` |
+| `navigation-android` | `get_platform_mapping`, `get_project_config`, `get_screen_identity`, `jui_build`, `list_screen_specs`, `read_layout_file`, `read_spec_file` |
+| `navigation-ios` | `get_platform_mapping`, `get_project_config`, `get_screen_identity`, `jui_build`, `list_screen_specs`, `read_layout_file`, `read_spec_file` |
+| `navigation-web` | `get_platform_mapping`, `get_project_config`, `get_screen_identity`, `jui_build`, `list_screen_specs`, `read_layout_file`, `read_spec_file` |
+| `test` | `doc_generate_html`, `get_project_config`, `get_screen_identity`, `list_layouts`, `list_screen_specs`, `read_layout_file`, `read_spec_file`, `test_artifacts_pull`, `test_artifacts_status`, `test_mock_generate` |
+<!-- inventory:end -->
 
 ---
 
