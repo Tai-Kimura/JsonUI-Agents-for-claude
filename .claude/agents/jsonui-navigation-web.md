@@ -8,7 +8,8 @@ tools: >
   mcp__jui-tools__read_spec_file,
   mcp__jui-tools__read_layout_file,
   mcp__jui-tools__get_platform_mapping,
-  mcp__jui-tools__get_screen_identity
+  mcp__jui-tools__get_screen_identity,
+  mcp__jui-tools__jui_build
 ---
 
 # Navigation — Web
@@ -207,7 +208,7 @@ Do NOT add new public members without `jsonui-define`.
 
 ### 6. Verify
 
-Ask `jsonui-implement` (or user) to re-run:
+Re-run the build gate yourself (or ask `jsonui-implement` / the user to):
 
 ```
 mcp__jui-tools__jui_build

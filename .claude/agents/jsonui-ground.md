@@ -4,7 +4,8 @@ description: Initializes JsonUI projects. Runs jui init, sets up platform scaffo
 tools: >
   Read, Write, Edit, Glob, Grep, Bash,
   mcp__jui-tools__get_project_config,
-  mcp__jui-tools__jui_init
+  mcp__jui-tools__jui_init,
+  mcp__jui-tools__jui_build
 ---
 
 # Ground Agent
