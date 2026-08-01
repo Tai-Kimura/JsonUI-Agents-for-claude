@@ -7,7 +7,8 @@ tools: >
   mcp__jui-tools__list_screen_specs,
   mcp__jui-tools__read_spec_file,
   mcp__jui-tools__read_layout_file,
-  mcp__jui-tools__get_platform_mapping
+  mcp__jui-tools__get_platform_mapping,
+  mcp__jui-tools__get_screen_identity
 ---
 
 # Navigation — Android
