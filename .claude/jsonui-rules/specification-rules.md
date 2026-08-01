@@ -281,7 +281,7 @@ Sub-specs never duplicate the parent's `layoutFile`. Parent authors the Layout; 
 
 Use the `Embed` view type when a parent screen hosts another screen as a region of its layout (tablet master/detail, dashboard panels). The embedded screen owns its own ViewModel — independent from the parent VM.
 
-**Canonical reference**: JsonUIDocument [`specification-rules.md` (5) section](../../../JsonUIDocument/.claude/jsonui-rules/specification-rules.md) (the file authored at distribution time). Treat that section as authoritative for the JSON shape, attribute table, and validation rules.
+**Canonical reference**: the JsonUIDocument repository's `specification-rules.md` (5) section (the file authored at distribution time). Treat that section as authoritative for the JSON shape, attribute table, and validation rules.
 
 **Quick recap of the rules (mirror these in spec / Layout JSON authoring):**
 
