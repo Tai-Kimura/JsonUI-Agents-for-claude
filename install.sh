@@ -4,11 +4,18 @@
 # Installs agents, skills, rules, workflow hook, and the /jsonui slash command
 # under .claude/ — your CLAUDE.md is never touched.
 #
+# The pack is fetched as a single tarball and its contents are enumerated
+# from disk, so new files (agents, skills, examples, rules) ship without
+# touching this script.
+#
 # Usage:
 #   ./install.sh                    # Install from main branch
 #   ./install.sh -b develop         # Install from specific branch
 #   ./install.sh -c abc123          # Install from specific commit
 #   ./install.sh -v 1.0.0           # Install from specific version tag
+#
+# Testing: set JSONUI_AGENTS_TARBALL_URL to any curl-able tarball URL
+# (e.g. file:///tmp/pack.tar.gz built with `git archive --prefix=x/ HEAD`).
 
 set -e
 
@@ -48,45 +55,46 @@ while getopts "b:c:v:h" opt; do
     esac
 done
 
-REPO_URL="https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/$REF"
+TARBALL_URL="${JSONUI_AGENTS_TARBALL_URL:-https://codeload.github.com/Tai-Kimura/JsonUI-Agents-for-claude/tar.gz/$REF}"
 AGENTS_DIR=".claude/agents"
 SKILLS_DIR=".claude/skills"
 RULES_DIR=".claude/jsonui-rules"
 COMMANDS_DIR=".claude/commands"
 CLAUDE_DIR=".claude"
 
-# Agent files (jsonui- prefixed to avoid collision with user agents)
-AGENT_FILES="jsonui-conductor.md jsonui-debug.md jsonui-define.md jsonui-ground.md jsonui-implement.md jsonui-navigation-android.md jsonui-navigation-ios.md jsonui-navigation-web.md jsonui-test.md"
-
-# Skill directories (11 skills; each contains SKILL.md and optionally examples/)
-SKILL_DIRS="jsonui-component-spec jsonui-dataflow jsonui-flow-test jsonui-layout jsonui-localize jsonui-platform-setup jsonui-screen-spec jsonui-screen-test jsonui-swagger jsonui-test-doc jsonui-viewmodel-impl"
-
-# Rule files (5 invariants / policy / philosophy / placement / spec authoring)
-RULE_FILES="invariants.md mcp-policy.md design-philosophy.md file-locations.md specification-rules.md"
-
-# Function to get examples for a skill (Bash 3.2 compatible - no associative arrays)
-get_skill_examples() {
-    case "$1" in
-        jsonui-layout)
-            echo "binding-correct.json binding-wrong.json collection-swiftui-basic.json collection-swiftui-full.json collection-uikit.json collection-wrong.json color-correct.json color-wrong.json id-naming-correct.json id-naming-wrong.json include-correct.json include-wrong.json screen-root-structure.json screen-root-wrong.json strings-json.json tabview.json tabview-wrong.json"
-            ;;
-        jsonui-screen-spec)
-            echo "component.json data-flow.json layout.json state-management.json transitions.json user-actions.json validation.json"
-            ;;
-        jsonui-swagger)
-            echo "db-extensions.json db-model-template.json property-types.json"
-            ;;
-        jsonui-viewmodel-impl)
-            echo "collection-kotlin.kt collection-swift.swift colormanager-kotlin.kt colormanager-swift.swift event-handler-kotlin.kt event-handler-swift.swift hardcode-correct.kt hardcode-correct.swift hardcode-wrong.kt hardcode-wrong.swift logger-correct.swift logger-wrong.swift repository-pattern.swift stringmanager-swift.swift strings-kotlin.kt viewmodel-kotlin.kt viewmodel-swift.swift"
-            ;;
-        *)
-            echo ""
-            ;;
-    esac
-}
-
 echo "Installing JsonUI Agents for Claude Code..."
 echo "  Source: $REF_TYPE '$REF'"
+
+# Fetch the pack once
+TMP_DIR=$(mktemp -d)
+trap 'rm -rf "$TMP_DIR"' EXIT
+echo ""
+echo "Fetching the pack tarball..."
+if ! curl -sLf "$TARBALL_URL" -o "$TMP_DIR/pack.tar.gz"; then
+    echo "Error: Failed to download the pack ($TARBALL_URL)." >&2
+    echo "Please check if the $REF_TYPE '$REF' exists." >&2
+    exit 1
+fi
+mkdir "$TMP_DIR/src"
+if ! tar -xzf "$TMP_DIR/pack.tar.gz" -C "$TMP_DIR/src" --strip-components=1; then
+    echo "Error: Failed to extract the pack tarball." >&2
+    exit 1
+fi
+SRC="$TMP_DIR/src"
+
+# Sanity-check the pack layout before writing anything
+for d in "$SRC/.claude/agents" "$SRC/skills" "$SRC/.claude/jsonui-rules" "$SRC/.claude/commands"; do
+    if [ ! -d "$d" ]; then
+        echo "Error: unexpected pack layout — missing ${d#"$SRC"/}" >&2
+        exit 1
+    fi
+done
+for f in "$SRC/.claude/jsonui-workflow.md" "$SRC/.claude/commands/jsonui.md"; do
+    if [ ! -f "$f" ]; then
+        echo "Error: unexpected pack layout — missing ${f#"$SRC"/}" >&2
+        exit 1
+    fi
+done
 
 # Create directories
 for dir in "$AGENTS_DIR" "$SKILLS_DIR" "$RULES_DIR" "$COMMANDS_DIR"; do
@@ -99,71 +107,51 @@ done
 # Count items
 agent_count=0
 skill_count=0
+example_count=0
 rule_count=0
 
-# Download agent files
+# Install agent files (enumerated from the pack)
 echo ""
-echo "Downloading agents..."
-for file in $AGENT_FILES; do
-    echo "  - $AGENTS_DIR/$file"
-    if ! curl -sLf "$REPO_URL/.claude/agents/$file" -o "$AGENTS_DIR/$file"; then
-        echo "Error: Failed to download $file" >&2
-        echo "Please check if the $REF_TYPE '$REF' exists." >&2
-        exit 1
-    fi
+echo "Installing agents..."
+for file in "$SRC"/.claude/agents/jsonui-*.md; do
+    name=$(basename "$file")
+    echo "  - $AGENTS_DIR/$name"
+    cp "$file" "$AGENTS_DIR/$name"
     agent_count=$((agent_count + 1))
 done
 
-# Download skill files
+# Install skills (each skill directory ships wholesale — SKILL.md, examples/,
+# and whatever the pack adds later)
 echo ""
-echo "Downloading skills..."
-for skill in $SKILL_DIRS; do
-    echo "  - skills/$skill/SKILL.md"
+echo "Installing skills..."
+for sdir in "$SRC"/skills/*/; do
+    skill=$(basename "$sdir")
+    echo "  - skills/$skill/"
     mkdir -p "$SKILLS_DIR/$skill"
-    if ! curl -sLf "$REPO_URL/skills/$skill/SKILL.md" -o "$SKILLS_DIR/$skill/SKILL.md"; then
-        echo "Error: Failed to download skills/$skill/SKILL.md" >&2
-        echo "Please check if the $REF_TYPE '$REF' exists." >&2
-        exit 1
-    fi
+    cp -R "${sdir}." "$SKILLS_DIR/$skill/"
     skill_count=$((skill_count + 1))
-
-    examples=$(get_skill_examples "$skill")
-    if [ -n "$examples" ]; then
-        mkdir -p "$SKILLS_DIR/$skill/examples"
-        for example in $examples; do
-            echo "    - examples/$example"
-            if ! curl -sLf "$REPO_URL/skills/$skill/examples/$example" -o "$SKILLS_DIR/$skill/examples/$example" 2>/dev/null; then
-                echo "    (skipped - not found)"
-            fi
-        done
+    if [ -d "${sdir}examples" ]; then
+        n=$(find "${sdir}examples" -type f | wc -l | tr -d ' ')
+        example_count=$((example_count + n))
     fi
 done
 
-# Download rule files
+# Install rule files (enumerated from the pack)
 echo ""
-echo "Downloading rules..."
-for file in $RULE_FILES; do
-    echo "  - $RULES_DIR/$file"
-    if ! curl -sLf "$REPO_URL/.claude/jsonui-rules/$file" -o "$RULES_DIR/$file"; then
-        echo "Error: Failed to download $file" >&2
-        echo "Please check if the $REF_TYPE '$REF' exists." >&2
-        exit 1
-    fi
+echo "Installing rules..."
+for file in "$SRC"/.claude/jsonui-rules/*.md; do
+    name=$(basename "$file")
+    echo "  - $RULES_DIR/$name"
+    cp "$file" "$RULES_DIR/$name"
     rule_count=$((rule_count + 1))
 done
 
-# Download the workflow menu and slash command
+# Install the workflow menu and slash command
 echo ""
-echo "Downloading workflow menu and slash command..."
-if ! curl -sLf "$REPO_URL/.claude/jsonui-workflow.md" -o "$CLAUDE_DIR/jsonui-workflow.md"; then
-    echo "Error: Failed to download jsonui-workflow.md" >&2
-    exit 1
-fi
+echo "Installing workflow menu and slash command..."
+cp "$SRC/.claude/jsonui-workflow.md" "$CLAUDE_DIR/jsonui-workflow.md"
 echo "  - $CLAUDE_DIR/jsonui-workflow.md"
-if ! curl -sLf "$REPO_URL/.claude/commands/jsonui.md" -o "$COMMANDS_DIR/jsonui.md"; then
-    echo "Error: Failed to download commands/jsonui.md" >&2
-    exit 1
-fi
+cp "$SRC/.claude/commands/jsonui.md" "$COMMANDS_DIR/jsonui.md"
 echo "  - $COMMANDS_DIR/jsonui.md"
 
 # Merge SessionStart hook into .claude/settings.json (idempotent, preserves user's existing settings)
@@ -207,7 +195,7 @@ echo "Installation complete!"
 echo ""
 echo "Installed:"
 echo "  Agents: $agent_count"
-echo "  Skills: $skill_count"
+echo "  Skills: $skill_count (with $example_count example files)"
 echo "  Rules: $rule_count"
 echo "  Workflow menu: 1 ($CLAUDE_DIR/jsonui-workflow.md)"
 echo "  Slash command: 1 ($COMMANDS_DIR/jsonui.md)"
