@@ -8,7 +8,10 @@ tools: >
   mcp__jui-tools__list_layouts,
   mcp__jui-tools__read_spec_file,
   mcp__jui-tools__read_layout_file,
-  mcp__jui-tools__doc_generate_html
+  mcp__jui-tools__doc_generate_html,
+  mcp__jui-tools__get_screen_identity,
+  mcp__jui-tools__test_artifacts_pull,
+  mcp__jui-tools__test_mock_generate
 ---
 
 # Test Agent
