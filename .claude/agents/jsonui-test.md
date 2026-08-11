@@ -7,6 +7,7 @@ tools: >
   mcp__jui-tools__list_screen_specs,
   mcp__jui-tools__list_layouts,
   mcp__jui-tools__read_spec_file,
+  mcp__jui-tools__search_specs,
   mcp__jui-tools__read_layout_file,
   mcp__jui-tools__doc_generate_html,
   mcp__jui-tools__get_screen_identity,
@@ -96,6 +97,11 @@ If the user says something like "write tests for screen X", skip the question.
 mcp__jui-tools__read_spec_file with file: "{screen}.spec.json"
 mcp__jui-tools__read_layout_file with file: "{screen}.json"
 ```
+
+A large screen may be SPLIT into sub-specs (the parent's `subSpecs` array;
+`list_screen_specs` lists them inline as `screen_sub_spec` rows). When you
+need the part that covers a topic, `mcp__jui-tools__search_specs` with a
+keyword returns the owning file + JSON path directly.
 
 Extract:
 
