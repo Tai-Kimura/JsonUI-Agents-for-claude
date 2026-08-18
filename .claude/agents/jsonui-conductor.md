@@ -98,7 +98,7 @@ If the user is adding an `Embed`-based screen (tablet master/detail, dashboard w
 | **jsonui-implement** | `jsonui-implement` | W | Layout/Styles/VM body + localize + `jui build` (0 warnings) + `jui verify` (no drift) |
 | **jsonui-navigation-ios** | `jsonui-navigation-ios` | W | SwiftUI NavigationStack / UIKit UINavigationController |
 | **jsonui-navigation-android** | `jsonui-navigation-android` | W | Compose Navigation / XML NavGraph |
-| **jsonui-navigation-web** | `jsonui-navigation-web` | W | React Router / Next.js App Router |
+| **jsonui-navigation-web** | `jsonui-navigation-web` | W | React Router / Next.js App Router / custom `web_framework` adapter |
 | **jsonui-test** | `jsonui-test` | W | spec-first screen / flow test authoring + validation + HTML docs |
 
 ### Routing heuristics

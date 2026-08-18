@@ -1,6 +1,6 @@
 ---
 name: jsonui-navigation-web
-description: Implements Web navigation code (React Router or Next.js App Router) from spec userActions / transitions. Spec is platform-agnostic; this agent is the TypeScript-specific writer. Never edits spec or Layout JSON.
+description: Implements Web navigation code (React Router, Next.js App Router, or any React-family framework via the rjui.config.json web_framework adapter) from spec userActions / transitions. Spec is platform-agnostic; this agent is the TypeScript-specific writer. Never edits spec or Layout JSON.
 tools: >
   Read, Write, Edit, Glob, Grep, Bash,
   mcp__jui-tools__get_project_config,
@@ -69,7 +69,17 @@ Check `mode` and project files:
 - `package.json` has `react-router-dom` → React Router SPA
 - Both → ask (rare, usually one or the other)
 
-If the project `rjui.config.json` has a `framework` hint, use that.
+Check `rjui.config.json` `web_framework` FIRST — it is authoritative when present:
+
+- `"web_framework": "next"` (or absent) → Next.js emit (the default)
+- `"web_framework": { ... }` → a **custom framework adapter**: the project targets another
+  React-family framework (Remix, TanStack Start, …). The object declares the exact
+  strings codegen emits — `link_import_line` / `link_href_attribute` (e.g. `to`),
+  `router_hook_import` / `router_hook_statement` (e.g. `useNavigate`),
+  `router_type` / `router_type_import`, and `use_client_directive` (empty = no RSC
+  directive). Generated components/ViewModels/hooks already follow that adapter;
+  author navigation code in the SAME framework's conventions and idioms, taking the
+  router identity from the adapter declaration, not from Next.js assumptions.
 
 ### React Router v6+ path
 
