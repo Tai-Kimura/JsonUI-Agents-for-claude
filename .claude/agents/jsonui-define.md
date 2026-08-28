@@ -143,6 +143,7 @@ Before a screen spec references a custom component (`CodeBlock`, `NavLink`, `Col
 | `dataFlow.viewModel.methods` | Public VM contract (button taps, async fetches) | Defaults to `isAsync: false`. See `/jsonui-dataflow` skill. |
 | `dataFlow.viewModel.vars` | Observable state | `{name, type, optional, observable, readOnly, platforms}` |
 | `dataFlow.repositories` | Data access layer; link to API with `methods[].endpoint` | Defaults to `isAsync: true` |
+| `methods[].params` / `returnType` | `"@canonical"` takes the parameters from the operation `endpoint` names; `"@canonical.wire"` takes the response schema name | Unresolvable mark = ERROR. Absent `params` still means "none" |
 | `dataFlow.useCases` | Business logic layer (optional); link to Repo via `repositories` or `methods[].calls` | |
 | `dataFlow.apiEndpoints` | `{path, method (GET/POST/PUT/PATCH/DELETE), request, response, notes}` | Path matches Repo `endpoint` references |
 | `relatedFiles` | Cross-references to generated/hand-written files | Only these `type` values: `View`, `ViewModel`, `Layout`, `Repository`, `UseCase`, `Model`, `Test`, `Extension`, `Component`, `Hook` |
@@ -213,6 +214,7 @@ Fix any violations. Do not proceed with violations still reported.
 - [ ] If the screen has any observable state (loading flag, fetched data, derived display strings the VM computes), `dataFlow.viewModel.vars` is non-empty.
 - [ ] If the screen reads/writes **anything outside the VM** (API, disk, keychain, cache, platform SDK), `dataFlow.repositories[]` has at least one entry with `methods[]` and `endpoint` (or SDK description in `description`).
 - [ ] Every `repositories[*].methods[*].endpoint` has a matching entry in `dataFlow.apiEndpoints[]`.
+- [ ] Methods whose parameters merely restate the API document use `"params": "@canonical"` rather than a hand-copied list — and the ones that deliberately differ (object argument standing in for flat fields, client-side callback, domain return type) are written out, not forced.
 - [ ] If a single user action orchestrates multiple repos or involves multi-step validation, a `dataFlow.useCases[]` entry exists.
 
 If any of the above is incomplete because the user hasn't told you, **STOP and ask** — do not guess method names, repo names, or endpoint shapes. Use the question template in `.claude/jsonui-rules/specification-rules.md` → "How to ask the user when they didn't volunteer this info".
