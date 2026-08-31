@@ -110,8 +110,6 @@ and words produced by a `switch`/`when` over a state.
 
 ---
 
----
-
 ## 5. DTO files are **regenerated** every build — never edit
 
 Files under the per-platform DTO directory carry `@generated` markers and are rewritten on every `jui build` from the swagger source:
