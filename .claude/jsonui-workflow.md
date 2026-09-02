@@ -23,7 +23,7 @@ This repository is a **JsonUI project**. Before doing any work, ask the user:
 Every task must satisfy all four invariants:
 
 1. `jui build` must pass with **zero warnings**.
-2. `jui verify --fail-on-diff` must pass with no drift.
+2. `jui verify --fail-on-diff` must pass with no drift — **and you must read how many screens it actually verified**. Screens whose layout is authored externally are skipped and do not affect the exit code, so `verified 0 of M` means the check did not run, not that it passed.
 3. `@generated` files are never hand-edited — edit the spec instead.
 4. `jui lint-strings` must be clean (and `jsonui-localize` run for VM-side strings) before a screen is considered done.
 

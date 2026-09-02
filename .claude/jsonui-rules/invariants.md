@@ -42,6 +42,18 @@ jui verify --fail-on-diff
 # Exit 0 ← required
 ```
 
+### ⚠️ Exit 0 is not the whole result — read the denominator
+
+`jui verify` only compares screens whose Layout JSON it could have generated. A screen whose spec points at a hand-authored layout is **skipped**, and skipped screens do not affect the exit code. So a face where every screen is authored externally passes this invariant while comparing nothing.
+
+This is not a corner case. Across six projects measured together, the count of screens
+actually compared was zero in every one — 47, 30, 19, 18, 11 and 2 screens respectively,
+all of them skipped with the reason `layout authored externally`.
+
+**Satisfying this invariant is therefore not by itself evidence that spec and Layout agree.** Read the line `jui verify` prints (1.8.5 and later name the denominator: `verified N of M screen(s) — K skipped (reason)`), and treat `verified 0` as *this check did not run*, not as *this check passed*. `--json PATH` writes the same numbers as `verified` / `skipped` / `total` / `skippedByReason` for a gate to assert on.
+
+When `verified` is 0, spec–Layout agreement has to come from somewhere else — review of the authored Layout against the spec, or a test that exercises the screen. Do not report the screen as verified.
+
 ---
 
 ## 3. `@generated` files are **never edited by hand**
