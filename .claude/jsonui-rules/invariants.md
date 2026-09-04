@@ -15,9 +15,20 @@ Invariants 5–8 apply when the project uses swagger-driven Data Model codegen (
 - Loop: edit → `jui build` → read warnings → fix → repeat until zero
 
 ```bash
-jui build
-# Warnings: 0 ← required
+jui build 2>&1 | grep -icE 'warning:|\[WARN|⚠'
+# 0 ← required
 ```
+
+**The build does not count for you.** `jui build` prints its findings and exits 0 whether there are none or fifty — it keeps no warning tally, has no line that fails on one, and the "zero warnings" rule lives *here*, in this rulebook, not in the process's exit code. So the gate is you reading the output. Warnings arrive in four spellings, and a narrow pattern silently counts a different thing each time (measured on a consumer's logs, 2026-09-04):
+
+| spelling | where it comes from | trap |
+|---|---|---|
+| `WARNING:` | most of the Python tools | case-sensitive `warning:` misses all of them |
+| `⚠` | attribute / design warnings | not matched by any `warn` pattern |
+| `warning:` | a few Ruby paths | |
+| `[WARN]` | Ruby logger, **with ANSI colour before it** (`\e[33m[WARN]\e[0m`) | `^\[WARN` anchored at column 0 is always 0 |
+
+Count with the unanchored, case-insensitive expression above. Accepted warnings (a consumer's baseline of 14 `⚠` it has chosen to live with) are not "zero" — write the number and the reason, never "0 warnings".
 
 **What `jui build` does in order** (relevant for diagnosing failures):
 1. Distributes shared `layouts/` / `styles/` / `resources/` / `images/` to each platform.
@@ -88,7 +99,7 @@ jui lint-strings
 
 - Every screen completion must end with a clean `jui lint-strings` (and a `jsonui-localize` pass for the VM-side strings the layout scan cannot see)
 - Intentional non-localized literals (brand names, format scaffolding) go in `.jui-strings-allowlist.json` — one entry per (layout, path, value), **reason required**. The ledger fails in both directions: an unlisted raw literal, and a stale entry whose literal is gone
-- `jui build --lint-strings` (or `"lint": {"strings": true}` in jui.config.json) runs the same check inside the build, where findings ride the warning stream and gate via invariant 1
+- `jui build --lint-strings` (or `"lint": {"strings": true}` in jui.config.json) runs the same check inside the build, where findings are **printed** as build warnings — the build's exit code does not change (it has no warning tally), so they gate only through invariant 1, i.e. through you counting them. The hard gate that actually fails is `jui lint-strings` run on its own (exit 2)
 - VM-side strings (error messages, alert titles) are still the `jsonui-localize` skill's territory — the lint covers the layout surface
 
 ### ⛔ The VM half has no gate at all — the sweep is the gate
