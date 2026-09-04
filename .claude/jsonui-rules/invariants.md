@@ -15,9 +15,11 @@ Invariants 5–8 apply when the project uses swagger-driven Data Model codegen (
 - Loop: edit → `jui build` → read warnings → fix → repeat until zero
 
 ```bash
-jui build 2>&1 | grep -icE 'warning \[|warning:|\[warn|⚠'
+jui build 2>&1 | grep -iE 'warning \[|warning:|\[warn|⚠' | grep -vic 'warnings found'
 # 0 ← required
 ```
+
+The second filter drops the build's own summary line (`[WARN] Validation warnings found: N`), which is printed through the same logger and would otherwise count as one more finding than there are (measured on real build logs: 2/2/0/4 against 1/1/0/3 findings).
 
 **The build does not count for you.** `jui build` prints its findings and exits 0 whether there are none or fifty — it keeps no warning tally, has no line that fails on one, and the "zero warnings" rule lives *here*, in this rulebook, not in the process's exit code. So the gate is you reading the output. Warnings arrive in four spellings, and a narrow pattern silently counts a different thing each time (measured on a consumer's logs, 2026-09-04):
 
