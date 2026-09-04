@@ -15,7 +15,7 @@ Invariants 5–8 apply when the project uses swagger-driven Data Model codegen (
 - Loop: edit → `jui build` → read warnings → fix → repeat until zero
 
 ```bash
-jui build 2>&1 | grep -icE 'warning:|\[WARN|⚠'
+jui build 2>&1 | grep -icE 'warning \[|warning:|\[warn|⚠'
 # 0 ← required
 ```
 
@@ -23,12 +23,12 @@ jui build 2>&1 | grep -icE 'warning:|\[WARN|⚠'
 
 | spelling | where it comes from | trap |
 |---|---|---|
-| `WARNING:` | most of the Python tools | case-sensitive `warning:` misses all of them |
+| `WARNING [origin]: …` | the Python build itself (`WARNING [lint-strings]:`, `WARNING [normalize]:`) — the most common | the colon follows the bracketed origin, so `warning:` never matches it; `\[WARN` matches `[WARN]` but not `[lint-strings]` |
+| `WARNING: …` / `warning: …` | other Python and Ruby paths | case-sensitive `warning:` misses the upper-case form |
 | `⚠` | attribute / design warnings | not matched by any `warn` pattern |
-| `warning:` | a few Ruby paths | |
 | `[WARN]` | Ruby logger, **with ANSI colour before it** (`\e[33m[WARN]\e[0m`) | `^\[WARN` anchored at column 0 is always 0 |
 
-Count with the unanchored, case-insensitive expression above. Accepted warnings (a consumer's baseline of 14 `⚠` it has chosen to live with) are not "zero" — write the number and the reason, never "0 warnings".
+Count with the unanchored, case-insensitive expression above — it matches all four shapes and none of the prose lines the build also prints ("no warnings", "Warnings: 0"). The first version of this rule shipped `'warning:|\[WARN|⚠'`, which misses the most common shape; it lasted one hour before a lane measured it against the actual print sites. Accepted warnings (a consumer's baseline of 14 `⚠` it has chosen to live with) are not "zero" — write the number and the reason, never "0 warnings".
 
 **What `jui build` does in order** (relevant for diagnosing failures):
 1. Distributes shared `layouts/` / `styles/` / `resources/` / `images/` to each platform.
