@@ -25,7 +25,7 @@ tools: >
 
 # Implement Agent
 
-Takes a validated spec and produces a working screen: Layout JSON + Styles + VM method bodies + strings.json + passing gates. Owns three of the four project invariants (build warnings, verify drift, localize).
+Takes a validated spec and produces a working screen: Layout JSON + Styles + VM method bodies + strings.json + passing gates. Owns four of the five project invariants (build warnings, verify drift, localize, contracts tested).
 
 ## You do NOT
 
@@ -268,6 +268,43 @@ If drift is reported:
 
 Do not "fix" one side blindly to match the other. Decide which is correct based on user intent.
 
+### 8.5 Contracts → declared logic is tested (MUST — invariant 5)
+
+Only for logic that has something to assert. A screen whose ViewModel methods
+have no branches, and which introduced no hand-written class, has nothing to
+do here — say that, rather than manufacturing an entry.
+
+**Branches.** For every method whose behaviour depends on a condition, the
+spec must carry the `branchContracts` entry. Missing → route to
+`jsonui-define`; it is spec work, not test work.
+
+Generation itself is `jsonui-test`'s Flow B2 — **delegate it**, the way
+navigation is delegated. It owns the harness wiring, and duplicating the
+generate step here would be a second copy of that flow to keep in step.
+
+**Hand-written classes.** For a mapper / formatter / calculator you wrote,
+the spec declares `unitContracts` and the stubs come from it:
+
+```bash
+jsonui-test generate unit-stubs                 # writes the stub; you write the body
+```
+
+**Then both checks, and read the number:**
+
+```bash
+jsonui-test generate branch-tests --check
+jsonui-test generate unit-stubs   --check
+# exit 0 required
+```
+
+- ⚠️ **`N = 0 case(s) declared` also exits 0.** The checks compare declared
+  against implemented; nothing measures coverage. Quote the count — a green
+  check over an empty set is the thing this step exists to prevent
+- ⚠️ Declared in the SUB-spec. A parent spec drops both blocks, and since
+  1.8.46 `--check` reports PROBLEM instead of losing them quietly
+- The tests must actually run, not merely generate. A stub whose body you did
+  not write is a declared case with no assertion behind it
+
 ### 9. Completion report
 
 ```
@@ -278,6 +315,8 @@ Do not "fix" one side blindly to match the other. Decide which is correct based 
 - ✅ jui verify --fail-on-diff: no drift
 - ✅ jsonui-localize: N strings registered (or 0 if none)
 - ✅ VM literal sweep: M literals swept across {files}, all accounted for
+- ✅ branch-tests --check: exit 0, N case(s) declared across M spec file(s)  (or: no conditional method on this screen)
+- ✅ unit-stubs --check: exit 0, N case(s) declared  (or: no hand-written class added)
 
 ### Files touched
 - Layout: docs/screens/layouts/{screen}.json
@@ -300,7 +339,7 @@ Do not "fix" one side blindly to match the other. Decide which is correct based 
 
 ## Invariant ownership
 
-You own three of the four:
+You own four of the five:
 
 | Invariant | Responsibility | How |
 |---|---|---|
@@ -308,8 +347,9 @@ You own three of the four:
 | 2. `jui verify --fail-on-diff` | **you** | step 8, after every edit cycle |
 | 3. `@generated` untouched | **you** | never edit them; if drift appears, fix spec or body |
 | 4. `jsonui-localize` ran | **you** | step 6, before the final build |
+| 5. Contracts tested | **you** (implementation) / `jsonui-define` (declaration) | step 8.5 — generate, write the bodies, both `--check` exit 0 |
 
-Step 7 and step 8 are both mandatory. Do not report the screen done without both.
+Steps 7, 8 and 8.5 are all mandatory. Do not report the screen done without them.
 
 ### ⛔ Invariant 4 has no machine backstop on the VM side
 
@@ -345,7 +385,7 @@ is display text.**
 ## Common mistakes
 
 1. **Editing `@generated` files to fix a drift** — always fix the source (spec or body), never the generated output.
-2. **Skipping localize "just this once"** — breaks invariant 4. And on the VM side there is nothing to catch it: no gate reads VM literals, so the screen ships with untranslated text and all four gates green.
+2. **Skipping localize "just this once"** — breaks invariant 4. And on the VM side there is nothing to catch it: no gate reads VM literals, so the screen ships with untranslated text and all five gates green.
 3. **Declaring done with warnings** — all warnings must be 0. Not "low", not "only deprecation warnings". Zero.
 4. **Running platform-specific builds directly** (`sjui build`, `./gradlew`) — use `jui build` via MCP. It distributes layouts + resolves platform overrides + runs the platform build in one step.
 5. **Editing Layout JSON in `my-app-ios/my-app/Layouts/`** — the platform copy gets overwritten. Always edit in shared `docs/screens/layouts/`.

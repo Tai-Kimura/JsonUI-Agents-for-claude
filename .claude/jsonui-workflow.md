@@ -20,12 +20,13 @@ This repository is a **JsonUI project**. Before doing any work, ask the user:
 
 ### Rules you must not violate (Workflow 1–3)
 
-Every task must satisfy all four invariants:
+Every task must satisfy all five invariants:
 
 1. `jui build` must pass with **zero warnings**.
 2. `jui verify --fail-on-diff` must pass with no drift — **and you must read how many screens it actually verified**. Screens whose layout is authored externally are skipped and do not affect the exit code, so `verified 0 of M` means the check did not run, not that it passed.
 3. `@generated` files are never hand-edited — edit the spec instead.
 4. `jui lint-strings` must be clean (and `jsonui-localize` run for VM-side strings) before a screen is considered done.
+5. Conditional logic and hand-written code are **declared and tested** — `branchContracts` / `unitContracts` where the entry makes a real test exist, and `jsonui-test generate branch-tests --check` / `unit-stubs --check` exit 0. A method with no branches and nothing to assert gets no entry.
 
 Full details in `.claude/jsonui-rules/invariants.md`.
 
