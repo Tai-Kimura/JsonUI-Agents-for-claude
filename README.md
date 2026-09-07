@@ -111,14 +111,15 @@ Authoring guides that agents invoke for specific tasks.
 | `jsonui-flow-test` | `jsonui-test` | Flow test JSON (multi-screen journey) |
 | `jsonui-test-doc` | `jsonui-test` | Description JSON + HTML documentation |
 
-## Rules — 4 project-wide invariants
+## Rules — 5 project-wide invariants
 
-Detailed rules in [`.claude/jsonui-rules/`](.claude/jsonui-rules/). The 4 invariants:
+Detailed rules in [`.claude/jsonui-rules/`](.claude/jsonui-rules/). The 5 invariants:
 
 1. **`jui build` must pass with zero warnings.**
 2. **`jui verify --fail-on-diff` must pass with no drift.**
 3. **`@generated` files are never edited by hand.** Edit the spec; `jui build` regenerates.
 4. **`jsonui-localize` must run before a screen is declared done.** (`jui build` does not detect unlocalized strings.)
+5. **Conditional logic and hand-written code are declared and tested.** `branchContracts` / `unitContracts` where the entry makes a real test exist — not for a method with no branches.
 
 ## Typical flow
 
@@ -146,7 +147,7 @@ One screen at a time. No batching.
 
 **Spec is the single source of truth for intent + contract. Layout JSON is the SSoT for UI structure. Everything else is generated, checked, or gated.**
 
-The 4 invariants keep the system honest. Agents can't edit `@generated` files, can't bypass `jui build` warnings, can't skip localization, can't accept `jui verify` drift. Every correction flows back to the correct source of truth.
+The 5 invariants keep the system honest. Agents can't edit `@generated` files, can't bypass `jui build` warnings, can't skip localization, can't accept `jui verify` drift, and can't leave conditional logic unasserted. Every correction flows back to the correct source of truth.
 
 See [`docs/plans/agent-redesign.md`](docs/plans/agent-redesign.md) for the full design rationale.
 

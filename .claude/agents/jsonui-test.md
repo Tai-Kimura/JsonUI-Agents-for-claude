@@ -85,8 +85,11 @@ Which kind of test?
 3. **Branch test** — what a ViewModel method does per branch (which API was
    called, what state resulted, whether it navigated), generated from the
    spec's branchContracts
-4. **Test documentation** — add description JSON + HTML docs to existing tests
-5. **Test validation** — check whether existing tests pass the CLI schema
+4. **Unit test stubs** — for the hand-written classes a spec declares in
+   `unitContracts` (mappers, formatters, calculators); the stub is generated,
+   the body is yours
+5. **Test documentation** — add description JSON + HTML docs to existing tests
+6. **Test validation** — check whether existing tests pass the CLI schema
 ```
 
 If the user says something like "write tests for screen X", skip the question.
@@ -342,6 +345,13 @@ mcp__jui-tools__read_spec_file with file: "{screen}.spec.json"
 No `branchContracts` section → **stop and route to `jsonui-define`**. The
 generator errors on such a screen rather than producing an empty suite, and
 authoring the decision table is spec work. Do not invent one here.
+
+⚠️ **Absence is not an answer any more (invariant 5).** If the screen has
+ViewModel methods whose behaviour depends on a condition, the missing section
+is a gap to close in the spec, not a reason to skip branch tests. Route it
+and say which methods need declaring. The exception is a screen whose methods
+genuinely have no branches — there, no section is the correct state, and it
+is reported as that rather than as "tests skipped".
 
 ### B2.2 Generate
 
