@@ -34,6 +34,14 @@ The filter is a heuristic and errs on the low side: a finding whose own text con
 
 Count with the unanchored, case-insensitive expression above — it matches all four shapes and none of the prose lines the build also prints ("no warnings", "Warnings: 0"). The first version of this rule shipped `'warning:|\[WARN|⚠'`, which misses the most common shape; it lasted one hour before a lane measured it against the actual print sites. Accepted warnings (a consumer's baseline of 14 `⚠` it has chosen to live with) are not "zero" — write the number and the reason, never "0 warnings".
 
+**The accepted warning most projects will meet is `WARNING [toolchain]:`.** It says this project's vendored platform tools were synced from an older version than the CLI now running, so the project builds with one toolchain and is validated by another. It reaches the expression above through `warning \[`, so it counts. The library's own docstring used to promise the opposite — that the line was "not counted toward the zero-warnings gate" — and was corrected on 2026-09-09: there is no tally in the process to be outside of, so the rulebook's expression is the only thing counting, and it matches. Record the count with its cause and your decision, next to the build result:
+
+```
+warnings 3 — toolchain split, `jui sync_tool` pending, accepted
+```
+
+The count is per vendored platform, not per project, so a project vendoring three platforms contributes three lines and one vendoring web alone contributes one. Running `jui sync_tool` clears them; if a re-run does not, this project was left behind by an earlier release rather than caught mid-transition — `bootstrap` replaces the shared CLI for every face at once while `sync_tool` is per-face, so a split is normal *between those two events* and not otherwise. Both cases print the identical message, so the count and the date you wrote it are the only record telling them apart. Never write "0 warnings" on the grounds that the split was expected, and never narrow the expression to exclude the line: an exclusion silences the left-behind case too, and that case has no other symptom.
+
 **What `jui build` does in order** (relevant for diagnosing failures):
 1. Distributes shared `layouts/` / `styles/` / `resources/` / `images/` to each platform.
 2. Syncs ViewModel Protocol/Base files from spec + Impl markers (hard-errors on drift).
