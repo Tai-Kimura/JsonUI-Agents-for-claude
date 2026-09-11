@@ -33,6 +33,48 @@ err() { printf 'FAIL %s\n' "$*" >&2; FAIL=1; }
 
 frontmatter() { awk '/^---$/{n++;next} n==1' "$1"; }
 
+# ---- 0. frontmatter parses as YAML, and name: matches the filename --------
+# Checks 1–4 read the frontmatter as text (awk), so a frontmatter the agent
+# loader rejects passes them all. That is how `jsonui-test` shipped for four
+# days with `no_install: true` unquoted inside description: — the mapping
+# colon made the whole block unparsable, the agent was registered nowhere,
+# and every text check stayed green. This arm asks the question the loader
+# asks. It needs a real YAML parser; with none available it FAILS rather
+# than skipping, because a skipped gate gates nothing.
+yaml_probe() {
+  if python3 -c 'import yaml' 2>/dev/null; then
+    python3 - "$1" <<'PY'
+import sys, yaml, os
+p = sys.argv[1]
+fm = open(p).read().split('---')[1]
+try:
+    d = yaml.safe_load(fm)
+except yaml.YAMLError as e:
+    print(str(e).splitlines()[0] + (f" (line {e.problem_mark.line + 1})" if getattr(e, 'problem_mark', None) else ""))
+    sys.exit(1)
+want = os.path.splitext(os.path.basename(p))[0]
+if not isinstance(d, dict):
+    print("frontmatter is not a mapping"); sys.exit(1)
+if d.get('name') != want:
+    print(f"name: {d.get('name')!r} != filename {want!r}"); sys.exit(1)
+PY
+  elif command -v ruby >/dev/null 2>&1; then
+    ruby -ryaml -e '
+      p = ARGV[0]; fm = File.read(p).split("---")[1]
+      d = YAML.safe_load(fm)
+      want = File.basename(p, ".md")
+      abort "frontmatter is not a mapping" unless d.is_a?(Hash)
+      abort "name: #{d["name"].inspect} != filename #{want.inspect}" unless d["name"] == want' "$1"
+  else
+    echo "no YAML parser (python3+pyyaml or ruby) on this machine" >&2
+    return 2
+  fi
+}
+for f in .claude/agents/*.md; do
+  out=$(yaml_probe "$f" 2>&1); rc=$?
+  [ "$rc" = 0 ] || err "$f: frontmatter does not parse as YAML / name mismatch — the agent loader will not register it: $(printf '%s' "$out" | tail -1)"
+done
+
 # ---- 1. frontmatter tools: superset of body-referenced MCP tools ---------
 for f in .claude/agents/*.md; do
   fm=$(frontmatter "$f")

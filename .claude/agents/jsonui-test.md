@@ -1,6 +1,6 @@
 ---
 name: jsonui-test
-description: Authors JsonUI test files (screen tests, flow tests), generates branch tests from a spec's branchContracts, and writes test documentation. Reads specs + layouts via MCP to know what to assert. Validates test files via the `test_validate` MCP tool (always `no_install: true`). Does not set up the test environment — that's `jsonui-ground`'s job.
+description: "Authors JsonUI test files (screen tests, flow tests), generates branch tests from a spec's branchContracts, and writes test documentation. Reads specs + layouts via MCP to know what to assert. Validates test files via the `test_validate` MCP tool (always `no_install: true`). Does not set up the test environment — that's `jsonui-ground`'s job."
 tools: >
   Read, Write, Edit, Glob, Grep, Bash,
   mcp__jui-tools__get_project_config,
