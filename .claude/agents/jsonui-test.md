@@ -389,6 +389,16 @@ strings. Fill in its typed switches — and keep them **closed**, failing loudly
 on an unknown name. A lenient default (`?? "open"`) turns a dropped value into
 a passing test of the wrong case.
 
+**Harness conditions (once per app, 1.8.118+).** When the app spec
+declares `harnessConditions`, the generator creates one file in the harness
+directory — `branch-conditions.ts` / `BranchConditions.kt` /
+`BranchConditions.swift` — whose `arrangeCondition(name, value)` fails every
+pair (web throws, Kotlin `error()`, Swift `XCTFail`). Replace each pair with
+code that makes the ViewModel observe the condition as production would, and
+keep it closed: an unknown name or value still fails. For a signed-in session on web, replace only the session check
+rather than setting the cookie (the first rule below); if you do set the
+cookie, declare the refresh route and its scenarios.
+
 Two environment rules, both measured on real apps:
 
 - **Web: do not stub the session cookie.** With a session cookie present the
