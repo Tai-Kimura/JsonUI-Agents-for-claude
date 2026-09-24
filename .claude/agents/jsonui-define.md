@@ -393,13 +393,14 @@ jui g converter --from codeblock.component.json   # single spec
 or, for a batch:
 
 ```
-jui g converter --all                             # all specs (prompts on existing)
-jui g converter --all --skip-existing             # idempotent, best-effort non-interactive
+jui g converter --all                             # all specs (asks before overwriting an existing scaffold file)
+jui g converter --all --skip-existing             # keeps every existing scaffold file, no prompts
+jui g converter --all --force                     # replaces every scaffold file, no prompts (jsonui-cli >= 1.8.113)
 ```
 
-`--skip-existing` leaves existing **converter** files alone silently. Downstream scaffolders (React component / Swift component / Kotlin component / adapters) still prompt on overwrite, so a fully-already-scaffolded project is the only case where `--skip-existing` stays quiet end-to-end; a partial scaffold can still block on those prompts.
+Every scaffold file — the converter and the downstream scaffolds (React / Swift / Kotlin component, adapters) — goes through one overwrite decision (jsonui-cli >= 1.8.112): `--skip-existing` keeps existing files without asking, a closed stdin answers "no", and `--force` replaces them without asking (>= 1.8.113; `sjui` / `kjui g converter` take the same two flags). Scaffolds are the project's code once generated, so `--force` discards hand edits — use it only when that is the intent.
 
-**Do not scaffold with `--attributes` by hand.** The whole point of the spec-driven path is that the attribute list stays in lockstep with the component contract; passing attrs by hand defeats that. `generate_cmd.py::_cmd_generate_converter` reads `props.items[]` → `--attributes` and `slots.items[]` non-empty → `--container`.
+**Do not scaffold with `--attributes` by hand.** The whole point of the spec-driven path is that the attribute list stays in lockstep with the component contract; passing attrs by hand defeats that. `generate_cmd.py::_cmd_generate_converter` reads `props.items[]` → `--attributes` (and, from jsonui-cli 1.8.113, each prop's `description` → `--attribute-descriptions`, so `attribute_definitions/<Name>.json` keeps the spec's sentence) and `slots.items[]` non-empty → `--container`.
 
 **When the spec CHANGES** (props added / renamed / retyped): delete the stale converter file on each affected platform, then re-run `jui g converter --from <spec>`. Do not edit the converter by hand.
 
