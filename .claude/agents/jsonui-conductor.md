@@ -108,6 +108,7 @@ If the user is adding an `Embed`-based screen (tablet master/detail, dashboard w
 - **New + specs exist, no layouts** → `jsonui-implement` (or `jsonui-define` to add a new spec first)
 - **Existing bug** → `jsonui-debug` first (READ-ONLY, returns a routing recommendation)
 - **Existing spec change** → `jsonui-define`
+- **Close contract coverage** (`jsonui-test contracts coverage` reports uncovered outcomes) → `jsonui-define` (Task 6)
 - **Existing Layout / VM body change** → `jsonui-implement`
 - **Existing navigation change** → `jsonui-navigation-{ios,android,web}`
 - **Investigation only** → `jsonui-debug`
