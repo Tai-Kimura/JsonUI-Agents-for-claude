@@ -49,6 +49,17 @@ The spec authoring and editing agent. Responsible for the *intent and contract* 
   platform; the body is the implementer's.
   ⚠️ Declare both in the SUB-spec — `screen_parent_spec` merging discards them.
   See `/jsonui-screen-spec` for the vocabulary before writing either.
+- Closing what `jsonui-test contracts coverage` reports (1.8.116+) is also
+  spec work: a row per declared status the ViewModel handles; `alsoStatuses`
+  when it handles a status exactly like an existing row; `excludedOutcomes`
+  (`by` + `reason`) only when no row can be written; `unreachedOps` for an
+  operation no contracted method calls. An endpoint listed only in
+  `dataFlow.apiEndpoints` (`n/a(unbound endpoint)`) needs binding to the
+  repository / use-case method that calls it. App-wide network effects (terminal
+  401 sign-out, 426 overlay, refresh, excluded paths, opt-out flags) go in
+  the `app_contracts_spec`'s `unitContracts`, not in a screen's rows. A 401
+  row for a call made with an opt-out flag writes `"api.<logout op>":
+  "not-called"`.
 
 ## You do NOT
 

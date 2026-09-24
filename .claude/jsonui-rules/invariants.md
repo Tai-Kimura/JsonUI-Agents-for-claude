@@ -162,13 +162,22 @@ A contract exists to make a test exist. `branchContracts` and `unitContracts` ar
 
 `platforms` omitted means every platform; the block is an object or an array of them. `doc_validate_spec` lints the shape.
 
+- `unitContracts` in the **`app_contracts_spec`** — the app-wide effects of the network layer: signing out on a terminal 401, the force-update overlay on 426, refresh, which paths are excluded from them, opt-out flags a call can pass. These happen at the app root, outside every screen's branch harness, so no screen's `branchContracts` can assert them. A screen's rows answer only what its ViewModel does when the status reaches it — and it does reach it: the handler runs, then the error is thrown to the caller
+
 ```bash
 jsonui-test generate branch-tests --check
 jsonui-test generate unit-stubs   --check
 # Exit 0 ← required: every declared case is implemented
 ```
 
-- ⚠️ **These checks measure agreement, not coverage.** They compare the DECLARED set against implemented test names — nothing in the toolchain computes a coverage percentage. `N = 0 case(s) declared` exits 0 exactly like a fully implemented project. So the exit code is a floor, never the answer — quote `N case(s) declared across M spec file(s)`, never "check passed"
+- ⚠️ **These checks measure agreement, not coverage.** They compare the DECLARED set against implemented test names. `N = 0 case(s) declared` exits 0 exactly like a fully implemented project. So the exit code is a floor, never the answer — quote `N case(s) declared across M spec file(s)`, never "check passed"
+- **Coverage is measured separately, and is not a gate yet (1.8.116+).** `jsonui-test contracts coverage` lists the API outcomes the OpenAPI declares that no branch row answers, per method × operation × platform. Read `units` and `statuses required` on the same line as the result — `units 0` means nothing was measured, not that everything is covered. Close an `uncovered` status in this order:
+  1. a row whose `when` serves that status
+  2. `alsoStatuses` on an existing row, when the ViewModel treats that status exactly like the row's own (the generator copies the row and checks it)
+  3. `excludedOutcomes` with `by` (`unit` / `unreachable` / `unexpressible`) and a `reason` — the last resort, because it asserts nothing
+  4. `unreachedOps` for an operation no contracted method calls
+  - An endpoint declared only in `dataFlow.apiEndpoints`, with no `repositories` / `useCases` method whose `endpoint` is that route, is reported `n/a(unbound endpoint)` and exits 3: no generated test can see its calls (they reach the runtime as undeclared). Bind it to the method that calls it — do not answer it with rows or exclusions
+- ⚠️ **Since 1.8.116 a generated branch test fails when the method calls a declared endpoint that none of its rows reaches.** The failure names the operation. If the method really makes that call (a refetch after a save, a follow-up load), add `"api.<op>": "called"` to the row whose act makes it; do not delete the endpoint from `dataFlow` to make the red go away — that turns the declaration into a lie
 - ⚠️ **Declare in the sub-spec, never in a parent spec.** `screen_parent_spec` merging discards these blocks; since 1.8.46 `--check` reports PROBLEM and exits non-zero instead of losing them silently
 - Implementation is detected **by name**: iOS `func <name>(` in an `XCTestCase`, Android `fun <name>(`, web `it("<name>")`. A renamed test is an unimplemented case
 - `unit-stubs` writes the stub in each platform's convention; the body is yours. It needs `platforms.<p>.unitTestsDir` in `jui.config.json`

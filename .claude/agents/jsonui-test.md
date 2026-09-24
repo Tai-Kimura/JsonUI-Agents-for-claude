@@ -371,6 +371,12 @@ names the fix: a scenario the mock file does not define, an `arg.<name>` the
 method does not declare as a param, a `@response.<path>` absent from the
 scenario body. Those belong back in the spec — route to `jsonui-define`.
 
+Since 1.8.116 a generated test also fails when the method, during its act,
+calls a declared endpoint that none of its rows reaches; the failure names
+the operation. That is a missing `"api.<op>": "called"` in the spec (usually
+a refetch after a save) — route it to `jsonui-define`. Never remove the
+endpoint from `dataFlow` to silence it.
+
 ### B2.3 Wire the harness (once per screen)
 
 The generated test + runtime are `@generated`. The **harness** is written
@@ -379,6 +385,25 @@ state, invoking the method, expecting transitions, and resolving `@key`
 strings. Fill in its typed switches — and keep them **closed**, failing loudly
 on an unknown name. A lenient default (`?? "open"`) turns a dropped value into
 a passing test of the wrong case.
+
+Two environment rules, both measured on real apps:
+
+- **Web: do not stub the session cookie.** With a session cookie present the
+  app's ApiClient tries a refresh; the screen does not declare the refresh
+  route, the runtime answers it 599, and the ViewModel receives status 0
+  instead of 401. The test stays green because `then` does not look at the
+  error kind — it is now testing an outcome production never has. If a
+  harness must carry a session, declare the refresh route and its scenarios
+  in the spec's `dataFlow` and the mock.
+- **iOS: stop third-party SDKs that make HTTP calls on their own schedule in
+  the test host** (push-token delivery is the common one). Such a call can
+  land inside a test's act window or not, depending on what an earlier run
+  left in the simulator, so the result flips between runs and no row can
+  fix it. Clearing Keychain or UserDefaults is not enough — it only stops
+  the SDK until it delivers again. Under XCTest, do not set the messaging
+  delegate, turn auto-init off and skip APNs registration; turning auto-init
+  off alone still let the delegate fire. This is a change in the app's own
+  launch code, so say so to the implementer — the generator cannot make it.
 
 ### B2.4 Prove the tests can fail
 
