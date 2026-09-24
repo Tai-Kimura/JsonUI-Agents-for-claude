@@ -380,6 +380,9 @@ that stayed green: they do not make the call, and once `called` lands they
 will allow it — each one that must not make it needs `"api.<op>":
 "not-called"`.
 
+API outcomes that `contracts coverage` reports uncovered are also spec work:
+route them to `jsonui-define` (Task 6: close contract coverage).
+
 ### B2.3 Wire the harness (once per screen)
 
 The generated test + runtime are `@generated`. The **harness** is written
