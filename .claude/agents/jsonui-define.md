@@ -500,13 +500,14 @@ Before drafting, read what the spec already says about that method and operation
    - **When the spec says a result exists but not what it is** ("a common message" with no strings key, a refetch described for one status only), write what it does state, and list the vagueness as a spec gap in 6.4. Do not invent the missing value, and do not drop the row for it.
 3. **`excludedOutcomes`** (`by` + `reason`; the shape is in `/jsonui-screen-spec`), only when neither 1 nor 2 can be written: `unit` (a unit case covers it — name the case), `unreachable` (this method cannot receive it — say why from the spec or the OpenAPI), `unexpressible` (only a `note` could state it). An exclusion asserts nothing, so it is the last resort.
 4. **`unattributed`**: `callers` names the use-case methods whose `calls` include the operation; the ViewModel method that calls one of them makes the call. Give that method a row that reaches the operation — a `when` that serves one of its scenarios, or `then` `"api.<op>": "called"`. If no contracted method on this screen calls it (the parent screen does, for example), declare it in `unreachedOps` with a reason. An endpoint that appears only in `dataFlow.apiEndpoints` is the different case in 6.1 (`n/a(unbound endpoint)`).
-5. **Ask** when the spec does not say how the ViewModel handles the status. Write the question; do not pick 1–4 for it.
+5. **A call made only under a precondition** the harness does not have (signed in, a feature flag, 1.8.118+): declare a harness condition in the app spec (`harnessConditions`) and write rows with `"harness.<name>": "<value>"` (`/jsonui-screen-spec`, *Harness conditions*). An exclusion cannot close it, and `unreachedOps` would be false.
+6. **Ask** when the spec does not say how the ViewModel handles the status. Write the question; do not pick 1–5 for it.
 
 Also say when the spec's prose describes a state that no field or row carries. That is a gap in the spec, not a draft.
 
 ### 6.4 Show, then write
 
-Show the drafts as one table per screen: method · operation · status · draft (1–5) · the JSON to add · the spec words it rests on · the spec gaps it found. Ask which to accept. Write only the accepted ones. What is not accepted stays `uncovered`, visibly. Never add an exclusion to make the number go down.
+Show the drafts as one table per screen: method · operation · status · draft (1–6) · the JSON to add · the spec words it rests on · the spec gaps it found. Ask which to accept. Write only the accepted ones. What is not accepted stays `uncovered`, visibly. Never add an exclusion to make the number go down.
 
 ### 6.5 Close the loop
 
