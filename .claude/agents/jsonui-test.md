@@ -197,7 +197,7 @@ mock contract drift — so a failure here is not necessarily about the test file
 Read the output before assuming the test is wrong; `no_mock_check: true` isolates the
 test file from mock drift. From 1.8.119 the result also carries the
 project's contracts-coverage section — the whole project, whatever `files`
-holds; `no_mock_check` does not skip it. From 1.8.120 it can make the
+holds; `no_mock_check` does not skip it. From 1.8.121 it can make the
 result FAILED (`Coverage: FAILED` on the summary line). That is not a test-file
 problem: entries not in the baseline, and what cannot be baselined, go to
 `jsonui-define` (Task 6) with the screens validate names; `baselined but closed`

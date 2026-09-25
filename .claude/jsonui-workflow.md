@@ -26,7 +26,7 @@ Every task must satisfy all five invariants:
 2. `jui verify --fail-on-diff` must pass with no drift — **and you must read how many screens it actually verified**. Screens whose layout is authored externally are skipped and do not affect the exit code, so `verified 0 of M` means the check did not run, not that it passed.
 3. `@generated` files are never hand-edited — edit the spec instead.
 4. `jui lint-strings` must be clean (and `jsonui-localize` run for VM-side strings) before a screen is considered done.
-5. Conditional logic and hand-written code are **declared and tested** — `branchContracts` / `unitContracts` where the entry makes a real test exist, and `jsonui-test generate branch-tests --check` / `unit-stubs --check` exit 0, and (from 1.8.120) `jsonui-test validate` passes its coverage section — nothing outside the app's baseline, nothing stale or vanished in it, nothing that cannot be baselined. A method with no branches and nothing to assert gets no entry.
+5. Conditional logic and hand-written code are **declared and tested** — `branchContracts` / `unitContracts` where the entry makes a real test exist, and `jsonui-test generate branch-tests --check` / `unit-stubs --check` exit 0, and (from 1.8.121) `jsonui-test validate` passes its coverage section — nothing outside the app's baseline, nothing stale or vanished in it, nothing that cannot be baselined. A method with no branches and nothing to assert gets no entry.
 
 Full details in `.claude/jsonui-rules/invariants.md`.
 
