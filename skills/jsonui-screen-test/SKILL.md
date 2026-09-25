@@ -343,6 +343,8 @@ Use **Title Case** for `metadata.name` - this is displayed in documentation and 
    - Error states
    - Edge cases
 
+**Element ids are checked against the layouts** (1.8.119+). `jsonui-test validate` looks up every id a step names (`id`, `ids`, `container`, `cropId`, `visible` / `notVisible` under `when` and `while`, nested `steps` too) in every layout of the project, on every platform with includes expanded. An id on none of them is INFO, and a WARNING from 1.8.120; it never fails the run by itself. Fix the step to the layout's spelling — when the message names layout ids, they are candidates: pick the node the step means. `test.appOwnedIds` in `jui.config.json` is only for elements the app draws outside every layout (a native navigation-bar item, a toast; an entry ending in `*` is a prefix): never add an id there to clear the message, and ask the user when you cannot tell. Ids the generated code derives (a Collection's `<id>_item_<n>`), a component's parts and web's `A #B` form are counted as cannot check.
+
 ### Example Workflow
 
 ```bash

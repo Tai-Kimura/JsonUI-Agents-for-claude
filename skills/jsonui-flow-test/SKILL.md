@@ -232,6 +232,7 @@ When screen tests define `args` with default values, flow tests can override the
 ### Inline Steps (For Flow-Specific Actions)
 
 You can also include inline steps for flow-specific actions that don't belong to any screen test.
+Their element ids are checked against the layouts the same way as a screen test's (1.8.119+; see the jsonui-screen-test skill, *Element ids are checked against the layouts*).
 
 **Every top-level inline step (action or assert) MUST carry a non-empty `screen`** — the
 alias (from `sources`) of the screen the step runs on. This applies to `steps`, `setup`,
