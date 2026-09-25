@@ -440,6 +440,15 @@ strings. Fill in its typed switches — and keep them **closed**, failing loudly
 on an unknown name. A lenient default (`?? "open"`) turns a dropped value into
 a passing test of the wrong case.
 
+**Call the method as the spec declares it.** The generated test passes the
+row's `arg.*` values positionally, in the order of the method's declared
+params — the spec, the `jui generate` stub and the test agree on that. A
+ViewModel method that takes one object instead (`start(params: {…})`) has
+drifted from its spec. Report it and route it (the spec's params →
+`jsonui-define`, the ViewModel → `jsonui-implement`); do not absorb it in the
+harness (its `invoke` on Android and iOS, or a wrapper around the ViewModel in
+`createHarness` on web), which would hide the drift from every later reader.
+
 **Harness conditions (once per app, 1.8.118+).** When the app spec
 declares `harnessConditions`, the generator creates one file in the harness
 directory — `branch-conditions.ts` / `BranchConditions.kt` /
