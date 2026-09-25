@@ -109,6 +109,7 @@ If the user is adding an `Embed`-based screen (tablet master/detail, dashboard w
 - **Existing bug** → `jsonui-debug` first (READ-ONLY, returns a routing recommendation)
 - **Existing spec change** → `jsonui-define`
 - **Close contract coverage** (`jsonui-test contracts coverage` reports uncovered outcomes) → `jsonui-define` (Task 6)
+- **validate red on coverage** → entries not in the baseline, or what cannot be baselined: `jsonui-define` (Task 6), with the screens validate names; only `baselined but closed`, with or without vanished: `jsonui-test` (shrink the baseline); `baselined but gone from the run` (vanished): with `not evaluated` or `screens not evaluated` on the same platform, `jsonui-define` first; otherwise tell the user — removing or re-keying those entries is theirs (`new` and `vanished` of the same count on two screens is a rename: tell the user, route nothing); `cannot start` or no baseline file with entries the user declines: tell the user — recording or repairing the baseline is their decision
 - **Existing Layout / VM body change** → `jsonui-implement`
 - **Existing navigation change** → `jsonui-navigation-{ios,android,web}`
 - **Investigation only** → `jsonui-debug`
@@ -141,7 +142,7 @@ You do not enforce these directly, but you remind the user and sub-agents when r
 2. `jui verify --fail-on-diff` must pass with no drift
 3. `@generated` files are never edited by hand
 4. `jsonui-localize` must run before a screen is done
-5. Conditional logic and hand-written code are declared (`branchContracts` / `unitContracts`) and tested — only where the entry makes a real test exist
+5. Conditional logic and hand-written code are declared (`branchContracts` / `unitContracts`) and tested — only where the entry makes a real test exist; from 1.8.120 `jsonui-test validate` also passes its coverage section
 
 See `.claude/jsonui-rules/invariants.md`.
 

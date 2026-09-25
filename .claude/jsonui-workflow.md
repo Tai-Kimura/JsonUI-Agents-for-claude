@@ -26,7 +26,7 @@ Every task must satisfy all five invariants:
 2. `jui verify --fail-on-diff` must pass with no drift — **and you must read how many screens it actually verified**. Screens whose layout is authored externally are skipped and do not affect the exit code, so `verified 0 of M` means the check did not run, not that it passed.
 3. `@generated` files are never hand-edited — edit the spec instead.
 4. `jui lint-strings` must be clean (and `jsonui-localize` run for VM-side strings) before a screen is considered done.
-5. Conditional logic and hand-written code are **declared and tested** — `branchContracts` / `unitContracts` where the entry makes a real test exist, and `jsonui-test generate branch-tests --check` / `unit-stubs --check` exit 0. A method with no branches and nothing to assert gets no entry.
+5. Conditional logic and hand-written code are **declared and tested** — `branchContracts` / `unitContracts` where the entry makes a real test exist, and `jsonui-test generate branch-tests --check` / `unit-stubs --check` exit 0, and (from 1.8.120) `jsonui-test validate` passes its coverage section — nothing outside the app's baseline, nothing stale or vanished in it, nothing that cannot be baselined. A method with no branches and nothing to assert gets no entry.
 
 Full details in `.claude/jsonui-rules/invariants.md`.
 
@@ -42,6 +42,7 @@ Agents call the `jsonui-mcp-server` for spec reads, layout reads, component look
 4. Silently fall back to Bash when an MCP call fails — surface the failure.
 5. Bypass bug-trace investigation for Workflow 2 bug fixes — the spec-first trace dramatically improves accuracy.
 6. Invent behavior that is not in the spec — ask the user or update the spec first.
+7. Record the first coverage baseline (`jsonui-test contracts baseline --initial`), or pass `--no-coverage-check`, to turn `jsonui-test validate` green — the first recording is the user's decision; agents only shrink an existing baseline (see `.claude/jsonui-rules/invariants.md`).
 
 ### File layout
 
