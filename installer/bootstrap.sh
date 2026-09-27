@@ -90,7 +90,12 @@ else
 fi
 
 if command -v ruby >/dev/null 2>&1; then
-  success "ruby $(ruby -v | awk '{print $2}')"
+  ruby_v="$(ruby -e 'print RUBY_VERSION' 2>/dev/null || true)"
+  if ruby -e 'exit(Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.2") ? 0 : 1)' >/dev/null 2>&1; then
+    success "ruby ${ruby_v}"
+  else
+    warning "ruby ${ruby_v:-?} here — sjui / kjui / rjui need Ruby 3.2 or later and stop on an older one. Install one (e.g. with rbenv) — jui init / jui sync_tool pin Ruby 3.2.2 in each platform directory's .ruby-version, so a version manager asks for exactly 3.2.2 (another 3.2 or a 3.3 does not satisfy it)."
+  fi
 else
   warning "ruby not found — sjui / kjui / rjui tools will not run."
 fi

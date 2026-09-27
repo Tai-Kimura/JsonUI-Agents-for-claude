@@ -2,7 +2,7 @@
   "_comment": "strings.json format - Structure: { file_prefix: { key: value } }",
   "login": {
     "sampleapp": "SampleApp",
-    "discover_your_perfect_dram": "Discover Your Perfect Dram"
+    "discover_new_arrivals": "Discover New Arrivals"
   },
   "main": {
     "welcome": "Welcome"
