@@ -322,7 +322,7 @@ a key is a name the included layout binds, a value is a literal or a binding
 read in the including layout's scope
 (`{ "include": "card", "data": { "title": "@{headline}" } }`). This holds on
 every platform from jsonui-cli 1.9.6 (Dynamic mode from SwiftJsonUI 10.29.2 /
-KotlinJsonUI 2.43.1); before it, web handed an included layout none of the
+KotlinJsonUI 2.43.2); before it, web handed an included layout none of the
 screen's data (it drew its own defaults), and the iOS and Android generated
 code ignored an object map.
 
@@ -359,10 +359,10 @@ web wrote both and did not compile). Declare it once, or give the include an
   TabView's `onValueChange` and its aliases `onPageChanged` /
   `onValueChanged` / `onTabChange`) a bare name is called, the same as
   `@{onTap}`, from jsonui-cli 1.9.6 (Dynamic mode: SwiftJsonUI 10.29.2 /
-  KotlinJsonUI 2.43.1); before, several of them dropped it without a word.
-  One exception in 1.9.6: on Android generated code a bare `onTextChange`
-  compiles only for a handler declared `() -> Void`; write `"@{h}"` when the
-  handler takes the text.
+  KotlinJsonUI 2.43.2); before, several of them dropped it without a word.
+  On Android generated code a bare `onTextChange` passes the text to a
+  handler that takes it from jsonui-cli 1.9.7 (in 1.9.6 it compiled only
+  for a handler declared `() -> Void`).
   `lookup_attribute` shows each event's type
 - **Views with bindings must have an `id`**
 - **Never prefix with `data.`** — bindings reference variables by bare name regardless of where they're declared (`data: [...]` at the root of a cell Layout, `stateManagement.uiVariables` in the spec, `dataFlow.viewModel.vars` — all resolve the same way at the binding site)
@@ -558,7 +558,7 @@ called with the new page when the page changes — a swipe, a `scrollTo`, a
 a tap on another tab, a `selectedIndex` write — not when the TabView first
 appears, and not when the selected tab is tapped again. Both hold on every
 platform from jsonui-cli 1.9.6 (Dynamic mode: SwiftJsonUI 10.29.2 /
-KotlinJsonUI 2.43.1); before, Android called the pager's handler with the
+KotlinJsonUI 2.43.2); before, Android called the pager's handler with the
 page it appeared on (web, with that page on the first scroll), and Android
 and web called the TabView's on every tab tap and never on a `selectedIndex`
 write. Load what the first page or tab shows when
