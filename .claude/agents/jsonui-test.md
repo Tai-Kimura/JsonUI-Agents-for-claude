@@ -293,6 +293,14 @@ violations. Only `[BODY]` (required missing / wrong type / bad enum / a field
 the contract does not have) needs action. `strict: true` (or
 `mock.checkOptionalFields`) is the opt-in for teams that do want full coverage.
 
+**A `null` the schema admits is not a violation.** From jsonui-cli 1.9.6 the
+check reads the schema as written before following a `$ref`: `nullable: true`
+— beside a `$ref` too (`{"$ref": "…", "nullable": true}`, OpenAPI 3.0) — a
+`null` type or type member, or a `oneOf` / `anyOf` branch that admits null.
+Before, a null for `$ref` + `nullable` was a `[BODY]` violation. Keep the
+`null` in the mock when the server sends it; do not replace it to satisfy an
+older check.
+
 **`mock serve` also checks the requests the app sends** against the operation's
 `requestBody` and query parameters. Violations do not fail the request — they
 are recorded and reported with a non-zero exit at the end of the run. So a green

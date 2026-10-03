@@ -308,6 +308,32 @@ Creation commands:
 
 → Examples: `examples/include-correct.json`, `examples/include-wrong.json`
 
+**An included layout reads the including screen's data** — an include is an
+inline expansion, and the screen's ViewModel owns that data. With an `id` on
+the include node, the included layout's ids and data names take the id as a
+prefix, camelCase-joined: in an include with id `side`, the included layout's
+`@{title}` reads the screen's `sideTitle`; without an `id` it reads `title`.
+A nested include is expanded too, and its id is joined to the prefix above it
+(`row` → `chip_a` → `rowChipA…`). An include without an `id` is a defined
+form, not a mistake: from jsonui-cli 1.9.6 sjui no longer warns `is missing
+'id'` for it. The include node's object maps are laid over that data for the
+included layout — `shared_data`, then `data` (`data` wins on a key both set):
+a key is a name the included layout binds, a value is a literal or a binding
+read in the including layout's scope
+(`{ "include": "card", "data": { "title": "@{headline}" } }`). This holds on
+every platform from jsonui-cli 1.9.6 (Dynamic mode from SwiftJsonUI 10.29.2 /
+KotlinJsonUI 2.43.1); before it, web handed an included layout none of the
+screen's data (it drew its own defaults), and the iOS and Android generated
+code ignored an object map.
+
+One name declared twice in the expanded screen — say the screen and an
+include without an `id` both declare `title` — is one data entry: with one
+type that is fine; with two types the Data type keeps the first, and from
+jsonui-cli 1.9.6 every platform warns `data property '<name>' is declared as
+'<A>' and as '<B>'` (before, iOS and Android dropped the second silently, and
+web wrote both and did not compile). Declare it once, or give the include an
+`id` so the names are two.
+
 ---
 
 ## Data Binding
@@ -315,6 +341,29 @@ Creation commands:
 ### Syntax
 
 - Bind with `@{}`: `"text": "@{title}"`, `"onClick": "@{onButtonTap}"`
+- **A bound value is one binding.** Text around a binding (`"Title: @{x}"`,
+  `"@{a} / @{b}"`, `"https://cdn/@{id}.png"`) composes a string in the layout:
+  compose it in the ViewModel and bind it as one value (`"@{titleLine}"`) —
+  a layout holds no logic, and a string composed in the layout cannot be
+  localized as one text. From jsonui-cli 1.9.6 the build warns
+  `[binding-mixed-text] '<Type>.<attr>' mixes literal text with a binding …`
+  on an attribute the component declares (before, iOS and web joined the
+  pieces and Android drew the first binding alone)
+- **Handler names**: write an event as `"@{onTap}"`. An event that takes
+  only a binding (`onClick`, `onLongPress`, `onPan`, a Switch / Slider /
+  Segment / CheckBox / Radio / SelectBox `onValueChange`, …) calls nothing
+  for a bare `"onTap"`, and from jsonui-cli 1.9.6 the build warns `… is the
+  bare name 'onTap', but the attribute is declared binding-only: write
+  '@{onTap}' … (binding-bare-event)`. On an event whose declared type
+  includes a string (`onTextChange`, `onItemAppear`, a Collection's or
+  TabView's `onValueChange` and its aliases `onPageChanged` /
+  `onValueChanged` / `onTabChange`) a bare name is called, the same as
+  `@{onTap}`, from jsonui-cli 1.9.6 (Dynamic mode: SwiftJsonUI 10.29.2 /
+  KotlinJsonUI 2.43.1); before, several of them dropped it without a word.
+  One exception in 1.9.6: on Android generated code a bare `onTextChange`
+  compiles only for a handler declared `() -> Void`; write `"@{h}"` when the
+  handler takes the text.
+  `lookup_attribute` shows each event's type
 - **Views with bindings must have an `id`**
 - **Never prefix with `data.`** — bindings reference variables by bare name regardless of where they're declared (`data: [...]` at the root of a cell Layout, `stateManagement.uiVariables` in the spec, `dataFlow.viewModel.vars` — all resolve the same way at the binding site)
 
@@ -362,6 +411,7 @@ The resolution semantics are SSoT-declared (`shared/core/binding_semantics.json`
 - `@{selectedTab == 0 ? #D4A574 : #B8A894}` - Ternary operators
 - `@{items.count > 0}` - Comparisons
 - `@{price * quantity}` - Calculations
+- `"Total: @{count}"` - Text around a binding (`binding-mixed-text`, 1.9.6+): bind a `totalLine` the ViewModel composes
 
 **Allowed:**
 - `@{searchTabColor}` - ViewModel computed property
@@ -485,6 +535,12 @@ What is not a tap:
   warns `onClick on a TextField is not called: a text field's tap focuses
   it` (`… on a TextView …`) once for each such node. Remove the handler — bind `text` to read what the user types;
   `onTextChange` is called on each change.
+- An `onClick` / `onclick` on a Web: the embedded page takes the taps. Nor
+  is an `onPan` on a TextField, a TextView or a Slider called — the
+  control's own drag (text selection, the slider's value) takes the
+  gesture. From jsonui-cli 1.9.6 `jui build` warns `'<attr>' is not called
+  on a <Type>: <reason>` on every platform, and Android no longer wires a
+  TextView's `onPan`. Remove the attribute.
 
 A control's own `onClick` — on a Switch, Toggle, CheckBox, Radio, Segment,
 Slider or SelectBox — is called once, after the control's own change (a Slider's when the drag
@@ -494,6 +550,19 @@ jsonui-cli 1.9.0: `canTap: false` stops the call and not the change, and
 SwiftJsonUI and KotlinJsonUI, not with jsonui-cli. To act on a control's change,
 bind its value (the view model's var then changes with it) rather than
 reading it in `onClick`.
+
+A pager's (a paging Collection's) `onValueChange` / `onPageChanged` is
+called with the new page when the page changes — a swipe, a `scrollTo`, a
+`currentPage` write — and not when the pager first appears. A TabView's
+`onValueChange` is called with the new index when the selected tab changes —
+a tap on another tab, a `selectedIndex` write — not when the TabView first
+appears, and not when the selected tab is tapped again. Both hold on every
+platform from jsonui-cli 1.9.6 (Dynamic mode: SwiftJsonUI 10.29.2 /
+KotlinJsonUI 2.43.1); before, Android called the pager's handler with the
+page it appeared on (web, with that page on the first scroll), and Android
+and web called the TabView's on every tab tap and never on a `selectedIndex`
+write. Load what the first page or tab shows when
+the screen loads, not from this handler.
 
 A tap whose `enabled` is bound stays a button, and reads as disabled while
 the value is false, on iOS and Android. A bound `canTap` or `userInteractionEnabled` also stops the tap while it is false, and the element is not announced as a button then (a
@@ -617,6 +686,21 @@ When generating Converters:
    (*Tappables are announced as buttons*, above): the component gives itself
    its role in its own code (the specification rules, *A tap on a custom
    component*)
+6. A literal String prop is localized (looked up as a strings.json key, as
+   a Label's `text` is) only when the prop's name is display text — `text`,
+   `hint`, `placeholder`, `label`, `prompt`, `alt`, `accessibilityLabel` —
+   and written as the literal otherwise (`"variant": "bar"`), on iOS and
+   Android alike, in a converter scaffolded by jsonui-cli 1.9.6 or later.
+   Before, Android looked every String literal up (and could warn `Bare key
+   … foreign section` for a `variant`) and iOS looked none up. A converter
+   scaffolded earlier keeps its old behaviour until it is scaffolded again:
+   the user runs the command on its header's `Generator:` line in a
+   terminal and answers `y` only for the converter file
+   (`<name>_converter.rb` for sjui, `<name>_component.rb` for kjui) and `n`
+   for the rest (the Swift / Kotlin component holds the app's code). Never
+   add `--force`, which overwrites the component's body too. Run from an
+   agent's shell (not a terminal) the command keeps every file and asks
+   nothing
 
 ---
 
