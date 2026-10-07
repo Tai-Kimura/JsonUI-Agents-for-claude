@@ -162,6 +162,10 @@ _Generated from [`schemas/actions.schema.json`](https://github.com/Tai-Kimura/js
 | `emitHook` | アプリが登録したテストフックを呼び出す（`window.__jsonuiTestHooks`） | `name` | `hookArgs` | Web のみ。iOS/Android は警告付き no-op（`when.platform` でゲート） |
 <!-- /generated:actions -->
 
+Scroll notes:
+- **`scrollUntilVisible` guarantees that its target is visible, not where it stops.** The stop offset depends on where the target first arrives (Android lifts a target stuck at the trailing edge; one that is not stuck stays where the search swipe ended), so the same step can leave the screen at two different offsets.
+- **Before asserting `visible` on a different element, scroll to that element too** (`scrollUntilVisible` on it), even if it sat on screen in the run you watched. A validation message at the bottom of a form, below a fixed footer, is the typical case: after `tap` Save, `scrollUntilVisible` the error label, then assert it.
+
 Keyboard notes:
 - **`typeText`** types on the software keyboard into the **currently-focused** field — it takes no `id`. Use it for focused-but-untargetable fields (e.g. an invisible code-entry input behind a custom 2FA/PIN UI). Focus must already be established (a prior `tap`, or the app focusing programmatically).
 - **`hideKeyboard`** dismisses the soft keyboard; it is a no-op when no keyboard is shown. Use it when the keyboard covers the next tap target and the field type has no return key (e.g. `number-pad`). On iOS the last-resort strategy is a drag-to-dismiss gesture, which only works when the enclosing ScrollView opts in via `"keyboardDismissMode": "interactive"` (or `"onDrag"`) in the layout JSON — coordinate with the layout when a screen needs this.
