@@ -536,6 +536,8 @@ _Generated from [`schemas/actions.schema.json`](https://github.com/Tai-Kimura/js
 
 (Inline usage of any action requires `screen` — see "Inline Steps" above.)
 
+Scroll note: `scrollUntilVisible` guarantees its target is visible, not where it stops — before asserting `visible` on a different element, `scrollUntilVisible` that element too (see the jsonui-screen-test skill's Scroll notes).
+
 ### Assertions
 
 <!-- generated:assertions -->
