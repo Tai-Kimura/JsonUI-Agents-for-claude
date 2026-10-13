@@ -99,7 +99,7 @@ Open `docs/screens/layouts/{name}.json` and refine:
 - Bindings (`@{propertyName}`) matching `stateManagement.uiVariables` and `dataFlow.viewModel.vars`
 - Styling (spec may only suggest styles in prose; you decide concrete values)
 - Platform overrides (`platform: { ios: {...}, android: {...}, web: {...} }`) for attributes that differ per platform
-- Responsive overrides (`responsive: { compact: {...} }`) for screen-size variants
+- Responsive overrides (`responsive: { compact: {...} }`, or window-width conditions `minWidth:N` / `maxWidth:N` from jsonui-cli 1.9.26 — not both in one block) for screen-size variants; one key wins alone (see the jsonui-layout skill)
 - Includes (`"include": "path/to/partial"`) for repeated sections
 - Collection `cellClasses` / `sections` for lists (use `"lazy": "none"` only when the Collection is nested inside an already-scrollable parent — see `.claude/jsonui-rules/specification-rules.md`)
 - TabView `view` references for tab screens
