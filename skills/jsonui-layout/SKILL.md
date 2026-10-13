@@ -731,15 +731,48 @@ Components can have a `responsive` block for size class-based attribute override
 | `regular` | Large screen (iPad, Android expanded) |
 | `landscape` | Landscape orientation |
 | `compact-landscape` | Small screen + landscape |
+| `medium-landscape` | Medium screen + landscape |
 | `regular-landscape` | Large screen + landscape |
 
-Priority: compound > landscape > regular > medium > compact > default
+Priority: regular-landscape > medium-landscape > compact-landscape > landscape > regular > medium > compact > default
+
+**One key wins, alone.** Of the keys that hold, only the highest-priority one is applied on top of the base; the others are NOT stacked under it. `{ "compact": { "padding": 4 }, "regular": { "spacing": 24 } }` on a regular window gives spacing 24 and the BASE padding — put every attribute a size class needs into that size class's override. (From jsonui-cli 1.9.26 / KotlinJsonUI's next release, Android Dynamic mode draws it the same way; it used to stack.)
+
+### Window-width conditions (jsonui-cli 1.9.26+)
+
+When the size classes cannot tell two situations apart — an open foldable held upright is `regular` at 669pt, the same class as the same device open sideways at 867pt — write width conditions instead:
+
+```json
+{
+  "type": "View",
+  "orientation": "vertical",
+  "responsive": {
+    "maxWidth:700": { "orientation": "vertical" },
+    "minWidth:700": { "orientation": "horizontal", "spacing": 24 }
+  }
+}
+```
+
+| Key | Holds when |
+|---|---|
+| `minWidth:N` | the window is **at least** N wide (`width >= N`) |
+| `maxWidth:N` | the window is **narrower than** N (`width < N` — N itself is NOT included) |
+
+- N is a whole number in the platform's logical unit: iOS pt, Android dp, web CSS px. The width is the **window's** (iOS: the scene / window, Android: `LocalWindowInfo.containerSize`, web: the viewport), not the parent's.
+- `maxWidth:700` and `minWidth:700` split every width with no gap and no overlap (fractional widths included). ⚠️ `maxWidth:699` + `minWidth:700` leaves 699..700 to the base.
+- ⚠️ The layout key's `maxWidth` is "less than N". jsonui-test-runner's responsive **test condition** `maxWidth` is "at most N" — a different thing with the same name.
+- Of the conditions that hold, the most narrowing one wins alone: the smallest `maxWidth`, else the largest `minWidth`.
+- `jui build` refuses (`ERROR [responsive]`), before writing anything:
+  - width conditions and size classes (`compact` … `regular-landscape`) in the same `responsive` block — use one or the other;
+  - a `maxWidth` whose N is larger than some `minWidth`'s N (both would hold at once): every maxWidth's N must be ≤ every minWidth's N;
+  - anything that looks like a width condition and is not exactly `minWidth:N` / `maxWidth:N` — no `-landscape` combination, no unit (`700px`), no fraction, no other casing.
+- No named breakpoints yet: write the number in each layout.
 
 ### Rules
 
 - `responsive` can be added to ANY component
 - Only attribute overrides — `type`, `child`, `data` CANNOT be in responsive
-- Unspecified attributes keep the default value
+- Unspecified attributes keep the default value (the base — not another key's override)
 - Use for: orientation changes, spacing/padding adjustments, visibility toggling, fontSize changes
 - For completely different structures, use variant files (`screen@regular.json`) — see below
 
