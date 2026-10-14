@@ -478,7 +478,7 @@ Set ViewModel state before tests:
 
 ## Setup and Teardown
 
-Run steps before/after each test case:
+`setup` runs **once per file, before the first case**, and `teardown` runs **once, after the last case** — not around each case. This is how all three drivers run a screen test file:
 
 ```json
 {
@@ -491,6 +491,35 @@ Run steps before/after each test case:
   "cases": [...]
 }
 ```
+
+**The cases share one screen state, in order.** The screen is opened once and every case starts where the previous case left it: its scroll position, the screen it navigated to, what it typed. So:
+
+- A case that scrolls (`scroll`, `scrollUntilVisible`) leaves the next case scrolled: an element near the top may then be outside the viewport, and its `visible` fails.
+- A case that navigates away (tap a link, submit a form) leaves the next case on the other screen, where the ids it expects are not there.
+- Putting the initialisation in `setup` does not reset the screen between cases — `setup` runs only before the first one.
+- A setup failure fails every case; teardown still runs.
+
+Either order the cases so each starts where the previous one ends, or declare `caseIsolation: "reopen"`:
+
+```json
+{
+  "caseIsolation": "reopen",
+  "setup": [ { "action": "waitFor", "id": "list_header" } ],
+  "cases": [
+    { "name": "scrolls to the footer", "steps": [ { "action": "scrollUntilVisible", "id": "list_footer" } ] },
+    { "name": "header is shown", "steps": [ { "assert": "visible", "id": "list_header" } ] }
+  ]
+}
+```
+
+| `caseIsolation` | Screen | `setup` / `teardown` |
+|---|---|---|
+| `"shared"` (default; same as omitting it) | opened once; cases share its state | once per file |
+| `"reopen"` | opened afresh before **each** case | before / after **each** case |
+
+With `"reopen"` the web driver goes back to the URL the page was on when the file started (the file's `mocks` re-applied, the `screenReady` gate awaited); iOS and Android relaunch the app with the file's `launch` and `mocks`. A case skipped by `skip` / `platform` / `responsive` opens nothing. A setup failure fails only that case, and its teardown still runs. It costs one page load (web) or one app launch (iOS / Android) per case, so use it when the cases really need a fresh screen, not by default.
+
+`caseIsolation` is read from jsonui-test-runner web 1.14.0, iOS 1.14.0 and Android 1.16.0. An older driver ignores it and runs the file as `"shared"`. `jsonui-test validate` rejects any other value. It applies to screen test files run on their own; a flow that references a case runs it inside the flow and ignores it.
 
 ## Test Case Arguments (args)
 
