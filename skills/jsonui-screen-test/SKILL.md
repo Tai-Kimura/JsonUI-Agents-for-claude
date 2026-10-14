@@ -164,7 +164,14 @@ _Generated from [`schemas/actions.schema.json`](https://github.com/Tai-Kimura/js
 
 Scroll notes:
 - **`scrollUntilVisible` guarantees that its target is visible, not where it stops.** The stop offset depends on where the target first arrives (Android lifts a target stuck at the trailing edge; one that is not stuck stays where the search swipe ended), so the same step can leave the screen at two different offsets.
+- **Without `container`, each platform scrolls a different surface**: web scrolls the target's nearest scrolling ancestor (a JsonUI page scrolls in its ScrollView's element, not the window), falling back to the window; iOS scrolls the first scroll view on screen; Android swipes across the middle of the app window, so it moves whichever scroll view lies under that line. On a screen-sized ScrollView all three reach the target; for a smaller scroll area (a list inside a card, a horizontal row), name it with `container`.
 - **Before asserting `visible` on a different element, scroll to that element too** (`scrollUntilVisible` on it), even if it sat on screen in the run you watched. A validation message at the bottom of a form, below a fixed footer, is the typical case: after `tap` Save, `scrollUntilVisible` the error label, then assert it.
+
+Visibility notes (`visible` / `notVisible` / `when.visible` / `when.notVisible`, one predicate on all three platforms; Android is the baseline):
+- **`visible` means in the viewport**: at least 1pt/px each way of the element inside the screen and inside every scroll container above it. A part showing is enough — its centre may be outside. An element laid out below a ScrollView's fold is **not** `visible`, although it exists: `scrollUntilVisible` it first.
+- **`notVisible` is exactly the negation**: absent, hidden (`visibility: invisible` / `gone`), or outside the viewport. It does not mean "covered" or "not tappable": an element at `opacity: 0`, or `enabled: false`, is `visible`.
+- **Under a native modal the screen beneath is not visible** — iOS `.sheet` (any detent) / `.fullScreenCover` / `.alert` / `.confirmationDialog`, Android `ModalBottomSheet` / `Dialog`. Assert on the modal's own elements while it is up.
+- **An overlay drawn in the same layout is not a modal** (a backdrop View with a panel, the usual web dialog): what it covers is still `visible` on iOS and web, while Android hides an element covered by a Button (and not one covered only by a plain colored View). Do not assert `visible` / `notVisible` on what an overlay covers — assert the overlay itself (`visible` on its panel, `notVisible` on it after closing).
 
 Keyboard notes:
 - **`typeText`** types on the software keyboard into the **currently-focused** field — it takes no `id`. Use it for focused-but-untargetable fields (e.g. an invisible code-entry input behind a custom 2FA/PIN UI). Focus must already be established (a prior `tap`, or the app focusing programmatically).

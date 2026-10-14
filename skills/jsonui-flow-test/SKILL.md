@@ -536,7 +536,9 @@ _Generated from [`schemas/actions.schema.json`](https://github.com/Tai-Kimura/js
 
 (Inline usage of any action requires `screen` — see "Inline Steps" above.)
 
-Scroll note: `scrollUntilVisible` guarantees its target is visible, not where it stops — before asserting `visible` on a different element, `scrollUntilVisible` that element too (see the jsonui-screen-test skill's Scroll notes).
+Scroll note: `scrollUntilVisible` guarantees its target is visible, not where it stops — before asserting `visible` on a different element, `scrollUntilVisible` that element too (see the jsonui-screen-test skill's Scroll notes). Without `container`, web scrolls the target's nearest scrolling ancestor, iOS the first scroll view, Android the middle of the app window — name `container` for a scroll area smaller than the screen.
+
+Visibility note: `visible` means in the viewport (inside the screen and every scroll container — laid out below the fold is not visible), `notVisible` is its exact negation (`opacity: 0` and `enabled: false` are visible), and the screen under a native modal is not visible. An overlay drawn in the same layout covers differently per platform — assert the overlay, not what it covers (see the jsonui-screen-test skill's Visibility notes).
 
 ### Assertions
 
