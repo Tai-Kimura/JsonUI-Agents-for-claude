@@ -156,6 +156,39 @@ Define cell/header/footer structure via `sections`. Each view requires a JSON fi
 - ViewModel must ensure each item in the data source has a unique value for this field
 - Without this, SwiftUI/Compose cannot properly animate list changes or maintain scroll position
 
+### Scrolling to a cell (`scrollTo`, `scrollAnchor`)
+
+`scrollTo` binds a plain value: a `String` names the cell whose key it is, an
+`Int` a cell counted across the sections. A CHANGE of the value scrolls; the
+value the list is drawn with, and the same value sent again, do not. To name
+the same cell again, put the value back to `""` after the landing.
+
+`scrollAnchor` says where that cell lands: `top`, `center` or `bottom` (the
+default). From jsonui-cli 1.9.29 (Dynamic mode: SwiftJsonUI 10.29.15 /
+KotlinJsonUI 2.43.12) it can be bound, to choose the anchor per request — for
+example the sent message's top at the top, and on loading a conversation the
+last message's bottom at the bottom:
+
+```json
+{
+  "type": "Collection",
+  "cellIdProperty": "id",
+  "items": "@{messages}",
+  "scrollTo": "@{scrollTarget}",
+  "scrollAnchor": "@{scrollTargetAnchor}",
+  "sections": [{ "cell": "message_cell" }]
+}
+```
+
+- The anchor is read when the `scrollTo` value changes: set it in the same
+  update as the target, or before. Changing the anchor alone scrolls nothing.
+- A bound value that is not `top`, `center` or `bottom` lands as `bottom`
+  (a debug build warns).
+- Under `reverseLayout` (Compose) `top` and `bottom` name the edges on screen,
+  bound or written.
+- `defaultScrollAnchor` only sets where the list starts; after the data is
+  replaced, scroll with `scrollTo`.
+
 ### Wrong Example
 
 → Example: `examples/collection-wrong.json` - Manual view repetition prohibited
