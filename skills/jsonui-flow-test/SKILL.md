@@ -232,7 +232,7 @@ When screen tests define `args` with default values, flow tests can override the
 ### Inline Steps (For Flow-Specific Actions)
 
 You can also include inline steps for flow-specific actions that don't belong to any screen test.
-Their element ids are checked against the layouts the same way as a screen test's (1.8.119+; see the jsonui-screen-test skill, *Element ids are checked against the layouts*). A `notVisible` assertion on a decorative image is named the same way (1.9.0+; the jsonui-screen-test skill, *A `notVisible` on a decorative image is named*), judged on the step's `screen`; the steps of a `block` have no screen and are not judged.
+Their element ids are checked against the layouts the same way as a screen test's (1.8.119+; see the jsonui-screen-test skill, *Element ids are checked against the layouts*). (A `notVisible` on a decorative image was named with an INFO from 1.9.0 to 1.9.29; from 1.9.30 it is not — the jsonui-screen-test skill, *A `notVisible` on a decorative image is no longer named*.) The steps of a `block` have no screen and are not judged.
 
 **Every top-level inline step (action or assert) MUST carry a non-empty `screen`** — the
 alias (from `sources`) of the screen the step runs on. This applies to `steps`, `setup`,
