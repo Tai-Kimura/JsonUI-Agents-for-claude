@@ -153,7 +153,7 @@ When no `case` or `cases` is specified, all cases from the referenced screen tes
 #### Conditional Flow Steps (`when`)
 Any flow step (file reference, block, or inline) may carry a `when` pre-condition and is
 skipped when it is not satisfied. Same condition object as screen tests
-(`visible` / `notVisible` / `platform` / `state`, ANDed):
+(`visible` / `notVisible` / `hidden` / `platform` / `state`, ANDed):
 ```json
 { "file": "product-detail", "case": "詳細表示", "when": { "platform": ["ios", "android"] } }
 ```
@@ -538,7 +538,7 @@ _Generated from [`schemas/actions.schema.json`](https://github.com/Tai-Kimura/js
 
 Scroll note: `scrollUntilVisible` guarantees its target is visible, not where it stops — before asserting `visible` on a different element, `scrollUntilVisible` that element too (see the jsonui-screen-test skill's Scroll notes). Without `container`, web scrolls the target's nearest scrolling ancestor, iOS the first scroll view, Android the middle of the app window — name `container` for a scroll area smaller than the screen.
 
-Visibility note: `visible` means in the viewport (inside the screen and every scroll container — laid out below the fold is not visible), `notVisible` is its exact negation (`opacity: 0` and `enabled: false` are visible), and the screen under a native modal is not visible. An overlay drawn in the same layout covers differently per platform — assert the overlay, not what it covers (see the jsonui-screen-test skill's Visibility notes).
+Visibility note: `visible` means in the viewport (inside the screen and every scroll container — laid out below the fold is not visible), `notVisible` is its exact negation (`opacity: 0` and `enabled: false` are visible), and the screen under a native modal is not visible. To check that something is not shown, assert `hidden` (not drawn at all, wherever it is) — `notVisible` passes for an element scrolled out. An overlay drawn in the same layout covers differently per platform — assert the overlay, not what it covers (see the jsonui-screen-test skill's Visibility notes).
 
 ### Assertions
 
