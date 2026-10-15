@@ -540,6 +540,8 @@ Scroll note: `scrollUntilVisible` guarantees its target is visible, not where it
 
 Visibility note: `visible` means in the viewport (inside the screen and every scroll container — laid out below the fold is not visible), `notVisible` is its exact negation (`opacity: 0` and `enabled: false` are visible), and the screen under a native modal is not visible. To check that something is not shown, assert `hidden` (not drawn at all, wherever it is) — `notVisible` passes for an element scrolled out. An overlay drawn in the same layout covers differently per platform — assert the overlay, not what it covers (see the jsonui-screen-test skill's Visibility notes).
 
+**Keyboard (iOS, jsonui-test-runner-ios 1.14.0+)**: a `tap` whose target sits under the software keyboard fails with `keyboard covers '<id>'` unless the keyboard can be put away without Return; write `{ "action": "hideKeyboard" }` between the last `input` and that `tap`. `hideKeyboard` may press the focused single-line field's Return key (return / Done only), which also runs the field's `onSubmit` if the screen binds one. Details: `jsonui-screen-test` → Keyboard notes.
+
 ### Assertions
 
 <!-- generated:assertions -->
