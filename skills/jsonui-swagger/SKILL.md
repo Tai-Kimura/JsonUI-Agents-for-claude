@@ -120,7 +120,7 @@ FOREIGN KEY constraint is expected in the database.
 API specification files (`docs/api/*.json`) are not just documentation — `jui build` reads them and generates per-platform DTO + Domain Data Model files (see `rules/file-locations.md` § API Specifications + Data Model, `rules/invariants.md` rules 6-9). Author with that in mind:
 
 - **v1 halt constructs** — these will halt `jui build` with an ERROR (not warning). Avoid them or factor them out before `jui build` is invoked:
-  - `anyOf` anywhere (untagged unions — v2 feature)
+  - `anyOf` anywhere (untagged unions) — **except a null union**: `anyOf` / `oneOf` of exactly one non-null member plus `{"type": "null"}` (either order, e.g. Pydantic's `Optional[X]`) and the 3.1 type array `type: [T, "null"]` are read as that member / `T` with `nullable: true`, on a field, an array `items`, a map's `additionalProperties` or a top-level schema. Prefer the 3.0 spelling (`nullable: true`, or `$ref` + `nullable: true`) when authoring; the null-union forms build the same DTOs
   - Schema-level `oneOf` (top-level discriminated envelopes — v2 feature)
   - Field-level `oneOf` **without** a sibling `discriminator` + explicit `mapping`
   - `discriminator` block without an accompanying `oneOf` list

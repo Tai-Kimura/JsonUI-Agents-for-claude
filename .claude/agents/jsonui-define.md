@@ -345,7 +345,8 @@ What actually halts vs what works:
 | Field-level `oneOf` + `discriminator` but `mapping` missing / partial / pointing outside `oneOf` list | Halts |
 | Schema-level `oneOf` (top-level discriminated envelope) — with or without discriminator | Halts (v2) |
 | `discriminator` without `oneOf` | Halts |
-| `anyOf` anywhere | Halts (v2) |
+| `anyOf` anywhere | Halts — except a null union |
+| Null union: `anyOf` / `oneOf` of exactly one non-null member plus `{"type": "null"}` (either order), or 3.1 `type: [T, "null"]` | **Supported** — read as that member with `nullable: true` (same DTOs as `nullable: true` / `$ref` + `nullable: true`) |
 
 When `has_one_of: true` fires, open the swagger and verify each `oneOf` site matches the supported shape — only halt-shaped cases need rework before `jui build`.
 
