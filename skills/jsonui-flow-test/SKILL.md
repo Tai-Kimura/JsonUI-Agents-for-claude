@@ -160,8 +160,56 @@ skipped when it is not satisfied. Same condition object as screen tests
 
 #### Launch Configuration (flow root)
 A flow test may declare a root-level `launch` object (`clearState` / `permissions` /
-`arguments`) applied before the flow starts — same shape as screen tests. See the
+`arguments`) applied before the flow starts — same shape as screen tests, and applied by the
+runner on all three platforms (web from jsonui-test-runner web 1.15.0). See the
 jsonui-screen-test skill for details.
+
+#### Initial State (flow root)
+`initialState.viewModels` puts values into the Data of the screens the flow visits. Its keys
+are **screen ids** — the same values the steps write in `screen` (layout basename without
+`.json`, see *`screen` values are canonical screen ids*). Each inner object follows the screen
+test rules (*Initial State* in the jsonui-screen-test skill): Data names the layout declares,
+values fitting the Data's class, `null` only for a class ending in `?`.
+
+```json
+{
+  "type": "flow",
+  "initialState": {
+    "viewModels": {
+      "login": { "email": "test@example.com" },
+      "checkout": { "couponCode": "WELCOME10" }
+    }
+  },
+  "steps": [
+    { "screen": "login", "action": "tap", "id": "login_button" },
+    { "file": "home", "case": "open_cart" },
+    { "screen": "checkout", "assert": "visible", "id": "coupon_applied" }
+  ]
+}
+```
+
+- All entries travel with the flow's one launch. Each screen applies its entry **once, the
+  first time the flow reaches it**; coming back to it later in the same flow does not apply it
+  again.
+- The driver checks the app's receipt where the flow reaches the screen — when an inline
+  step's `screen` changes to it and the implicit screen check passes. A rejected key or no
+  receipt fails the flow there (see *Setup failures* in the jsonui-screen-test skill for the
+  messages and causes). Drivers iOS 1.15.0 / Android 1.17.0 / web 1.15.0 with SwiftJsonUI ≥
+  10.30.0 / KotlinJsonUI ≥ 2.44.0 and code from the jsonui-cli of the same train.
+- **Name each screen in an inline step's `screen`.** A screen in `viewModels` that no step in
+  `setup` / `steps` names never has its receipt checked — `jsonui-test validate` warns, and so does the
+  driver when the flow ends without reaching it. A file reference carries no `screen`, so a
+  screen visited only inside a referenced case is not "reached"; add an inline step on it
+  (an `assert: "screen"` is enough).
+- **`initialState.screen` is removed.** A flow starts where the app starts. validate errors
+  (`flow-initial-state-screen-removed`); delete the key.
+- **A referenced file's or case's own `initialState` is ignored inside the flow** —
+  validate and the driver warn (`referenced-initial-state-ignored`). Move the values into
+  `viewModels` under that screen's id.
+- An empty `viewModels` (`{}`) is the same as none.
+
+`state` / `when.state` in a flow read the Data of the step's `screen` (else the last `screen`
+an earlier step named); a case a flow references reads its own file's screen.
 
 #### Step-level Features
 Inline flow steps and block steps support the same step attributes as screen tests —
