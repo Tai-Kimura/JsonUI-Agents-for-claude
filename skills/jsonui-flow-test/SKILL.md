@@ -191,14 +191,17 @@ values fitting the Data's class, `null` only for a class ending in `?`.
 - All entries travel with the flow's one launch. Each screen applies its entry **once, the
   first time the flow reaches it**; coming back to it later in the same flow does not apply it
   again.
-- The driver checks the app's receipt where the flow reaches the screen — when an inline
-  step's `screen` changes to it and the implicit screen check passes. A rejected key or no
-  receipt fails the flow there (see *Setup failures* in the jsonui-screen-test skill for the
+- The driver checks the app's receipt where the flow reaches the screen — the first time an
+  inline step's `screen` changes to it (after the implicit screen check passes; with
+  `verifyScreenTransitions` off, still at that step). A screen stays pending until its receipt
+  passed, so a retried body (`retry`) checks it again. A rejected key or no receipt fails the
+  flow there (see *Setup failures* in the jsonui-screen-test skill for the
   messages and causes). Drivers iOS 1.15.0 / Android 1.17.0 / web 1.15.0 with SwiftJsonUI ≥
   10.30.0 / KotlinJsonUI ≥ 2.44.0 and code from the jsonui-cli of the same train.
 - **Name each screen in an inline step's `screen`.** A screen in `viewModels` that no step in
-  `setup` / `steps` names never has its receipt checked — `jsonui-test validate` warns, and so does the
-  driver when the flow ends without reaching it. A file reference carries no `screen`, so a
+  `setup` / `steps` names never has its receipt checked — `jsonui-test validate` warns. The
+  driver warns about every screen still pending when the flow ends — also one an earlier
+  attempt reached but did not confirm, when the attempt that passed never went there. A file reference carries no `screen`, so a
   screen visited only inside a referenced case is not "reached"; add an inline step on it
   (an `assert: "screen"` is enough).
 - **`initialState.screen` is removed.** A flow starts where the app starts. validate errors
