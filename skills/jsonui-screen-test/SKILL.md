@@ -218,7 +218,7 @@ _Generated from [`schemas/actions.schema.json`](https://github.com/Tai-Kimura/js
 |-----------|---------|
 | `label` | Human-readable step name for logs/reports. **Exception**: on `selectOption`, `label` is the option text, not a step name. |
 | `optional` | `true` → a failure of this step becomes a warning and execution continues. |
-| `when` | Pre-condition; the step is skipped when not satisfied. Object with `visible` / `notVisible` / `hidden` (element id), `platform`, and/or `state` (`{path, equals}`), ANDed. |
+| `when` | Pre-condition; the step is skipped when not satisfied. Object with `visible` / `notVisible` / `hidden` (element id), `platform`, and/or `state` (`{path, equals}`, read from the state bridge like the `state` assertion; instant — an absent bridge or an unresolved path is not met, a truncated iOS bridge fails the step), ANDed. |
 
 ```json
 { "action": "tap", "id": "tutorial_close", "when": { "visible": "tutorial_overlay" }, "optional": true }
@@ -276,7 +276,31 @@ platform:
 - **Web**: `clearState` clears cookies and the origin's local / session storage (not
   IndexedDB); a `deny` or `unset` clears the context's permissions first, then the `allow`s
   are granted again; `arguments` → `sessionStorage["JSONUI_TEST_ARGS"]`, removed at the end
-  of the file. The page is reloaded once.
+  of the file. Then the runner calls the harness's `afterLaunch(page)` hook, writes the
+  initialState, switches the mocks and reloads the page once (`goto` on a reopen). The page
+  must already be on the app (not `about:blank`) when a file with a launch starts.
+
+**Web harness: seed cookies in `afterLaunch`.** `clearState` removes cookies and storage, so
+whatever the harness set up before `runner.run()` and needs to survive a launch — an auth
+cookie, a storage flag — goes in the runner config hook `afterLaunch: (page) => void |
+Promise<void>`. It is awaited after clearState / permissions / arguments and before the
+initialState write, the mocks and the reload; it runs on every launch (per case under
+`caseIsolation: "reopen"`) and not at all for a file with nothing to launch with; a throw fails
+the launch like the other launch steps (setup).
+
+```typescript
+const runner = new JsonUITestRunner(page, {
+  afterLaunch: async (page) => {
+    await page.context().addCookies([{ name: 'session', value: token, url: baseUrl }]);
+  },
+});
+// or createRunner().afterLaunch(async (page) => { … }).build(page)
+```
+
+On web the initialState payload also carries `writtenAt`; the generated hook takes it only in
+a document opened after it was written (the one the reload / `goto` opens), so a page still
+hydrating from before the launch cannot consume it first. Nothing to write in the test or
+harness — regenerate the app with `jui build` from the jsonui-cli of this train.
 
 `clearState` (iOS) and `arguments` are delivered and no further: reading them is the app's
 own code, not the libraries'. A file with a `launch`, `mocks` or a non-empty `initialState`
