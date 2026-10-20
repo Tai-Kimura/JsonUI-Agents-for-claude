@@ -23,7 +23,7 @@ This repository is a **JsonUI project**. Before doing any work, ask the user:
 Every task must satisfy all five invariants:
 
 1. `jui build` must pass with **zero warnings**.
-2. `jui verify --fail-on-diff` must pass with no drift — **and you must read how many screens it actually verified**. Screens whose layout is authored externally are skipped and do not affect the exit code, so `verified 0 of M` means the check did not run, not that it passed.
+2. `jui verify --fail-on-diff` must pass with no drift — **and you must read both of its counts**: `verified N of M screen(s)` and `checked against the spec's declarations: K of E externally authored layout(s) — F finding(s)`. Screens whose layout is authored externally are not in `verified`; they are checked on the `checked` line, and its findings are WARNINGs that do not affect the exit code unless `"verify": {"external": "gate"}`. `verified 0` with `checked` 0 or missing (the line is printed only when there is an externally authored layout) means the check did not run, not that it passed.
 3. `@generated` files are never hand-edited — edit the spec instead.
 4. `jui lint-strings` must be clean (and `jsonui-localize` run for VM-side strings) before a screen is considered done.
 5. Conditional logic and hand-written code are **declared and tested** — `branchContracts` / `unitContracts` where the entry makes a real test exist, and `jsonui-test generate branch-tests --check` / `unit-stubs --check` exit 0, and (from 1.9.0) `jsonui-test validate` passes its coverage section — nothing outside the app's baseline, nothing stale or vanished in it, nothing that cannot be baselined. A method with no branches and nothing to assert gets no entry.
