@@ -70,15 +70,16 @@ The one legitimate exception: `screen_parent_spec` index files, where `structure
 
 ### Every name the Layout binds is declared by the spec
 
-The Layout JSON is written by hand, so nothing generates its bindings from the spec — the spec has to declare them. `jui verify` checks every externally authored layout against its spec (`checked against the spec's declarations: K of E externally authored layout(s) — F finding(s)`; a WARNING, counted by `--fail-on-diff` when `jui.config.json` has `"verify": {"external": "gate"}`). A name is declared when the spec has it in any of:
+The Layout JSON is written by hand, so nothing generates its bindings from the spec — the spec has to declare them. `jui verify` checks every externally authored layout against its spec (`checked against the spec's declarations: K of E externally authored layout(s) — F finding(s)`; a WARNING, counted by `--fail-on-diff` when `jui.config.json` has `"verify": {"external": "gate"}`). A name is declared only by what goes into the data section `jui g project` writes:
 
-- `dataFlow.viewModel.vars` / `dataFlow.viewModel.methods`
-- `stateManagement.uiVariables` / `stateManagement.eventHandlers`
-- what the spec's `displayLogic`, `collection` or `tabView` generate (the data section `jui g project` writes)
+- `stateManagement.uiVariables`
+- what the spec's `displayLogic`, `collection` or `tabView` generate
+
+`dataFlow.viewModel.vars` / `methods` and `stateManagement.eventHandlers` are the view model's and the view's own and never go into data ("a value the view does not use must not be in data"), so a name the Layout binds that is only there is reported (`declared only in dataFlow.viewModel.vars, which never goes into the data section`). Keeping it there as well is fine; it must also be in `uiVariables`.
 
 It is checked for each `@{…}` binding in the layout (its root name) and each entry of the layout file's own `data` section.
 
-**Where to declare a name the Layout binds: `stateManagement.uiVariables`.** A layout's bindings resolve against the data section `jui g project` writes, and that is built from `uiVariables` (plus what `displayLogic` / `collection` / `tabView` generate). A handler the Layout binds (`"onClick": "@{onSaveTap}"`) is a `uiVariables` entry with a callback type — `"(() -> Void)?"` or the `callback` alias. A screen's `stateManagement.eventHandlers` are view-local: they never go into the data section, and doc validate requires their names to match `^on[A-Z]`. Names already declared in `dataFlow.viewModel.vars` / `methods` or `eventHandlers` are counted as declared by `jui verify`, but new ones go in `uiVariables`.
+**Where to declare a name the Layout binds: `stateManagement.uiVariables`.** A layout's bindings resolve against the data section `jui g project` writes, and that is built from `uiVariables` (plus what `displayLogic` / `collection` / `tabView` generate). A handler the Layout binds (`"onClick": "@{onSaveTap}"`) is a `uiVariables` entry with a callback type — `"(() -> Void)?"` or the `callback` alias. A screen's `stateManagement.eventHandlers` are view-local: they never go into the data section, and doc validate requires their names to match `^on[A-Z]`.
 
 Two rules decide the cases that are not obvious:
 
