@@ -147,6 +147,9 @@ Follow the standard order. Invoke the `/jsonui-screen-spec` skill for the author
 - `structure.layout` is **always an empty object** (`{}`) for new specs.
 - **Never write the UI tree inline in the spec.** If the user gives you UI details, author them into the Layout JSON (→ `jsonui-implement`), not here.
 - `structure.collection.cell.children` — **never**. Use `cell.layoutFile` pointing at an external cell Layout JSON, plus `cell.uiVariables` / `cell.eventHandlers` for typed cell data.
+- **Declare every name the Layout binds in `stateManagement.uiVariables`** — a handler it binds (`@{onSaveTap}`) with a callback type `"(() -> Void)?"`; screen `eventHandlers` are view-local and never reach the layout's data. `jui verify` reports a binding or a `data` entry the spec does not declare (`checked against the spec's declarations …`). See `.claude/jsonui-rules/specification-rules.md` → "Every name the Layout binds is declared by the spec".
+- **An include's bindings are the including screen's to declare**, spelled with the include's `id` in front (`pager` + `summaryText` → `pagerSummaryText`, `pager` + `onNextTap` → `pagerOnNextTap` as a callback in `uiVariables` — not in `eventHandlers`, whose names doc validate requires to start with `on`). A partial shared by several screens is declared in each spec that includes it; no separate spec for the partial.
+- **Never write `stateManagement.cellData`.** It is not a JsonUI field and declares nothing; put those names in `stateManagement.uiVariables`.
 
 **🔴 Hard rule: any non-standard Layout `type` needs a `component_spec` FIRST.**
 
