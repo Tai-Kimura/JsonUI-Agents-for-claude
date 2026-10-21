@@ -29,6 +29,14 @@ curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude
 
 Supported `JSONUI_BOOTSTRAP_STEPS` values: any comma-separated subset of `cli,mcp,agents`.
 
+Add one skill to a project that already has the pack (the SessionStart sync refreshes the skills a project has, not
+new ones) — only `.claude/skills/<name>/` is written; agents, rules, other skills and `settings.json` stay as they are:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tai-Kimura/JsonUI-Agents-for-claude/main/install.sh | \
+  bash -s -- -s jsonui-infra
+```
+
 ### Post-install
 
 1. Add the CLI tools to your `PATH` (the bootstrap prints the exact lines).

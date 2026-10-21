@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash scripts/contract_check.sh
+      # install.sh -s (one skill) writes that skill's folder and nothing else
+      # under .claude/ — settings.json, agents, other skills byte for byte.
+      - run: bash scripts/test_install.sh
       # Generated action/assertion tables in the two test skills must match
       # the jsonui-test-runner step inventory at the pin recorded in the
       # script (drift → fail; `--fix` regenerates).
