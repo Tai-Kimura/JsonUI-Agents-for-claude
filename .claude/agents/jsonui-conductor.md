@@ -80,7 +80,7 @@ Adjust the state summary based on classification:
 | 1. New | specs-only or active | Ask: "Add a new spec, or implement an existing one?" → define or implement |
 | 2. Modify | any | Ask: "Bug? Feature change? Spec change?" — for a bug, run **jsonui-debug** (READ-ONLY) first → route per the report to **jsonui-define** / **jsonui-implement** / **jsonui-navigation-{platform}**. For a feature change, go directly to the target agent. |
 | 3. Investigate | any | Route to **jsonui-debug** (READ-ONLY) |
-| 4. Other | any | Ask what they need and pick the closest route, or propose backend mode per `.claude/jsonui-workflow.md` Workflow 4 |
+| 4. Other | any | Ask what they need. The server room — infrastructure, flows, load or cost under `docs/infra` (what `jui viz` draws) — is **jsonui-define** (Task 7), not backend mode. Otherwise pick the closest route, or propose backend mode per `.claude/jsonui-workflow.md` Workflow 4 |
 
 ### Note on `Embed` (cross-screen embedding)
 
@@ -93,7 +93,7 @@ If the user is adding an `Embed`-based screen (tablet master/detail, dashboard w
 | Logical route | Agent | R/W | Responsibility |
 |---|---|---|---|
 | **jsonui-debug** | `jsonui-debug` | R | spec-first bug trace, behavior walks, code archaeology |
-| **jsonui-define** | `jsonui-define` | W | spec authoring (screen / component / API/DB / doc-rules), validate, HTML docs |
+| **jsonui-define** | `jsonui-define` | W | spec authoring (screen / component / API/DB / doc-rules / the server room's `docs/infra`), validate, HTML docs |
 | **jsonui-ground** | `jsonui-ground` | W | `jui init`, platform scaffolding, test runner setup |
 | **jsonui-implement** | `jsonui-implement` | W | Layout/Styles/VM body + localize + `jui build` (0 warnings) + `jui verify` (no drift) |
 | **jsonui-navigation-ios** | `jsonui-navigation-ios` | W | SwiftUI NavigationStack / UIKit UINavigationController |
@@ -110,6 +110,7 @@ If the user is adding an `Embed`-based screen (tablet master/detail, dashboard w
 - **Existing spec change** → `jsonui-define`
 - **Close contract coverage** (`jsonui-test contracts coverage` reports uncovered outcomes) → `jsonui-define` (Task 6)
 - **validate red on coverage** → entries not in the baseline, or what cannot be baselined: `jsonui-define` (Task 6), with the screens validate names; only `baselined but closed`, with or without vanished: `jsonui-test` (shrink the baseline); `baselined but gone from the run` (vanished): with `not evaluated` or `screens not evaluated` on the same platform, `jsonui-define` first; otherwise tell the user — removing or re-keying those entries is theirs (`new` and `vanished` of the same count on two screens is a rename: tell the user, route nothing); `cannot start` or no baseline file with entries the user declines: tell the user — recording or repairing the baseline is their decision
+- **Server room** (write or update `docs/infra`: the model, flows, load scenarios, prices; price it; check it against the IaC) → `jsonui-define` (Task 7)
 - **Existing Layout / VM body change** → `jsonui-implement`
 - **Existing navigation change** → `jsonui-navigation-{ios,android,web}`
 - **Investigation only** → `jsonui-debug`
