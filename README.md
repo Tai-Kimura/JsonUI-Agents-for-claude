@@ -82,7 +82,7 @@ Your project's `CLAUDE.md` is **not created, not overwritten, not touched**. Add
 | Agent | R/W | Responsibility |
 |---|---|---|
 | `jsonui-conductor` | R | Entry point — reads repo state via MCP and routes to the right sub-agent |
-| `jsonui-define` | W | Spec authoring (screen / component / API/DB / doc-rules), validate, HTML docs |
+| `jsonui-define` | W | Spec authoring (screen / component / API/DB / doc-rules / the server room `docs/infra`), validate, HTML docs |
 | `jsonui-ground` | W | `jui init`, platform scaffolding, test runner setup |
 | `jsonui-implement` | W | Layout / Styles / VM body + localize + `jui build` (0 warnings) + `jui verify` (no drift) |
 | `jsonui-navigation-ios` | W | SwiftUI NavigationStack / UIKit UINavigationController |
@@ -93,7 +93,7 @@ Your project's `CLAUDE.md` is **not created, not overwritten, not touched**. Add
 
 All agents are MCP-first — they call the `jsonui-mcp-server` for spec / layout reads, lookups, generation, build, verify. Bash shell-outs to `jui` are reserved for commands without MCP wrappers.
 
-## Skills (11)
+## Skills (12)
 
 Authoring guides that agents invoke for specific tasks.
 
@@ -102,6 +102,7 @@ Authoring guides that agents invoke for specific tasks.
 | `jsonui-screen-spec` | `jsonui-define` | Screen `.spec.json` authoring |
 | `jsonui-component-spec` | `jsonui-define` | Reusable component spec |
 | `jsonui-swagger` | `jsonui-define` | API / DB OpenAPI |
+| `jsonui-infra` | `jsonui-define` | The server room (`docs/infra`): model, flows, load, prices, cost, checks |
 | `jsonui-dataflow` | `jsonui-define`, `jsonui-implement`, `jsonui-debug` | `dataFlow.{viewModel,repositories,useCases,apiEndpoints}` + Mermaid linkage |
 | `jsonui-layout` | `jsonui-implement` | Layout JSON + Styles + includes |
 | `jsonui-viewmodel-impl` | `jsonui-implement` | VM / Repository / UseCase method body implementation (signatures stay in spec) |
