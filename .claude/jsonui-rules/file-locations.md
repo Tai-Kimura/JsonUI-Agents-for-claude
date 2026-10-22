@@ -184,6 +184,7 @@ The infrastructure `jui viz` draws, plays flows on and prices. Hand-written JSON
 | `docs/infra/prices/*.json` | `prices_dir` | The room's own prices (what the bundled table lacks) |
 | `docs/infra/seed/` | — | `infra_seed`'s draft and report when written (`write: true`) — never read as the model |
 | `docs/infra/.check-report.infra-*.json` | — | `infra_check`'s reports (generated) |
+| `docs/infra/migrations/<name>/` | `migrations_dir` | One migration plan: `changes.json` (the model's shape + `order`) and `removals.json` — the model stays the old side |
 
 No value of a secret, an account id or an address in any of them — `infra_validate` refuses the file.
 

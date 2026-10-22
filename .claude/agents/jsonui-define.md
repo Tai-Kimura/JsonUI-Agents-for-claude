@@ -553,6 +553,11 @@ order: `mcp__jui-tools__infra_seed` (draft, read-only), `infra_validate` (model 
 0 errors, every `noPrice` / `noRule` / `loadUndefined` entry of `infra_cost` is either fixed or stated with its
 reason, and the load numbers' basis (measured or assumed) is in your report.
 
+A migration plan (`docs/infra/migrations/<name>/changes.json` + `removals.json`, jsonui-cli 2.3.20+) is written only
+when the user asks for one, by the skill's Migration rules; the model stays today's infrastructure. Done means
+`infra_validate` with `plan` reports 0 errors under `migrations`, and `infra_cost` with `plan` gives the old → new
+month, which your report states with its biggest changes.
+
 No value of a secret, an account id or an address in any file — names and ids only.
 
 ---
