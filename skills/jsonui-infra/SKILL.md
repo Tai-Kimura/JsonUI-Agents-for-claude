@@ -140,12 +140,13 @@ New = the model + `changes.json` − `removals.json`.
 
 | Rule | Note |
 |---|---|
-| `changes.json` has the model's shape (`groups`, `nodes`, `edges`, `version: 0`) and an optional `order`: node ids. | No `flows`, `environments` — the plan moves nodes and their wiring. |
+| `changes.json` has the model's shape (`groups`, `nodes`, `edges`, `flows`, `environments`, `version: 0`) and an optional `order`: node ids. | A flow, group or edge with an id the model has replaces it; a new id adds one. |
 | A node in `changes` with an id the model has **replaces** it; a new id **adds** a node. | Write the whole node: a replacement is not a patch. |
-| `removals.json` is `{"version": 0, "nodes": [id], "groups": [id], "edges": [id or {"from", "to"}]}`. A removed node **takes its edges** with it. | Do not list those edges again. |
+| `removals.json` is `{"version": 0, "nodes": [id], "groups": [id], "edges": [id or {"from", "to"}], "flows": [id]}`. A removed node **takes its edges** with it. | Do not list those edges again. |
+| **A plan that changes a flow** writes the whole flow in `changes`' `flows` (by the flow's id), and lists a flow that goes in `removals`' `flows`. Flows change at the plan's last step. | A flow that walks a node the plan removes must be rewritten or removed, or the plan fails on the new model's check (`flow.node.missing`). |
 | A replaced node **keeps its edges** unless `changes` or `removals` names them. | To rewire, remove the old edge and add the new one. |
 | An id in both files (`migration.both`), twice (`migration.duplicate`), a removal the model lacks (`migration.remove_missing`), an `order` id the plan does not touch (`migration.order_unknown`) and an edge whose end the new model lacks (`migration.edge_end`) are errors. | Each names the file and path. |
-| The play order is `order`, else the order of `changes`' nodes, then `removals`' nodes. | Put what must exist first (a new database before the service that reads it) first. |
+| The play order is `order`, else the order of `changes`' nodes, then `removals`' nodes — one node a step. An edge comes in at the later step of its two ends and goes at the earlier; a group comes in with the first node it holds; flows, removed groups, and edges or groups with no node of their own changing come at one last step. | Put what must exist first (a new database before the service that reads it) first. |
 
 ## What you do not do
 
