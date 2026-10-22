@@ -84,8 +84,12 @@ show where it is going. Then `mcp__jui-tools__infra_validate` with `plan: "<name
 `migrations` (the plan's own codes and the infra checks on the merged new model), and read its `steps` — the order
 `jui viz`'s 移管 button will play. Then `mcp__jui-tools__infra_cost` with `plan` (and a `scenario`): the month old,
 new and the difference, per node, per provider and after each step; `account: true` adds the account's month (its
-environments priced together). Every node the plan adds needs a price and load like any other (Step 5) — a node
-added with no load row costs 0 in the difference, which is not a saving.
+environments priced together). Every node the plan adds needs a price and load like any other (Step 5): write its load
+row in the room's load file (validate does not flag a row for a node a plan adds; it counts in the new month) — a node
+added with no load row costs 0 in the difference, which is not a saving. Read `unpricedChanged` (the changed nodes
+whose month is not all priced in the old or the new; the difference leaves their part out) before calling the
+difference a saving. A step's difference is the whole month's change at that step, not its node's own: a neighbour can
+move with it (a shared free amount); its `moved` names what moved. A node's own change is its row in the per-node list.
 
 ### Step 9: Report
 
