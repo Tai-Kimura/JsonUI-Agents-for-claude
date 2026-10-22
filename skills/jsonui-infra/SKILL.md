@@ -83,8 +83,9 @@ The model in `docs/infra/*.json` is today's infrastructure; a plan says what mov
 show where it is going. Then `mcp__jui-tools__infra_validate` with `plan: "<name>"`: fix every problem it lists under
 `migrations` (the plan's own codes and the infra checks on the merged new model), and read its `steps` — the order
 `jui viz`'s 移管 button will play. Then `mcp__jui-tools__infra_cost` with `plan` (and a `scenario`): the month old,
-new and the difference, per node, per provider and after each step; `account` for one account. Every node the plan
-adds needs a price and load like any other (Step 5).
+new and the difference, per node, per provider and after each step; `account: true` adds the account's month (its
+environments priced together). Every node the plan adds needs a price and load like any other (Step 5) — a node
+added with no load row costs 0 in the difference, which is not a saving.
 
 ### Step 9: Report
 

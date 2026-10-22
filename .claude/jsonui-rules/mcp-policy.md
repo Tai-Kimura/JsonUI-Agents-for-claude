@@ -39,7 +39,7 @@ JsonUI agents call the `jsonui-mcp-server` (the `jui-tools` MCP) to interact wit
 | Server room: validate the room's own prices | `mcp__jui-tools__infra_prices_validate` | `jsonui-doc validate infra-prices --json` |
 | Server room: draft the model from IaC, config files and code (read-only unless `write: true`) | `mcp__jui-tools__infra_seed` | `jsonui-doc seed infra` |
 | Server room: the declared infra checks (model ⇔ IaC, code, load) | `mcp__jui-tools__infra_check` | `jsonui-doc check infra --json` |
-| Server room: the month's (or a day's) cost; with `plan`, a migration plan's old / new / difference | `mcp__jui-tools__infra_cost` | `jsonui-doc cost infra --json [--migration <name> [--account <id>]]` |
+| Server room: the month's (or a day's) cost; with `plan`, a migration plan's old / new / difference | `mcp__jui-tools__infra_cost` | `jsonui-doc cost infra --json [--migration <name> [--account]]` |
 | jui viz (local viewer of Claude Code sessions only): server running, hooks installed, relay registered | `mcp__jui-tools__viz_status` | `jui viz status --json --with-relay` |
 | jui viz: check the environment | `mcp__jui-tools__viz_doctor` | `jui viz doctor --json` |
 | jui viz: start the server in the background, get its URL | `mcp__jui-tools__viz_start` | `jui viz start --json` |
