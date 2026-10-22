@@ -34,12 +34,12 @@ JsonUI agents call the `jsonui-mcp-server` (the `jui-tools` MCP) to interact wit
 | Validate test files (always `no_install: true`; from 1.8.119 the result also carries the project's contracts-coverage section — a gate from 1.9.0) | `mcp__jui-tools__test_validate` | `jsonui-test validate --no-install` |
 | Generate branch tests from a spec's branchContracts | `mcp__jui-tools__test_generate_branch_tests` | `jsonui-test generate branch-tests` |
 | Contract-gap coverage (declared API outcomes no branch row answers; read-only. Its `exit` does not read the baseline: `jsonui-test validate` compares these entries with the app's baseline, and gates on that from 1.9.0) | `mcp__jui-tools__test_contracts_coverage` | `jsonui-test contracts coverage` |
-| Server room (`docs/infra`): validate the model and its flows | `mcp__jui-tools__infra_validate` | `jsonui-doc validate infra --json` |
+| Server room (`docs/infra`): validate the model and its flows, and its migration plans (`plan`: one) | `mcp__jui-tools__infra_validate` | `jsonui-doc validate infra --json [--migration <name>]` |
 | Server room: validate the load scenarios | `mcp__jui-tools__infra_load_validate` | `jsonui-doc validate infra-load --json` |
 | Server room: validate the room's own prices | `mcp__jui-tools__infra_prices_validate` | `jsonui-doc validate infra-prices --json` |
 | Server room: draft the model from IaC, config files and code (read-only unless `write: true`) | `mcp__jui-tools__infra_seed` | `jsonui-doc seed infra` |
 | Server room: the declared infra checks (model ⇔ IaC, code, load) | `mcp__jui-tools__infra_check` | `jsonui-doc check infra --json` |
-| Server room: the month's (or a day's) cost | `mcp__jui-tools__infra_cost` | `jsonui-doc cost infra --json` |
+| Server room: the month's (or a day's) cost; with `plan`, a migration plan's old / new / difference | `mcp__jui-tools__infra_cost` | `jsonui-doc cost infra --json [--migration <name> [--account <id>]]` |
 | jui viz (local viewer of Claude Code sessions only): server running, hooks installed, relay registered | `mcp__jui-tools__viz_status` | `jui viz status --json --with-relay` |
 | jui viz: check the environment | `mcp__jui-tools__viz_doctor` | `jui viz doctor --json` |
 | jui viz: start the server in the background, get its URL | `mcp__jui-tools__viz_start` | `jui viz start --json` |
